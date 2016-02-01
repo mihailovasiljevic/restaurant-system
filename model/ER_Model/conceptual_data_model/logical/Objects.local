@@ -1,0 +1,8 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<oracle.dbtools.crest.model.design.logical.LogicalDesign>
+   <object objectType="Entity" objectID="2D39A97D-721E-336C-7740-3279B102F220" name="Gost restorana" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Entity" propertyParentId="36898E81-37F9-9D01-542B-C2B6BA6EB24F" propertySourceId="" propertyTargetId=""/>
+   <object objectType="Entity" objectID="F291624C-B06B-51DE-409C-1E6E1A3C85E8" name="Restoran" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Entity" propertyParentId="36898E81-37F9-9D01-542B-C2B6BA6EB24F" propertySourceId="" propertyTargetId=""/>
+   <object objectType="Entity" objectID="BF6B76CC-DCAD-1B09-CC8D-0B597F06ED46" name="Vrsta restorana" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Entity" propertyParentId="36898E81-37F9-9D01-542B-C2B6BA6EB24F" propertySourceId="" propertyTargetId=""/>
+   <object objectType="Relation" objectID="857F8517-E69B-AF09-0053-430169F29506" name="klasifikuje" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Relation" propertyParentId="36898E81-37F9-9D01-542B-C2B6BA6EB24F" propertySourceId="BF6B76CC-DCAD-1B09-CC8D-0B597F06ED46" propertyTargetId="F291624C-B06B-51DE-409C-1E6E1A3C85E8"/>
+   <object objectType="Relation" objectID="80FF942A-C7B2-0C20-210E-D7F6C245FA05" name="pripada restoranu" seqName="seg_0" propertyClassName="oracle.dbtools.crest.model.design.logical.Relation" propertyParentId="36898E81-37F9-9D01-542B-C2B6BA6EB24F" propertySourceId="F291624C-B06B-51DE-409C-1E6E1A3C85E8" propertyTargetId="2D39A97D-721E-336C-7740-3279B102F220"/>
+</oracle.dbtools.crest.model.design.logical.LogicalDesign>

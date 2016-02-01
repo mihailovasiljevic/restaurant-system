@@ -1,0 +1,166 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="2D39A97D-721E-336C-7740-3279B102F220" name="Gost restorana">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:12:41 UTC</createdTime>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="GOST_ID" id="946EA083-F97A-CD78-84E4-63C908F86253">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:12:50 UTC</createdTime>
+<commentInRDBMS>Identifikator gosta restorana.</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="GOST_IME" id="8DC4F534-99AC-D1AC-0BE3-0BE027B22F7F">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:13:07 UTC</createdTime>
+<commentInRDBMS>Ime gosta restorana.</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>64 CHAR</dataTypeSize>
+<ownDataTypeParameters>64 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="GOST_PREZ" id="6DBA6CD2-C16F-4C2E-4BAE-F08DC2700A7F">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:13:25 UTC</createdTime>
+<commentInRDBMS>Prezime gosta restorana.</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>64 CHAR</dataTypeSize>
+<ownDataTypeParameters>64 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="GOST_EMAIL" id="81D26D68-56A1-45A5-3C9C-5CF3D62F347A">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:13:40 UTC</createdTime>
+<commentInRDBMS>Email gosta.</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>64 CHAR</dataTypeSize>
+<ownDataTypeParameters>64 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="GOST_LOZ" id="75409665-05F5-881C-3E4A-4CA8EF418288">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:14:04 UTC</createdTime>
+<commentInRDBMS>Lozinka gosta.</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>256 CHAR</dataTypeSize>
+<ownDataTypeParameters>256 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="GOST_AKT" id="A7B7056D-D97F-4E1F-A5C5-30EC68FA6C86">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:14:18 UTC</createdTime>
+<commentInRDBMS>Da li je nalog aktiviran?</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT006</logicalDatatype>
+<dataTypeSize>1 BYTE</dataTypeSize>
+<listOfValues>
+<valueDef value="0" description="FALSE"/>
+<valueDef value="1" description="TRUE"/>
+</listOfValues>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>1 BYTE,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="GOST_BRPS" id="1A3F99D7-E147-33A3-81AF-A1826EC842C5">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:15:21 UTC</createdTime>
+<commentInRDBMS>Broj poseta gosta odredjenom restoranu.</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="RES_ID" id="C4B53B01-BAA6-30AC-4D90-CEA0AAD2FAD9">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:16:38 UTC</createdTime>
+<generatorID>80FF942A-C7B2-0C20-210E-D7F6C245FA05</generatorID>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<referedAttribute>E51F2FB0-748D-8905-9819-ACDCB549818C</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="RES_VRS_ID" id="93E2D171-6C87-F35C-0FBF-B930B4DA2C2F">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:16:38 UTC</createdTime>
+<generatorID>80FF942A-C7B2-0C20-210E-D7F6C245FA05</generatorID>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<referedAttribute>D9C3855E-1E6B-FBE7-0C46-9D9CAF9AAB14</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT025</logicalDatatype>
+<dataTypeSize>2 CHAR</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="8D86104A-FFAB-8B4A-E264-C174C7767975" name="Gost restorana PK">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:13:06 UTC</createdTime>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>946EA083-F97A-CD78-84E4-63C908F86253</attributeRef>
+<attributeRef>C4B53B01-BAA6-30AC-4D90-CEA0AAD2FAD9</attributeRef>
+<attributeRef>93E2D171-6C87-F35C-0FBF-B930B4DA2C2F</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>

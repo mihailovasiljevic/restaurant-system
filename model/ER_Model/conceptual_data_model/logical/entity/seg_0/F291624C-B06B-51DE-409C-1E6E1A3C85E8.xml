@@ -1,0 +1,105 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Entity class="oracle.dbtools.crest.model.design.logical.Entity" directorySegmentName="seg_0" id="F291624C-B06B-51DE-409C-1E6E1A3C85E8" name="Restoran">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:09:01 UTC</createdTime>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<adequatelyNormalized>NO</adequatelyNormalized>
+<expectedVolumes>0</expectedVolumes>
+<fwdEngineeringStrategyName>Single Table</fwdEngineeringStrategyName>
+<growthPercent>0</growthPercent>
+<growthType>Year</growthType>
+<maxVolumes>9999999</maxVolumes>
+<minVolumes>0</minVolumes>
+<normalForm>Third</normalForm>
+<attributes itemClass="oracle.dbtools.crest.model.design.logical.Attribute">
+<Attribute name="RES_ID" id="E51F2FB0-748D-8905-9819-ACDCB549818C">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:09:05 UTC</createdTime>
+<commentInRDBMS>Identifikator restorana.</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="RES_NAZ" id="A941D5F8-84C1-AA37-D700-9A908E344F8D">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:09:32 UTC</createdTime>
+<commentInRDBMS>Naziv restorana.</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT024</logicalDatatype>
+<dataTypeSize>80 CHAR</dataTypeSize>
+<ownDataTypeParameters>80 CHAR,,</ownDataTypeParameters>
+</Attribute>
+<Attribute name="RES_OCENA" id="31F7FE5F-F9DC-FFA8-E242-2EF3AD81178D">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:09:48 UTC</createdTime>
+<commentInRDBMS>OCena restorana.</commentInRDBMS>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<listOfValues>
+<valueDef value="0" description=""/>
+<valueDef value="1" description=""/>
+<valueDef value="2" description=""/>
+<valueDef value="3" description=""/>
+<valueDef value="4" description=""/>
+<valueDef value="5" description=""/>
+</listOfValues>
+<defaultValue>0</defaultValue>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<listOfRanges>
+<rangeDef class="oracle.dbtools.crest.model.design.constraint.AVT">
+<beginValue>0</beginValue>
+<endValue>5</endValue>
+</rangeDef>
+</listOfRanges>
+</Attribute>
+<Attribute name="RES_VRS_ID" id="D9C3855E-1E6B-FBE7-0C46-9D9CAF9AAB14">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:11:29 UTC</createdTime>
+<generatorID>857F8517-E69B-AF09-0053-430169F29506</generatorID>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<referedAttribute>DA3725FE-1E3C-9D60-3887-9A2F4FA4826B</referedAttribute>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT025</logicalDatatype>
+<dataTypeSize>2 CHAR</dataTypeSize>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+</Attribute>
+</attributes>
+<identifiers itemClass="oracle.dbtools.crest.model.design.logical.CandidateKey">
+<identifier id="1A20881F-55F3-C1A4-D498-3E68F2693766" name="Restoran PK">
+<createdBy>Misa</createdBy>
+<createdTime>2016-01-30 13:09:25 UTC</createdTime>
+<ownerDesignName>conceptual_data_model</ownerDesignName>
+<engineerTo>
+<item key="BF4BA1E5-BE3D-198F-1176-84EE3A39D876" value="true"/>
+</engineerTo>
+<pk>true</pk>
+<usedAttributes>
+<attributeRef>E51F2FB0-748D-8905-9819-ACDCB549818C</attributeRef>
+<attributeRef>D9C3855E-1E6B-FBE7-0C46-9D9CAF9AAB14</attributeRef>
+</usedAttributes>
+</identifier>
+</identifiers>
+</Entity>
