@@ -105,7 +105,7 @@
 	<!-- Setup -->
 	<target name="prepare-database">
 	    <echo message="Inserting default user into database."/>
-		<java classname="rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.client.InitClient"  fork="true">
+		<java classname="restaurant.client.InitClient"  fork="true">
 			<classpath>
 				<pathelement path="${build}" />
 				<fileset dir="${lib}">
