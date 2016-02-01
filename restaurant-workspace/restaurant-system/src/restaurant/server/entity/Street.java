@@ -28,14 +28,14 @@ public class Street implements Serializable{
 	@Column(name = "STREET_ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "STREET_NAZ", nullable = false, length=64)
-	private String naziv;
+	@Column(name = "STREET_NAME", nullable = false, length=64)
+	private String name;
 	
 	@ManyToOne
 	@JoinColumn(name = "CITY_ID", referencedColumnName = "CITY_ID", nullable = false)
 	private City city;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "STREET") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "street") //mappedBy says that owning side is street
 	private Set<Address> addresses = new HashSet<Address>();
 	
 	public void add(Address address) {
@@ -58,12 +58,12 @@ public class Street implements Serializable{
 		this.id = id;
 	}
 
-	public String getNaziv() {
-		return naziv;
+	public String getName() {
+		return name;
 	}
 
-	public void setNaziv(String naziv) {
-		this.naziv = naziv;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public City getCity() {
@@ -82,17 +82,17 @@ public class Street implements Serializable{
 		this.addresses = addresses;
 	}
 
-	public Street(Integer id, String naziv, City city, Set<Address> addresses) {
+	public Street(Integer id, String name, City city, Set<Address> addresses) {
 		super();
 		this.id = id;
-		this.naziv = naziv;
+		this.name = name;
 		this.city = city;
 		this.addresses = addresses;
 	}
 
 	@Override
 	public String toString() {
-		return "Street [id=" + id + ", naziv=" + naziv + "]";
+		return "Street [id=" + id + ", naziv=" + name + "]";
 	}
 	
 	

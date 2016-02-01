@@ -41,6 +41,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -53,13 +55,17 @@ public class RestaurantType implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "REST_VRST_ID", unique = true, nullable = false)
+	@Column(name = "REST_TYPE_ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "REST_VRST_NAZ",nullable = false, length=64)
-	private String naziv;
+	@Column(name = "REST_TYPE_NAME",nullable = false, length=64)
+	private String name;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "RESTAURANT_TYPE")
+	@ManyToOne
+	@JoinColumn(name = "SYS_MEN_ID", referencedColumnName = "SYS_MEN_ID", nullable = false)
+	private SystemMenager systemMenager;
+	
+	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurantType")
 	private Set<Restaurant> restaurants = new HashSet<Restaurant>();
 	
 	public void add(Restaurant rst) {
@@ -83,16 +89,14 @@ public class RestaurantType implements Serializable{
 		this.id = id;
 	}
 
-	public String getNaziv() {
-		return naziv;
+	public String getName() {
+		return name;
 	}
 
-	public void setNaziv(String naziv) {
-		this.naziv = naziv;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	
-	
 	public Set<Restaurant> getRestaurants() {
 		return restaurants;
 	}
@@ -101,14 +105,23 @@ public class RestaurantType implements Serializable{
 		this.restaurants = restaurants;
 	}
 
-	public RestaurantType(Integer id, String naziv,Set<Restaurant> restaurants){
+	public SystemMenager getSystemMenager() {
+		return systemMenager;
+	}
+
+	public void setSystemMenager(SystemMenager systemMenager) {
+		this.systemMenager = systemMenager;
+	}
+
+	public RestaurantType(Integer id, String name, SystemMenager systemMenager, Set<Restaurant> restaurants) {
 		super();
 		this.id = id;
-		this.naziv = naziv;
+		this.name = name;
+		this.systemMenager = systemMenager;
 		this.restaurants = restaurants;
 	}
-	
+
 	public String toString() {
-		return "(Tip restorana)[id=" + id + ",naziv=" + naziv + "]";
+		return "(Tip restorana)[id=" + id + ",naziv=" + name + "]";
 	}
 }

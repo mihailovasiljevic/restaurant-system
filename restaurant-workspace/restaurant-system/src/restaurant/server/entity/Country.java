@@ -26,10 +26,10 @@ public class Country implements Serializable{
 	@Column(name = "CNT_ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "CNT_NAZ",nullable = false, length=64)
-	private String naziv;
+	@Column(name = "CNT_NAME",nullable = false, length=64)
+	private String name;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "COUNTRY") //mappedBy says that owning side is country
+	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "country") //mappedBy says that owning side is country
 	private Set<City> cities = new HashSet<City>();
 	
 	public void add(City city) {
@@ -52,12 +52,12 @@ public class Country implements Serializable{
 		this.id = id;
 	}
 
-	public String getNaziv() {
-		return naziv;
+	public String getName() {
+		return name;
 	}
 
-	public void setNaziv(String naziv) {
-		this.naziv = naziv;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Set<City> getCities() {
@@ -68,10 +68,10 @@ public class Country implements Serializable{
 		this.cities = cities;
 	}
 
-	public Country(Integer id, String naziv, Set<City> cities) {
+	public Country(Integer id, String name, Set<City> cities) {
 		super();
 		this.id = id;
-		this.naziv = naziv;
+		this.name = name;
 		this.cities = cities;
 	}
 	
