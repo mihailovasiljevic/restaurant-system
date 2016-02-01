@@ -50,7 +50,7 @@ public class RestaurantMenager implements Serializable{
 	private Image image;
 	
 	@ManyToOne
-	@JoinColumn(name = "SYS_MEN_ID", referencedColumnName = "SYS_MEN_ID", nullable = false)
+	@JoinColumn(name = "SYS_MEN_ID", referencedColumnName = "SYS_MEN_ID")
 	private SystemMenager systemMenager;
 
 	

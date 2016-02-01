@@ -1,0 +1,15 @@
+package restaurant.server.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "RESERAVATION")
+public class Reservation implements Serializable{
+
+	private static final long serialVersionUID = 3847723219419666671L;
+
+	
+}

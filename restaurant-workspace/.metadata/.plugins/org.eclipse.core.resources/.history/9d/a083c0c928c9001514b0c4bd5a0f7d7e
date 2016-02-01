@@ -1,0 +1,49 @@
+package restaurant.server.entity;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "RESTAURANT_GUEST")
+public class RestaurantGuest implements Serializable{
+
+	private static final long serialVersionUID = -97243651610451388L;
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "REST_GUEST_ID", unique = true, nullable = false)
+	private Integer id;
+	
+	@Column(name = "REST_GUEST_NAME", nullable = false, length=64)
+	private String name;
+	
+	@Column(name = "REST_GUEST_SURNAME", nullable = false, length = 64)
+	private String surname;
+	
+	@Column(name = "REST_GUEST_EMAIL", nullable = false, length = 80)
+	private String email;
+	
+	@Column(name = "REST_GUEST_PASS", nullable = false, length = 256)
+	private String password;
+	
+	@Column(name = "REST_GUEST_ACT", nullable = false)
+	private Boolean activated;
+	
+	@ManyToOne
+	@JoinColumn(name = "ADDRESS_ID", referencedColumnName = "ADDRESS_ID")
+	private Address address;
+	
+	@OneToOne
+	@JoinColumn(name = "IMAGE_ID", referencedColumnName = "IMAGE_ID")
+	private Image image;
+}

@@ -1,0 +1,137 @@
+package restaurant.server.entity;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.sql.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name = "TABLES_CONFIGURATION")
+public class TablesConfiguration implements Serializable{
+	
+	private static final long serialVersionUID = -9073143508246375400L;
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "TAB_CONF_ID", unique = true, nullable = false)
+	private Integer id;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "TAB_CONF_DATE_FROM", nullable = false)
+	private Date dateFrom;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "TAB_CONF_DATE_TO")
+	private Date dateTo;
+
+	@Column(name = "TAB_CONF_ROW_NO", nullable = false)
+	private Integer numberOfRows;
+	
+	@Column(name = "TAB_CONF_COL_NO", nullable = false)
+	private Integer numberOfCols;
+	
+	@Column(name = "TAB_CONF_CURR", nullable = false)
+	private Boolean current;
+	
+	@ManyToOne
+	@JoinColumn(name = "REST_MEN_ID", referencedColumnName = "REST_MEN_ID")
+	private RestaurantMenager restauratnMenager;
+	
+	@ManyToOne
+	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
+	private Restaurant restaurant;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Date getDateFrom() {
+		return dateFrom;
+	}
+
+	public void setDateFrom(Date dateFrom) {
+		this.dateFrom = dateFrom;
+	}
+
+	public Date getDateTo() {
+		return dateTo;
+	}
+
+	public void setDateTo(Date dateTo) {
+		this.dateTo = dateTo;
+	}
+
+	public Integer getNumberOfRows() {
+		return numberOfRows;
+	}
+
+	public void setNumberOfRows(Integer numberOfRows) {
+		this.numberOfRows = numberOfRows;
+	}
+
+	public Integer getNumberOfCols() {
+		return numberOfCols;
+	}
+
+	public void setNumberOfCols(Integer numberOfCols) {
+		this.numberOfCols = numberOfCols;
+	}
+
+	public Boolean getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(Boolean current) {
+		this.current = current;
+	}
+
+	public RestaurantMenager getRestauratnMenager() {
+		return restauratnMenager;
+	}
+
+	public void setRestauratnMenager(RestaurantMenager restauratnMenager) {
+		this.restauratnMenager = restauratnMenager;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public TablesConfiguration(Integer id, Date dateFrom, Date dateTo, Integer numberOfRows, Integer numberOfCols,
+			Boolean current, RestaurantMenager restauratnMenager, Restaurant restaurant) {
+		super();
+		this.id = id;
+		this.dateFrom = dateFrom;
+		this.dateTo = dateTo;
+		this.numberOfRows = numberOfRows;
+		this.numberOfCols = numberOfCols;
+		this.current = current;
+		this.restauratnMenager = restauratnMenager;
+		this.restaurant = restaurant;
+	}
+
+	@Override
+	public String toString() {
+		return "TablesConfiguration [id=" + id + ", numberOfRows=" + numberOfRows + ", numberOfCols=" + numberOfCols
+				+ ", current=" + current + "]";
+	}
+	
+}

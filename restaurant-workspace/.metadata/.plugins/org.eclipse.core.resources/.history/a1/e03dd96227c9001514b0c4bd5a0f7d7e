@@ -1,0 +1,30 @@
+package restaurant.server.entity;
+
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "RESTAURANT_TABLE")
+public class RestaurantTable implements Serializable{
+
+	private static final long serialVersionUID = 5508943516967115779L;
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "REST_TABLE_ID", unique = true, nullable = false)
+	private Integer id;
+	
+	@Column(name = "REST_TABLE_ROW", nullable = false)
+	private Integer row;
+	
+	@Column(name = "REST_TABLE_COL", nullable = false)
+	private Integer col;
+	
+}

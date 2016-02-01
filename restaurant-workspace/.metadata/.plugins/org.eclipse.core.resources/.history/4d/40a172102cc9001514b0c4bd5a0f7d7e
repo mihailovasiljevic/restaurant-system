@@ -1,0 +1,12 @@
+package restaurant.server.entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "FRIEND")
+public class Friend implements Serializable{
+
+}

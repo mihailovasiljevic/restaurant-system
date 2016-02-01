@@ -1,0 +1,73 @@
+package restaurant.server.entity;
+
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.LAZY;
+import static javax.persistence.GenerationType.IDENTITY;
+
+import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Time;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name = "RESTAURANT_TABLE")
+public class RestaurantTable implements Serializable{
+
+	private static final long serialVersionUID = 5508943516967115779L;
+
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "REST_TABLE_ID", unique = true, nullable = false)
+	private Integer id;
+	
+	@Column(name = "REST_TABLE_ROW", nullable = false)
+	private Integer row;
+	
+	@Column(name = "REST_TABLE_COL", nullable = false)
+	private Integer col;
+	
+	@Column(name = "REST_TABLE_RES", nullable = false)
+	private Boolean reserved;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "REST_TABLE_RES_DATE")
+	private Date reservedDate;
+	
+	@Temporal(TemporalType.TIME)
+	@Column(name = "REST_TABLE_RES_TIME")
+	private Time reservedTime;
+	
+	@Column(name = "REST_TABLE_RES_FOR", nullable = false)
+	private Integer reservedFor;  //for how many hours is table reserved
+
+	@ManyToOne
+	@JoinColumn(name = "TAB_CONF_ID", referencedColumnName = "TAB_CONF_ID")
+	private TablesConfiguration tablesConfiguration;
+	
+	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "table") //mappedBy says that owning side is street
+	private Set<Reservation> reservations = new HashSet<Reservation>();
+	
+	public void add(Reservation reservation) {
+		if (reservation.getTable() != null)
+			reservation.getTable().getReservations().remove(reservation);
+		reservation.setTable(this);
+		reservations.add(reservation);
+	}
+
+	public void remove(Reservation reservation) {
+		reservation.setTable(null);
+		reservations.remove(reservation);
+	}
+}

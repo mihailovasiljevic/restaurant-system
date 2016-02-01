@@ -32,6 +32,9 @@ public class Menu implements Serializable{
 	@Column(name = "MENU_ID", unique = true, nullable = false)
 	private Integer id;
 	
+	@Column(name = "MENU_NAME", nullable = false, length=64)
+	private String name;
+	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "MENU_DATE_FROM", nullable = false)
 	private Date dateFrom;
@@ -69,6 +72,14 @@ public class Menu implements Serializable{
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Date getDateFrom() {
@@ -115,10 +126,11 @@ public class Menu implements Serializable{
 		return serialVersionUID;
 	}
 
-	public Menu(Integer id, Date dateFrom, Date dateTo, RestaurantMenager restaurantMenager, Restaurant restaurant,
-			Set<Dish> dishes) {
+	public Menu(Integer id, String name, Date dateFrom, Date dateTo, RestaurantMenager restaurantMenager,
+			Restaurant restaurant, Set<Dish> dishes) {
 		super();
 		this.id = id;
+		this.name = name;
 		this.dateFrom = dateFrom;
 		this.dateTo = dateTo;
 		this.restaurantMenager = restaurantMenager;
