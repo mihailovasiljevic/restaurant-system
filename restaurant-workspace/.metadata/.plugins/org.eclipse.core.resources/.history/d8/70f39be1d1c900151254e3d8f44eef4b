@@ -1,0 +1,11 @@
+package restaurant.server.session;
+
+public class InitBean implements Init{
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

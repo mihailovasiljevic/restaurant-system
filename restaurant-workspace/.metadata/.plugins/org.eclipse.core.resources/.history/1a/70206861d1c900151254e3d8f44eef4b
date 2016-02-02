@@ -1,0 +1,10 @@
+tomee.dir=D:/Projects/ISA/apache-tomee-webprofile-1.7.3
+dirname=restaurant-system
+warname=restaurant-system.war
+jarname=restaurant-system.jar
+earname=restaurant-system.ear
+
+db.driver=com.mysql.jdbc.Driver
+db.connectionString=jdbc:mysql://192.168.0.2:3306/root
+db.username=root
+db.password=root

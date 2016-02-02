@@ -43,3 +43,15 @@ user global configuration and to define the default location to store repositori
 not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
 EGit might behave differently since they see different configuration options.
 This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.wst.server.discovery 1 0 2016-02-02 18:39:52.730
+!MESSAGE cacheFile=file:/D:/Projects/ISA/restaurant-system/restaurant-workspace/.metadata/.plugins/org.eclipse.wst.server.discovery/serverAdapterSitesDetails.xml
+
+!ENTRY org.eclipse.jst.server.tomcat.core 4 0 2016-02-02 18:40:30.467
+!MESSAGE Several ports (8005, 8080, 8009) required by Apache TomEE Plus 1.5.0 at localhost are already in use. The server may already be running in another process, or a system process may be using the port. To start this server you will need to stop the other process or change the port number(s).
+
+!ENTRY org.eclipse.jst.server.tomcat.core 4 0 2016-02-02 18:41:04.743
+!MESSAGE Port 8080 required by Apache TomEE Plus 1.5.0 at localhost is already in use. The server may already be running in another process, or a system process may be using the port. To start this server you will need to stop the other process or change the port number(s).
+
+!ENTRY org.eclipse.jst.server.tomcat.core 4 0 2016-02-02 18:41:49.321
+!MESSAGE Port 8080 required by Apache TomEE Plus 1.5.0 at localhost is already in use. The server may already be running in another process, or a system process may be using the port. To start this server you will need to stop the other process or change the port number(s).

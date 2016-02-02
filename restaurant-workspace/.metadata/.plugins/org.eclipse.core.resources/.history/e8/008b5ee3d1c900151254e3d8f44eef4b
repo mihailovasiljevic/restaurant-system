@@ -1,0 +1,18 @@
+package restaurant.server.session;
+
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+
+import rs.ac.uns.ftn.informatika.mbs2.vezbe09.primer01.server.session.Init;
+
+@Stateless
+@Remote(Init.class)
+public class InitBean implements Init{
+
+	@Override
+	public void init() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

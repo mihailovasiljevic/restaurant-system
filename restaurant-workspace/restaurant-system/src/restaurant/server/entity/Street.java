@@ -82,9 +82,8 @@ public class Street implements Serializable{
 		this.addresses = addresses;
 	}
 
-	public Street(Integer id, String name, City city, Set<Address> addresses) {
+	public Street(String name, City city, Set<Address> addresses) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.city = city;
 		this.addresses = addresses;

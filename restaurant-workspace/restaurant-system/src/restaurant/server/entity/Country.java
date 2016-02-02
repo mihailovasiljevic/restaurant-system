@@ -68,9 +68,8 @@ public class Country implements Serializable{
 		this.cities = cities;
 	}
 
-	public Country(Integer id, String name, Set<City> cities) {
+	public Country(String name, Set<City> cities) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.cities = cities;
 	}
