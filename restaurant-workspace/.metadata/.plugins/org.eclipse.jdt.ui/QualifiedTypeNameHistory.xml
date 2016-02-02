@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="javax.persistence.OneToOne"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.Image"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.SystemMenager"/>
+<fullyQualifiedTypeName name="java.lang.Boolean"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.RestaurantMenager"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.TablesConfiguration"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.Restaurant"/>
+<fullyQualifiedTypeName name="javax.persistence.ManyToMany"/>
+<fullyQualifiedTypeName name="javax.persistence.Temporal"/>
+<fullyQualifiedTypeName name="javax.persistence.TemporalType"/>
+<fullyQualifiedTypeName name="java.sql.Date"/>
+<fullyQualifiedTypeName name="java.sql.Time"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.RestaurantTable"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.RestaurantGuest"/>
+<fullyQualifiedTypeName name="restaurant.server.session.GenericDaoLocal"/>
+<fullyQualifiedTypeName name="java.io.Serializable"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.Country"/>
+<fullyQualifiedTypeName name="restaurant.server.session.CountryDaoLocal"/>
+<fullyQualifiedTypeName name="restaurant.server.session.CountryDaoBean"/>
+<fullyQualifiedTypeName name="javax.persistence.CascadeType"/>
+</qualifiedTypeNameHistroy>

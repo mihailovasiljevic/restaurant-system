@@ -24,12 +24,8 @@ public class Friend implements Serializable{
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name = "GUEST_ID", referencedColumnName = "REST_GUEST_ID")
+	@JoinColumn(name = "REST_GUEST_ID", referencedColumnName = "REST_GUEST_ID")
 	private RestaurantGuest restaurantGuest;
-	
-	@ManyToOne
-	@JoinColumn(name = "FRIEND_ID", referencedColumnName = "REST_GUEST_ID")
-	private RestaurantGuest restaurantFriend;
 
 	public Integer getId() {
 		return id;
@@ -47,24 +43,16 @@ public class Friend implements Serializable{
 		this.restaurantGuest = restaurantGuest;
 	}
 
-	public RestaurantGuest getRestaurantFriend() {
-		return restaurantFriend;
-	}
-
-	public void setRestaurantFriend(RestaurantGuest restaurantFriend) {
-		this.restaurantFriend = restaurantFriend;
-	}
 
 	public Friend(Integer id, RestaurantGuest restaurantGuest, RestaurantGuest restaurantFriend) {
 		super();
 		this.id = id;
 		this.restaurantGuest = restaurantGuest;
-		this.restaurantFriend = restaurantFriend;
 	}
 
 	@Override
 	public String toString() {
-		return "Friend [id=" + id + ", restaurantGuest=" + restaurantGuest.getName() + ", restaurantFriend=" + restaurantFriend.getName()
+		return "Friend [id=" + id + ", restaurantGuest=" + restaurantGuest.getName() 
 				+ "]";
 	}
 	

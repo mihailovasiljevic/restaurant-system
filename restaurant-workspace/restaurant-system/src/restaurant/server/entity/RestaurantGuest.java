@@ -59,6 +59,7 @@ public class RestaurantGuest implements Serializable{
 	@JoinColumn(name = "IMAGE_ID", referencedColumnName = "IMAGE_ID")
 	private Image image;
 	
+	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurantGuest") //mappedBy says that owning side is street
 	private Set<Friend> myFriends = new HashSet<Friend>();
 	
@@ -74,18 +75,18 @@ public class RestaurantGuest implements Serializable{
 		myFriends.remove(friend);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurantFriend") //mappedBy says that owning side is street
-	private Set<Friend> iAmFriendTo = new HashSet<Friend>();
+	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurantGuest") //mappedBy says that owning side is street
+	private Set<FriendTo> iAmFriendTo = new HashSet<FriendTo>();
 	
-	public void addFriend(Friend friend) {
-		if (friend.getRestaurantFriend() != null)
-			friend.getRestaurantFriend().getiAmFriendTo().remove(friend);
-		friend.setRestaurantFriend(this);
+	public void add(FriendTo friend) {
+		if (friend.getRestaurantGuest() != null)
+			friend.getRestaurantGuest().getiAmFriendTo().remove(friend);
+		friend.setRestaurantGuest(this);
 		iAmFriendTo.add(friend);
 	}
 
-	public void removeFriend(Friend friend) {
-		friend.setRestaurantFriend(null);
+	public void remove (FriendTo friend) {
+		friend.setRestaurantGuest(null);
 		iAmFriendTo.remove(friend);
 	}
 	
@@ -222,11 +223,11 @@ public class RestaurantGuest implements Serializable{
 		this.myFriends = myFriends;
 	}
 
-	public Set<Friend> getiAmFriendTo() {
+	public Set<FriendTo> getiAmFriendTo() {
 		return iAmFriendTo;
 	}
 
-	public void setiAmFriendTo(Set<Friend> iAmFriendTo) {
+	public void setiAmFriendTo(Set<FriendTo> iAmFriendTo) {
 		this.iAmFriendTo = iAmFriendTo;
 	}
 
@@ -256,7 +257,7 @@ public class RestaurantGuest implements Serializable{
 
 	public RestaurantGuest(Integer id, String name, String surname, String email, String password, Boolean activated,
 			Integer numberOfVisits, Address address, Restaurant restaurant, Image image, Set<Friend> myFriends,
-			Set<Friend> iAmFriendTo, Set<Invitation> sentInvitations, Set<Invitation> receivedInvitations,
+			Set<FriendTo> iAmFriendTo, Set<Invitation> sentInvitations, Set<Invitation> receivedInvitations,
 			Set<Reservation> reservations) {
 		super();
 		this.id = id;
