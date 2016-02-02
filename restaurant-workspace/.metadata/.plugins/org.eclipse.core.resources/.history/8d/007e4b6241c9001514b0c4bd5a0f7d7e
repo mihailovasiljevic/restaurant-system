@@ -1,0 +1,83 @@
+package restaurant.server.session;
+
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+public class GenericDaoBean<T, ID extends Serializable> implements GenericDaoLocal<T, ID> {
+
+	private Class<T> entityType;
+
+	@PersistenceContext(unitName = "restaurant-system")
+	protected EntityManager em;
+
+	@SuppressWarnings("unchecked")
+	public GenericDaoBean() {
+		entityType = (Class<T>) ((ParameterizedType) getClass()
+				.getGenericSuperclass()).getActualTypeArguments()[0];
+	}
+
+	public Class<T> getEntityType() {
+		return entityType;
+	}
+
+	public T findById(ID id) {
+		T entity;
+		em.getTransaction().begin();
+		entity = em.find(entityType, id);
+		em.getTransaction().commit();
+		return entity;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<T> findAll() {
+		em.getTransaction().begin();
+		Query q = em.createQuery("SELECT x FROM " + entityType.getSimpleName()
+				+ " x");
+		em.getTransaction().commit();
+		List<T> result = q.getResultList();
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<T> findBy(String query) {
+		em.getTransaction().begin();
+		Query q = em.createQuery(query);
+		em.getTransaction().commit();
+		List<T> result = q.getResultList();
+		return result;
+	}
+
+	public T persist(T entity) {
+		em.getTransaction().begin();
+		em.persist(entity);
+		em.getTransaction().commit();
+		return entity;
+	}
+
+	public T merge(T entity) {
+		em.getTransaction().begin();
+		entity = em.merge(entity);
+		em.getTransaction().commit();
+		return entity;
+	}
+
+	public void remove(T entity) {
+		em.getTransaction().begin();
+		entity = em.merge(entity);
+		em.remove(entity);
+		em.getTransaction().commit();
+	}
+
+	public void flush() {
+		em.flush();
+	}
+
+	public void clear() {
+		em.clear();
+	}
+}

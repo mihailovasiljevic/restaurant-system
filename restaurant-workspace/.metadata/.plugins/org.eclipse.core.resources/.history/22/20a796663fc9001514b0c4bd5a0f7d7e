@@ -1,0 +1,7 @@
+package restaurant.server.session;
+
+import java.io.Serializable;
+
+public class GenericDaoBean<T, ID extends Serializable> implements GenericDaoLocal<T, ID> {
+
+}
