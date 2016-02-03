@@ -1,7 +1,0 @@
-package restaurant.server.session;
-
-import java.io.Serializable;
-
-public interface CountryDaoLocal<T> extends GenericDaoLocal<T, Serializable>{
-
-}

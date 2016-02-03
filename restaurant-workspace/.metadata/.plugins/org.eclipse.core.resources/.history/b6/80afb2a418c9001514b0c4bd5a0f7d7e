@@ -1,9 +1,0 @@
-package restaurant.server.entity;
-
-import java.io.Serializable;
-
-public class SystemMenager implements Serializable{
-
-	private static final long serialVersionUID = -3387534626139060334L;
-
-}

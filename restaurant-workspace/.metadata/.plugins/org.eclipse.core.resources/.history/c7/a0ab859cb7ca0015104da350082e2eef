@@ -1,0 +1,8 @@
+package restaurant.servlet.session;
+
+import restaurant.server.entity.Friend;
+
+public class FriendDaoBean extends GenericDaoBean<Friend, Integer>
+implements FriendDaoLocal{
+
+}

@@ -12,6 +12,10 @@
 		<item value="false" key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID"/>
 		<item value="false" key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED"/>
 		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value="D:\Projects\ISA\Internet softverske arhitekture 2015\Vežbe\09. Referentni primer (JSP, Servlet, SLSB, JPA)\Vezbe09"/>
+			<item value="D:\Projects\ISA\Internet softverske arhitekture 2015\Vežbe\10. MDB"/>
+			<item value="/media/authorit0/Data/Projects/ISA/Internet softverske arhitekture 2015/Vežbe/10. MDB/Vezbe10"/>
+			<item value="/media/authorit0/Data/Projects/ISA/Examples-Workspace/Vezbe09"/>
 			<item value="D:\Projects\ISA\Examples-Workspace\Vezbe09"/>
 		</list>
 		<list key="WizardProjectsImportPage.STORE_ARCHIVES">

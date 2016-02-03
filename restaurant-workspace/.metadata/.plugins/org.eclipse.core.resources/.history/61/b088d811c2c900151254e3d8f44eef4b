@@ -1,7 +1,0 @@
-package restaurant.server.session;
-
-import restaurant.server.entity.Country;
-
-public interface AddressDaoLocal extends GenericDaoLocal<Address, Integer>{
-
-}

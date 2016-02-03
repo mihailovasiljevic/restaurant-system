@@ -1,0 +1,5 @@
+package restaurant.servlet.session;
+
+public interface Init {
+	void init();
+}

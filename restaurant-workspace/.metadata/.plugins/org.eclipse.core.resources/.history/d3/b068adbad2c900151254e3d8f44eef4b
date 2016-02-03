@@ -1,7 +1,0 @@
-package restaurant.client;
-
-public class InitClient {
-	public static void main(String args[]) {
-	
-	}
-}

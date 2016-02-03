@@ -1,7 +1,0 @@
-package restaurant.server.entity;
-
-import java.io.Serializable;
-
-public class SystemMenager implements Serializable{
-
-}

@@ -8,7 +8,6 @@
 <fullyQualifiedTypeName name="java.sql.Date"/>
 <fullyQualifiedTypeName name="java.sql.Time"/>
 <fullyQualifiedTypeName name="javax.persistence.CascadeType"/>
-<fullyQualifiedTypeName name="java.io.Serializable"/>
 <fullyQualifiedTypeName name="restaurant.server.session.GenericDaoLocal"/>
 <fullyQualifiedTypeName name="restaurant.server.entity.Address"/>
 <fullyQualifiedTypeName name="restaurant.server.session.AddressDaoLocal"/>
@@ -30,7 +29,6 @@
 <fullyQualifiedTypeName name="restaurant.server.session.ReservationDaoLocal"/>
 <fullyQualifiedTypeName name="restaurant.server.entity.Restaurant"/>
 <fullyQualifiedTypeName name="restaurant.server.session.RestaurantDaoLocal"/>
-<fullyQualifiedTypeName name="restaurant.server.entity.RestaurantGuest"/>
 <fullyQualifiedTypeName name="restaurant.server.session.RestaurantGuestDaoLocal"/>
 <fullyQualifiedTypeName name="restaurant.server.entity.RestaurantMenager"/>
 <fullyQualifiedTypeName name="restaurant.server.session.RestaurantMenagerDaoLocal"/>
@@ -53,4 +51,9 @@
 <fullyQualifiedTypeName name="restaurant.server.session.CityDaoLocal"/>
 <fullyQualifiedTypeName name="restaurant.server.session.CityDaoBean"/>
 <fullyQualifiedTypeName name="restaurant.server.session.Init"/>
+<fullyQualifiedTypeName name="java.io.Serializable"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.RestaurantGuest"/>
+<fullyQualifiedTypeName name="restaurant.server.entity.UserType"/>
+<fullyQualifiedTypeName name="restaurant.server.session.UserTypeDaoLocal"/>
+<fullyQualifiedTypeName name="restaurant.servlet.session.Init"/>
 </qualifiedTypeNameHistroy>
