@@ -1,8 +1,0 @@
-package restaurant.servlet.session;
-
-import restaurant.server.entity.Image;
-
-public class ImageDaoBean extends GenericDaoBean<Image, Integer>
-implements ImageDaoLocal{
-
-}

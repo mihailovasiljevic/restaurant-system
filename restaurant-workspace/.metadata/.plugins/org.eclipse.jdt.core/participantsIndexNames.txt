@@ -1,3 +1,0 @@
-INDEX VERSION 1.126
-/media/authorit0/Data/Projects/ISA/restaurant-system/restaurant-workspace/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/585782283.index
-/Vezbe09/src

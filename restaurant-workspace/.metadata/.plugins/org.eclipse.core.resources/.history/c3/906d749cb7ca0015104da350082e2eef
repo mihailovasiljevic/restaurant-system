@@ -1,7 +1,0 @@
-package restaurant.servlet.session;
-
-import restaurant.server.entity.Dish;
-
-public interface DishDaoLocal extends GenericDaoLocal<Dish, Integer>{
-
-}

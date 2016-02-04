@@ -1,8 +1,0 @@
-package restaurant.servlet.session;
-
-import restaurant.server.entity.Reservation;
-
-public class ReservationDaoBean extends GenericDaoBean<Reservation, Integer>
-implements ReservationDaoLocal{
-
-}
