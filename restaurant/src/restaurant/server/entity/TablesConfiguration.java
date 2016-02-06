@@ -5,7 +5,7 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,8 +52,8 @@ public class TablesConfiguration implements Serializable{
 	private Boolean current;
 	
 	@ManyToOne
-	@JoinColumn(name = "REST_MEN_ID", referencedColumnName = "REST_MEN_ID")
-	private RestaurantMenager restaurantMenager;
+	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
+	private User userRestaurantMenager;
 	
 	@ManyToOne
 	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
@@ -130,12 +130,12 @@ public class TablesConfiguration implements Serializable{
 		this.current = current;
 	}
 
-	public RestaurantMenager getRestaurantMenager() {
-		return restaurantMenager;
+	public User getUserRestaurantMenager() {
+		return userRestaurantMenager;
 	}
 
-	public void setRestaurantMenager(RestaurantMenager restauratnMenager) {
-		this.restaurantMenager = restauratnMenager;
+	public void setUserRestaurantMenager(User userRestaurantMenager) {
+		this.userRestaurantMenager = userRestaurantMenager;
 	}
 
 	public Restaurant getRestaurant() {
@@ -154,9 +154,13 @@ public class TablesConfiguration implements Serializable{
 		this.tables = tables;
 	}
 
-	public TablesConfiguration( String name, Date dateFrom, Date dateTo, Integer numberOfRows,
-			Integer numberOfCols, Boolean current, RestaurantMenager restaurantMenager, Restaurant restaurant,
-			Set<RestaurantTable> tables) {
+	public TablesConfiguration() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public TablesConfiguration(String name, Date dateFrom, Date dateTo, Integer numberOfRows, Integer numberOfCols,
+			Boolean current, User userRestaurantMenager, Restaurant restaurant, Set<RestaurantTable> tables) {
 		super();
 		this.name = name;
 		this.dateFrom = dateFrom;
@@ -164,15 +168,17 @@ public class TablesConfiguration implements Serializable{
 		this.numberOfRows = numberOfRows;
 		this.numberOfCols = numberOfCols;
 		this.current = current;
-		this.restaurantMenager = restaurantMenager;
+		this.userRestaurantMenager = userRestaurantMenager;
 		this.restaurant = restaurant;
 		this.tables = tables;
 	}
 
 	@Override
 	public String toString() {
-		return "TablesConfiguration [id=" + id + ", numberOfRows=" + numberOfRows + ", numberOfCols=" + numberOfCols
-				+ ", current=" + current + "]";
+		return "TablesConfiguration [id=" + id + ", name=" + name + ", dateFrom=" + dateFrom + ", dateTo=" + dateTo
+				+ ", numberOfRows=" + numberOfRows + ", numberOfCols=" + numberOfCols + ", current=" + current + "]";
 	}
+
+
 	
 }

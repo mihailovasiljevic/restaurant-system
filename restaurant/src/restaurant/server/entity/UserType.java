@@ -30,49 +30,20 @@ public class UserType implements Serializable{
 	private String name;
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userType")
-	private Set<RestaurantGuest> restaurantGuests = new HashSet<RestaurantGuest>();
+	private Set<User> users = new HashSet<User>();
 	
-	public void add(RestaurantGuest rst) {
+	public void add(User rst) {
 		if (rst.getUserType() != null)
-			rst.getUserType().getRestaurantGuests().remove(rst);
+			rst.getUserType().getUsers().remove(rst);
 		rst.setUserType(this);
-		restaurantGuests.add(rst);
+		users.add(rst);
 	}
 
-	public void remove(RestaurantGuest rst) {
+	public void remove(User rst) {
 		rst.setUserType(null);
-		restaurantGuests.remove(rst);
+		users.remove(rst);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userType")
-	private Set<RestaurantMenager> restaurantMenagers = new HashSet<RestaurantMenager>();
-	
-	public void add(RestaurantMenager rst) {
-		if (rst.getUserType() != null)
-			rst.getUserType().getRestaurantMenagers().remove(rst);
-		rst.setUserType(this);
-		restaurantMenagers.add(rst);
-	}
-
-	public void remove(RestaurantMenager rst) {
-		rst.setUserType(null);
-		restaurantMenagers.remove(rst);
-	}
-	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userType")
-	private Set<SystemMenager> systemMenagers = new HashSet<SystemMenager>();
-	
-	public void add(SystemMenager rst) {
-		if (rst.getUserType() != null)
-			rst.getUserType().getSystemMenagers().remove(rst);
-		rst.setUserType(this);
-		systemMenagers.add(rst);
-	}
-
-	public void remove(SystemMenager rst) {
-		rst.setUserType(null);
-		systemMenagers.remove(rst);
-	}
 
 	public Integer getId() {
 		return id;
@@ -90,39 +61,26 @@ public class UserType implements Serializable{
 		this.name = name;
 	}
 
-	public Set<RestaurantGuest> getRestaurantGuests() {
-		return restaurantGuests;
+	public Set<User> getUsers() {
+		return users;
 	}
 
-	public void setRestaurantGuests(Set<RestaurantGuest> restaurantGuests) {
-		this.restaurantGuests = restaurantGuests;
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 
-	public Set<RestaurantMenager> getRestaurantMenagers() {
-		return restaurantMenagers;
-	}
 
-	public void setRestaurantMenagers(Set<RestaurantMenager> restaurantMenagers) {
-		this.restaurantMenagers = restaurantMenagers;
-	}
 
-	public Set<SystemMenager> getSystemMenagers() {
-		return systemMenagers;
-	}
-
-	public void setSystemMenagers(Set<SystemMenager> systemMenagers) {
-		this.systemMenagers = systemMenagers;
-	}
-
-	public UserType(String name, Set<RestaurantGuest> restaurantGuests, Set<RestaurantMenager> restaurantMenagers,
-			Set<SystemMenager> systemMenagers) {
+	public UserType(String name, Set<User> users) {
 		super();
 		this.name = name;
-		this.restaurantGuests = restaurantGuests;
-		this.restaurantMenagers = restaurantMenagers;
-		this.systemMenagers = systemMenagers;
+		this.users = users;
 	}
-
+	
+	public UserType() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
 	public String toString() {
 		return "UserType [id=" + id + ", name=" + name + "]";

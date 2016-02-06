@@ -28,11 +28,11 @@ public class Address implements Serializable{
 	@Column(name = "ADDRESS_ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "ADDRESS_BRUL", nullable = false)
-	private Integer brojUUlici;
+	@Column(name = "ADDRESS_BRUL", nullable = false, length=5)
+	private String brojUUlici;
 	
 	@ManyToOne
-	@JoinColumn(name = "STREET_ID", referencedColumnName = "STREET_ID", nullable = false)
+	@JoinColumn(name = "STREET_ID", referencedColumnName = "STREET_ID")
 	private Street street;
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "address") //mappedBy says that owning side is street
@@ -51,51 +51,20 @@ public class Address implements Serializable{
 	}
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "address") //mappedBy says that owning side is street
-	private Set<RestaurantGuest> guests = new HashSet<RestaurantGuest>();
+	private Set<User> users = new HashSet<User>();
 	
-	public void add(RestaurantGuest guest) {
+	public void add(User guest) {
 		if (guest.getAddress() != null)
-			guest.getAddress().getGuests().remove(guest);
+			guest.getAddress().getUsers().remove(guest);
 		guest.setAddress(this);
-		guests.add(guest);
+		users.add(guest);
 	}
 
-	public void remove(RestaurantGuest guest) {
+	public void remove(User guest) {
 		guest.setAddress(null);
-		guests.remove(guest);
-	}
-	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "address") //mappedBy says that owning side is street
-	private Set<RestaurantMenager> restaurantMenagers = new HashSet<RestaurantMenager>();
-	
-	public void add(RestaurantMenager restaurantMenager) {
-		if (restaurantMenager.getAddress() != null)
-			restaurantMenager.getAddress().getRestaurantMenagers().remove(restaurantMenager);
-		restaurantMenager.setAddress(this);
-		restaurantMenagers.add(restaurantMenager);
+		users.remove(guest);
 	}
 
-	public void remove(RestaurantMenager restaurantMenager) {
-		restaurantMenager.setAddress(null);
-		restaurantMenagers.remove(restaurantMenager);
-	}
-
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "address") //mappedBy says that owning side is street
-	private Set<SystemMenager> systemMenagers = new HashSet<SystemMenager>();
-	
-	public void add(SystemMenager systemManager) {
-		if (systemManager.getAddress() != null)
-			systemManager.getAddress().getSystemMenagers().remove(systemManager);
-		systemManager.setAddress(this);
-		systemMenagers.add(systemManager);
-	}
-
-	public void remove(SystemMenager systemManager) {
-		systemManager.setAddress(null);
-		systemMenagers.remove(systemManager);
-	}
-	
-	
 	public Integer getId() {
 		return id;
 	}
@@ -104,11 +73,11 @@ public class Address implements Serializable{
 		this.id = id;
 	}
 
-	public Integer getBrojUUlici() {
+	public String getBrojUUlici() {
 		return brojUUlici;
 	}
 
-	public void setBrojUUlici(Integer brojUUlici) {
+	public void setBrojUUlici(String brojUUlici) {
 		this.brojUUlici = brojUUlici;
 	}
 
@@ -128,45 +97,29 @@ public class Address implements Serializable{
 		this.restaurants = restaurants;
 	}
 
-	public Set<RestaurantGuest> getGuests() {
-		return guests;
+	public Set<User> getUsers() {
+		return users;
 	}
 
-	public void setGuests(Set<RestaurantGuest> guests) {
-		this.guests = guests;
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 
-	public Set<RestaurantMenager> getRestaurantMenagers() {
-		return restaurantMenagers;
-	}
-
-	public void setRestaurantMenagers(Set<RestaurantMenager> restaurantMenagers) {
-		this.restaurantMenagers = restaurantMenagers;
-	}
-
-	public Set<SystemMenager> getSystemMenagers() {
-		return systemMenagers;
-	}
-
-	public void setSystemMenagers(Set<SystemMenager> systemMenagers) {
-		this.systemMenagers = systemMenagers;
-	}
-
-	public Address(Integer brojUUlici, Street street, Set<Restaurant> restaurants,
-			Set<RestaurantGuest> guests, Set<RestaurantMenager> restaurantMenagers, Set<SystemMenager> systemManagers) {
+	public Address(String brojUUlici, Street street, Set<Restaurant> restaurants, Set<User> users) {
 		super();
 		this.brojUUlici = brojUUlici;
 		this.street = street;
 		this.restaurants = restaurants;
-		this.guests = guests;
-		this.restaurantMenagers = restaurantMenagers;
-		this.systemMenagers = systemManagers;
+		this.users = users;
+	}
+
+	public Address() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public String toString() {
 		return "Address [id=" + id + ", brojUUlici=" + brojUUlici + "]";
 	}
-	
-	
 }

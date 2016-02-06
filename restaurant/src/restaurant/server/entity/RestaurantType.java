@@ -62,8 +62,8 @@ public class RestaurantType implements Serializable{
 	private String name;
 	
 	@ManyToOne
-	@JoinColumn(name = "SYS_MEN_ID", referencedColumnName = "SYS_MEN_ID", nullable = false)
-	private SystemMenager systemMenager;
+	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
+	private User userSystemMenager;
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurantType")
 	private Set<Restaurant> restaurants = new HashSet<Restaurant>();
@@ -79,7 +79,6 @@ public class RestaurantType implements Serializable{
 		rst.setRestaurantType(null);
 		restaurants.remove(rst);
 	}
-	
 
 	public Integer getId() {
 		return id;
@@ -97,6 +96,14 @@ public class RestaurantType implements Serializable{
 		this.name = name;
 	}
 
+	public User getUserSystemMenager() {
+		return userSystemMenager;
+	}
+
+	public void setUserSystemMenager(User userSystemMenager) {
+		this.userSystemMenager = userSystemMenager;
+	}
+
 	public Set<Restaurant> getRestaurants() {
 		return restaurants;
 	}
@@ -105,22 +112,22 @@ public class RestaurantType implements Serializable{
 		this.restaurants = restaurants;
 	}
 
-	public SystemMenager getSystemMenager() {
-		return systemMenager;
+	public RestaurantType() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public void setSystemMenager(SystemMenager systemMenager) {
-		this.systemMenager = systemMenager;
-	}
-
-	public RestaurantType(String name, SystemMenager systemMenager, Set<Restaurant> restaurants) {
+	public RestaurantType(String name, User userSystemMenager, Set<Restaurant> restaurants) {
 		super();
 		this.name = name;
-		this.systemMenager = systemMenager;
+		this.userSystemMenager = userSystemMenager;
 		this.restaurants = restaurants;
 	}
 
+	@Override
 	public String toString() {
-		return "(Tip restorana)[id=" + id + ",naziv=" + name + "]";
+		return "RestaurantType [id=" + id + ", name=" + name + "]";
 	}
+
+
 }

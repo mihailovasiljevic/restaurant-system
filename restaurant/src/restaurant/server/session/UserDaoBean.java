@@ -1,6 +1,7 @@
 package restaurant.server.session;
 
 import restaurant.server.entity.User;
+
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.Query;

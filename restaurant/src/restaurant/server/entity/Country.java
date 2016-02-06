@@ -26,7 +26,7 @@ public class Country implements Serializable{
 	@Column(name = "CNT_ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "CNT_NAME",nullable = false, length=64)
+	@Column(name = "CNT_NAME",nullable = false, length=64, unique = true)
 	private String name;
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "country") //mappedBy says that owning side is country
@@ -66,6 +66,11 @@ public class Country implements Serializable{
 
 	public void setCities(Set<City> cities) {
 		this.cities = cities;
+	}
+	
+	public Country() {
+		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	public Country(String name, Set<City> cities) {

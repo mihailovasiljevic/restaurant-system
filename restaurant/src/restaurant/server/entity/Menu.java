@@ -5,7 +5,7 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,18 +40,18 @@ public class Menu implements Serializable{
 	private Date dateFrom;
 	
 	@Temporal(TemporalType.DATE)
-	@Column(name = "MENU_DATE_TO", nullable = true)
+	@Column(name = "MENU_DATE_TO")
 	private Date dateTo;
 	
 	@ManyToOne
-	@JoinColumn(name = "REST_MEN_ID", referencedColumnName = "REST_MEN_ID")
-	private RestaurantMenager restaurantMenager;
+	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
+	private User userRestaurantMenager;
 	
 	@ManyToOne
 	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
 	private Restaurant restaurant;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurantManager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "menu") //mappedBy says that owning side is street
 	private Set<Dish> dishes = new HashSet<Dish>();
 	
 	public void add(Dish dish) {
@@ -98,12 +98,12 @@ public class Menu implements Serializable{
 		this.dateTo = dateTo;
 	}
 
-	public RestaurantMenager getRestaurantMenager() {
-		return restaurantMenager;
+	public User getUserRestaurantMenager() {
+		return userRestaurantMenager;
 	}
 
-	public void setRestaurantMenager(RestaurantMenager restaurantMenager) {
-		this.restaurantMenager = restaurantMenager;
+	public void setUserRestaurantMenager(User userRestaurantMenager) {
+		this.userRestaurantMenager = userRestaurantMenager;
 	}
 
 	public Restaurant getRestaurant() {
@@ -122,24 +122,25 @@ public class Menu implements Serializable{
 		this.dishes = dishes;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public Menu() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
-	public Menu(String name, Date dateFrom, Date dateTo, RestaurantMenager restaurantMenager,
-			Restaurant restaurant, Set<Dish> dishes) {
+	public Menu(String name, Date dateFrom, Date dateTo, User userRestaurantMenager, Restaurant restaurant,
+			Set<Dish> dishes) {
 		super();
 		this.name = name;
 		this.dateFrom = dateFrom;
 		this.dateTo = dateTo;
-		this.restaurantMenager = restaurantMenager;
+		this.userRestaurantMenager = userRestaurantMenager;
 		this.restaurant = restaurant;
 		this.dishes = dishes;
 	}
 
 	@Override
 	public String toString() {
-		return "Menu [id=" + id + ", dateFrom=" + dateFrom + ", dateTo=" + dateTo + "]";
+		return "Menu [id=" + id + ", name=" + name + ", dateFrom=" + dateFrom + ", dateTo=" + dateTo + "]";
 	}
-	
+
 }

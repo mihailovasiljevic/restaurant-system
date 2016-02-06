@@ -8,11 +8,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-public class GenericDaoBean<T, ID extends Serializable> implements GenericDaoLocal<T, ID> {
-
+public abstract class GenericDaoBean<T, ID extends Serializable> implements GenericDaoLocal<T, ID> {
+	
 	private Class<T> entityType;
 
-	@PersistenceContext(unitName = "restaurant-system")
+	@PersistenceContext(unitName = "restaurant")
 	protected EntityManager em;
 
 	@SuppressWarnings("unchecked")
@@ -68,4 +68,5 @@ public class GenericDaoBean<T, ID extends Serializable> implements GenericDaoLoc
 	public void clear() {
 		em.clear();
 	}
+
 }

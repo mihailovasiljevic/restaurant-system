@@ -61,7 +61,9 @@
 	      	<include name="*.js"/>
 	      </zipfileset>
 	      <classes dir="build">
-	        <include name="restaurant/entity/*.class"/>
+	      	 <include name="restaurant/server/servlet/*.class"/>
+	        <include name="restaurant/server/entity/*.class"/>
+	      	<include name="messages/*.properties"/>  
 	      	<include name="log4j.properties"/>
 	      </classes>
 	    </war>
@@ -75,7 +77,9 @@
 				<include name="persistence.xml"/>
 			</zipfileset>			
 			<zipfileset dir="${build}">
-				<include name="restaurant/entity/*.class" />
+				<include name="restaurant/server/session/*.class"/>
+				<include name="restaurant/server/entity/*.class"/>
+				<include name="restaurant/externals/*.class"/>
 			</zipfileset>					
 		</jar>
 	</target>
@@ -123,8 +127,31 @@
 		     userid="${db.username}"
 		     password="${db.password}" >
 			
+			DROP TABLE IF EXISTS vozilo;
+			DROP TABLE IF EXISTS gorivo;
+			DROP TABLE IF EXISTS menjac;
+			DROP TABLE IF EXISTS korisnik;
+
+			DROP TABLE IF EXISTS ADDRESS;
+			DROP TABLE IF EXISTS CITY;
+			DROP TABLE IF EXISTS COUNTRY;
+			DROP TABLE IF EXISTS DISH;
+			DROP TABLE IF EXISTS FRIEND;
+			DROP TABLE IF EXISTS IMAGE;
+			DROP TABLE IF EXISTS INVITATION;
+			DROP TABLE IF EXISTS MENU;
+			DROP TABLE IF EXISTS RESERVATION;
 			DROP TABLE IF EXISTS RESTAURANT;
+			DROP TABLE IF EXISTS RESTAURANT_GUEST;
+			DROP TABLE IF EXISTS RESTAURANT_MENAGER;
+			DROP TABLE IF EXISTS RESTAURANT_TABLE;
 			DROP TABLE IF EXISTS RESTAURANT_TYPE;
+			DROP TABLE IF EXISTS STREET;
+			DROP TABLE IF EXISTS SYSTEM_MENAGER;
+			DROP TABLE IF EXISTS TABLES_CONFIGURATION;
+			DROP TABLE IF EXISTS USER;
+			DROP TABLE IF EXISTS USER_TYPE;
+			
 			
 		</sql>
 	</target>

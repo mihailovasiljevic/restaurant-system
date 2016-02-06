@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,8 +25,12 @@ public class Friend implements Serializable{
 	private Integer id;
 	
 	@ManyToOne
-	@JoinColumn(name = "REST_GUEST_ID", referencedColumnName = "REST_GUEST_ID")
-	private RestaurantGuest restaurantGuest;
+	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
+	private User userGuest;
+	
+	@OneToOne
+	@JoinColumn(name = "USER_OWNER_ID", referencedColumnName = "USER_ID")
+	private User friendshipOwner;
 
 	public Integer getId() {
 		return id;
@@ -35,24 +40,38 @@ public class Friend implements Serializable{
 		this.id = id;
 	}
 
-	public RestaurantGuest getRestaurantGuest() {
-		return restaurantGuest;
+	public User getUserGuest() {
+		return userGuest;
 	}
 
-	public void setRestaurantGuest(RestaurantGuest restaurantGuest) {
-		this.restaurantGuest = restaurantGuest;
+	public void setUserGuest(User userGuest) {
+		this.userGuest = userGuest;
 	}
 
+	public User getFriendshipOwner() {
+		return friendshipOwner;
+	}
 
-	public Friend(RestaurantGuest restaurantGuest, RestaurantGuest restaurantGuestOwner) {
+	public void setFriendshipOwner(User friendshipOwner) {
+		this.friendshipOwner = friendshipOwner;
+	}
+
+	public Friend() {
 		super();
-		this.restaurantGuest = restaurantGuest;
+		// TODO Auto-generated constructor stub
 	}
+
+	public Friend(User userGuest, User friendshipOwner) {
+		super();
+		this.id = id;
+		this.userGuest = userGuest;
+		this.friendshipOwner = friendshipOwner;
+	}
+
 
 	@Override
 	public String toString() {
-		return "Friend [id=" + id + ", restaurantGuest=" + restaurantGuest.getName() 
-				+ "]";
+		return "Friend [id=" + id + "]";
 	}
 	
 	

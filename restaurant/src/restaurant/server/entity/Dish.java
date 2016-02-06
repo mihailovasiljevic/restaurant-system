@@ -29,7 +29,7 @@ public class Dish implements Serializable{
 	@Column(name = "DISH_DESC", length=512)
 	private String description;
 	
-	@Column(name = "DISH_PRICE", length=512)
+	@Column(name = "DISH_PRICE")
 	private Double price;
 	
 	@ManyToOne
@@ -82,6 +82,10 @@ public class Dish implements Serializable{
 		this.description = description;
 		this.price = price;
 		this.menu = menu;
+	}
+	
+	public Dish() {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override

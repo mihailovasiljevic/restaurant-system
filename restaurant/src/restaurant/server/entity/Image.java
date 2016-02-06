@@ -22,98 +22,62 @@ public class Image implements Serializable{
 	@Column(name = "IMAGE_ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "IMAGE_NAME",nullable = false, length=128)
+	@Column(name = "IMAGE_NAME",nullable = false, length=256, unique = true)
 	private String name;
 	
-	@Column(name = "IMAGE_PATH",nullable = false, length=256)
+	@Column(name = "IMAGE_PATH",nullable = false, length=512)
 	private String path;
 	
 	@OneToOne(mappedBy = "image")
-	private RestaurantGuest restaurantGuest;
-
-	@OneToOne(mappedBy = "image")
-	private SystemMenager systemManager;
-
-	
-	@OneToOne(mappedBy = "image")
-	private RestaurantMenager restaurantMenager;
-
+	private User user;
 
 	public Integer getId() {
 		return id;
 	}
 
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 
 	public String getName() {
 		return name;
 	}
 
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	public String getPath() {
 		return path;
 	}
 
-
 	public void setPath(String path) {
 		this.path = path;
 	}
 
-
-	public RestaurantGuest getRestaurantGuest() {
-		return restaurantGuest;
+	public User getUser() {
+		return user;
 	}
 
-
-	public void setRestaurantGuest(RestaurantGuest restaurantGuest) {
-		this.restaurantGuest = restaurantGuest;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-
-	public SystemMenager getSystemManager() {
-		return systemManager;
+	public Image() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
-
-	public void setSystemManager(SystemMenager systemManager) {
-		this.systemManager = systemManager;
-	}
-
-
-	public RestaurantMenager getRestaurantMenager() {
-		return restaurantMenager;
-	}
-
-
-	public void setRestaurantMenager(RestaurantMenager restaurantMenager) {
-		this.restaurantMenager = restaurantMenager;
-	}
-
-
-	public Image(String name, String path, RestaurantGuest restaurantGuest, SystemMenager systemManager,
-			RestaurantMenager restaurantMenager) {
+	public Image(String name, String path, User user) {
 		super();
 		this.name = name;
 		this.path = path;
-		this.restaurantGuest = restaurantGuest;
-		this.systemManager = systemManager;
-		this.restaurantMenager = restaurantMenager;
+		this.user = user;
 	}
-
 
 	@Override
 	public String toString() {
 		return "Image [id=" + id + ", name=" + name + ", path=" + path + "]";
 	}
-	
 	
 }

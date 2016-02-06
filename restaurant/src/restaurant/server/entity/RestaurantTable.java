@@ -52,7 +52,7 @@ public class RestaurantTable implements Serializable{
 	@Column(name = "REST_TABLE_RES_TIME")
 	private Time reservedTime;
 	
-	@Column(name = "REST_TABLE_RES_FOR", nullable = false)
+	@Column(name = "REST_TABLE_RES_FOR")
 	private Integer reservedFor;  //for how many hours is table reserved
 
 	@ManyToOne
@@ -168,7 +168,11 @@ public class RestaurantTable implements Serializable{
 		this.tablesConfiguration = tablesConfiguration;
 		this.reservations = reservations;
 	}
-
+	
+	public RestaurantTable() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
 	public String toString() {
 		return "RestaurantTable [id=" + id + ", row=" + row + ", col=" + col + ", reserved=" + reserved

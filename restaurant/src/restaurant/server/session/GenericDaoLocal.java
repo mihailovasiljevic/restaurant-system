@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface GenericDaoLocal<T, ID extends Serializable> {
+
 	public Class<T> getEntityType();
 
 	public T findById(ID id);
@@ -21,4 +22,5 @@ public interface GenericDaoLocal<T, ID extends Serializable> {
 	public void flush();
 
 	public void clear();
+
 }

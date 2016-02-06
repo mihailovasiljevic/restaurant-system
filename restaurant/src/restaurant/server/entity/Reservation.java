@@ -5,8 +5,8 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Time;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "RESERAVATION")
+@Table(name = "RESERVATION")
 public class Reservation implements Serializable{
 
 	private static final long serialVersionUID = 3847723219419666671L;
@@ -39,10 +39,6 @@ public class Reservation implements Serializable{
 	@Column(name = "RES_DATE", nullable = false)
 	private Date date;
 	
-	@Temporal(TemporalType.TIME)
-	@Column(name = "RES_TIME", nullable = false)
-	private Time time;
-	
 	@Column(name = "RES_FOR", nullable = false)
 	private Integer forHowLong;
 	
@@ -54,14 +50,14 @@ public class Reservation implements Serializable{
 	private Restaurant restaurant;
 	
 	@ManyToOne
-	@JoinColumn(name = "REST_GUEST_ID", referencedColumnName = "REST_GUEST_ID")
-	private RestaurantGuest restaurantGuest;
+	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
+	private User userGuestReservationMaker;
 	
 	@ManyToOne
 	@JoinColumn(name = "REST_TABLE_ID", referencedColumnName = "REST_TABLE_ID")
 	private RestaurantTable restaurantTable;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "resrvation") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "reservation") //mappedBy says that owning side is street
 	private Set<Invitation> invitations = new HashSet<Invitation>();
 	
 	public void add(Invitation invitation) {
@@ -100,13 +96,6 @@ public class Reservation implements Serializable{
 		this.date = date;
 	}
 
-	public Time getTime() {
-		return time;
-	}
-
-	public void setTime(Time time) {
-		this.time = time;
-	}
 
 	public Integer getForHowLong() {
 		return forHowLong;
@@ -132,12 +121,12 @@ public class Reservation implements Serializable{
 		this.restaurant = restaurant;
 	}
 
-	public RestaurantGuest getRestaurantGuest() {
-		return restaurantGuest;
+	public User getUserGuestReservationMaker() {
+		return userGuestReservationMaker;
 	}
 
-	public void setRestaurantGuest(RestaurantGuest restaurantGuest) {
-		this.restaurantGuest = restaurantGuest;
+	public void setUserGuestReservationMaker(User userGuestReservationMaker) {
+		this.userGuestReservationMaker = userGuestReservationMaker;
 	}
 
 	public RestaurantTable getRestaurantTable() {
@@ -156,25 +145,29 @@ public class Reservation implements Serializable{
 		this.invitations = invitations;
 	}
 
-	public Reservation(String name, Date date, Time time, Integer forHowLong, Integer grade,
-			Restaurant restaurant, RestaurantGuest restaurantGuest, RestaurantTable restaurantTable,
-			Set<Invitation> invitations) {
+	public Reservation() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Reservation(String name, Date date, Time time, Integer forHowLong, Integer grade, Restaurant restaurant,
+			User userGuestReservationMaker, RestaurantTable restaurantTable, Set<Invitation> invitations) {
 		super();
 		this.name = name;
 		this.date = date;
-		this.time = time;
+
 		this.forHowLong = forHowLong;
 		this.grade = grade;
 		this.restaurant = restaurant;
-		this.restaurantGuest = restaurantGuest;
+		this.userGuestReservationMaker = userGuestReservationMaker;
 		this.restaurantTable = restaurantTable;
 		this.invitations = invitations;
 	}
 
 	@Override
 	public String toString() {
-		return "Reservation [id=" + id + ", name=" + name + ", date=" + date + ", time=" + time + ", forHowLong="
-				+ forHowLong + ", grade=" + grade + "]";
+		return "Reservation [id=" + id + ", name=" + name + ", date=" + date + ", forHowLong="
+				+ forHowLong + ", grade=" + grade + ", restaurant=" + restaurant + "]";
 	}
 	
 	

@@ -30,11 +30,11 @@ public class City implements Serializable{
 	@Column(name = "CITY_ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "CITY_NAME", nullable = false, length=64)
+	@Column(name = "CITY_NAME", nullable = false, length=64, unique = true)
 	private String name;
 	
 	@ManyToOne
-	@JoinColumn(name = "CNT_ID", referencedColumnName = "CNT_ID", nullable = false)
+	@JoinColumn(name = "CNT_ID", referencedColumnName = "CNT_ID")
 	private Country country;
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "city") //mappedBy says that owning side is city
@@ -90,7 +90,11 @@ public class City implements Serializable{
 		this.country = country;
 		this.streets = streets;
 	}
-
+	
+	public City() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
 	public String toString() {
 		return "City [id=" + id + ", naziv=" + name + "]";

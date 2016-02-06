@@ -1,0 +1,64 @@
+Fakultet tehniÄ�kih nauka / Katedra za informatiku
+Internet softverske arhitekture / 2014/2015.
+=================================
+
+1. Lokacija primera
+-------------------
+restaurant.client
+restaurant.server.servlet
+restaurant.server.entity
+restaurant.server.session
+restaurant.server.util
+messages
+web
+WEB-INF
+META-INF
+
+2. Opis primera
+---------------
+Primer kompletne web aplikacije koja se sastoji iz sledecih delova:
+- servleti koji predstavljaju kontrolere u web aplikaciji sa MVC arhitekturom, 
+  pristupaju session bean-ovima
+- JSP stranice koje predstavljaju prikaze (view) u MVC modelu
+- entity klase kao model podataka aplikacije (anotirane perzistentne klase) 
+- session bean-ovi za realizaciju business logike
+- konfiguracioni fajlovi za razlicite delove sistema
+
+3. Sadrzaj primera
+------------------
+jsp/*         			- JSP stranice kao view iz MVC modela
+*.servlet.*    			- servleti kao kontroleri iz MVC modela
+*.entity.*      		- anotirane perzistentne klase
+*.session.*     		- klasa koje realizuju business logiku
+*.util.*        		- Klase koje sluze kao servisi klasama iz drugih paketa (usluzne klase)
+*.client.*				- pozivanje metode session bean-a
+messages.*				- lokalizovane poruke koje su vidljive u jsp stranama
+WEB-INF/web.xml    		- konfiguracioni fajl za web aplikaciju
+META-INF/persistence.xml - konfiguracija entity managera
+META-INF/application.xml - konfiguracija cele aplikacije
+log4j.properties		- konfiguracija log4j
+jndi.properties			- konfiguracija JNDI klijenta
+
+4. Pokretanje primera
+---------------------
+[] ant deploy
+[] ant prepare-database
+http://localhost:8080/restaurant/
+
+(Napomena: neophodno je izmeniti podatke u build.properites, pokrenuti MySQL server unutar koga je kreirana odgovarajuca baza podataka i pokrenuti Tomee server)
+
+<Resource id="My Unmanaged DataSource" type="DataSource">
+  JdbcDriver com.mysql.jdbc.Driver
+  JdbcUrl jdbc:mysql://192.168.0.2:3306/ra_XX_XXXX?autoReconnect=true
+  UserName ra_XX_XXXX
+  Password ra_XX_XXXX
+  JtaManaged false
+</Resource>
+
+<Resource id="My DataSource" type="DataSource">
+  JdbcDriver com.mysql.jdbc.Driver
+  JdbcUrl jdbc:mysql://192.168.0.2:3306/ra_XX_XXXX?autoReconnect=true
+  UserName ra_XX_XXXX
+  Password ra_XX_XXXX
+  JtaManaged true
+</Resource>

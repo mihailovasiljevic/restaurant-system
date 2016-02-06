@@ -40,7 +40,7 @@ public class Restaurant implements Serializable{
 	@Column(name = "REST_NAME", nullable = false, length = 128)
 	private String name;
 	
-	@Column(name = "REST_GRADE", nullable = true)
+	@Column(name = "REST_GRADE")
 	private Integer grade;
 	
 	@ManyToOne
@@ -52,8 +52,8 @@ public class Restaurant implements Serializable{
 	private Address address;
 	
 	@ManyToOne
-	@JoinColumn(name = "SYS_MEN_ID", referencedColumnName = "SYS_MEN_ID")
-	private SystemMenager systemMenager;
+	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
+	private User userSystemMenager;
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
 	private Set<Menu> menus = new HashSet<Menu>();
@@ -86,18 +86,18 @@ public class Restaurant implements Serializable{
 	}
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
-	private Set<RestaurantGuest> restaurantGuests = new HashSet<RestaurantGuest>();
+	private Set<User> users = new HashSet<User>();
 	
-	public void add(RestaurantGuest restaurantGuest) {
+	public void add(User restaurantGuest) {
 		if (restaurantGuest.getRestaurant() != null)
-			restaurantGuest.getRestaurant().getRestaurantGuests().remove(restaurantGuest);
+			restaurantGuest.getRestaurant().getUsers().remove(restaurantGuest);
 		restaurantGuest.setRestaurant(this);
-		restaurantGuests.add(restaurantGuest);
+		users.add(restaurantGuest);
 	}
 
-	public void remove(RestaurantGuest restaurantGuest) {
+	public void remove(User restaurantGuest) {
 		restaurantGuest.setRestaurant(null);
-		restaurantGuests.remove(restaurantGuest);
+		users.remove(restaurantGuest);
 	}
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
@@ -155,12 +155,12 @@ public class Restaurant implements Serializable{
 		this.address = address;
 	}
 
-	public SystemMenager getSystemMenager() {
-		return systemMenager;
+	public User getUserSystemMenager() {
+		return userSystemMenager;
 	}
 
-	public void setSystemMenager(SystemMenager systemMenager) {
-		this.systemMenager = systemMenager;
+	public void setUserSystemMenager(User userSystemMenager) {
+		this.userSystemMenager = userSystemMenager;
 	}
 
 	public Set<Menu> getMenus() {
@@ -179,12 +179,12 @@ public class Restaurant implements Serializable{
 		this.tablesConfigurations = tablesConfigurations;
 	}
 
-	public Set<RestaurantGuest> getRestaurantGuests() {
-		return restaurantGuests;
+	public Set<User> getUsers() {
+		return users;
 	}
 
-	public void setRestaurantGuests(Set<RestaurantGuest> restaurantGuests) {
-		this.restaurantGuests = restaurantGuests;
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 
 	public Set<Reservation> getReservations() {
@@ -195,18 +195,23 @@ public class Restaurant implements Serializable{
 		this.reservations = reservations;
 	}
 
+	public Restaurant() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
 	public Restaurant(String name, Integer grade, RestaurantType restaurantType, Address address,
-			SystemMenager systemMenager, Set<Menu> menus, Set<TablesConfiguration> tablesConfigurations,
-			Set<RestaurantGuest> restaurantGuests, Set<Reservation> reservations) {
+			User userSystemMenager, Set<Menu> menus, Set<TablesConfiguration> tablesConfigurations,
+			Set<User> users, Set<Reservation> reservations) {
 		super();
 		this.name = name;
 		this.grade = grade;
 		this.restaurantType = restaurantType;
 		this.address = address;
-		this.systemMenager = systemMenager;
+		this.userSystemMenager = userSystemMenager;
 		this.menus = menus;
 		this.tablesConfigurations = tablesConfigurations;
-		this.restaurantGuests = restaurantGuests;
+		this.users = users;
 		this.reservations = reservations;
 	}
 
@@ -214,5 +219,5 @@ public class Restaurant implements Serializable{
 	public String toString() {
 		return "Restaurant [id=" + id + ", name=" + name + ", grade=" + grade + "]";
 	}
-	
+
 }

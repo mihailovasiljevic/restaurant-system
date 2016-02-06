@@ -34,12 +34,12 @@ public class Invitation implements Serializable{
 	private Reservation reservation;
 	
 	@ManyToOne
-	@JoinColumn(name = "REST_GUEST_SEND_ID", referencedColumnName = "REST_GUEST_ID")
-	private RestaurantGuest restaurantSender;
+	@JoinColumn(name = "USER_SEND_ID", referencedColumnName = "USER_ID")
+	private User userGuestInvitationSender;
 	
 	@ManyToOne
-	@JoinColumn(name = "REST_GUEST_INV_ID", referencedColumnName = "REST_GUEST_ID")
-	private RestaurantGuest restaurantInvited;
+	@JoinColumn(name = "USER_RCV_ID", referencedColumnName = "USER_ID")
+	private User userGuestInvitationReceived;
 
 	public Integer getId() {
 		return id;
@@ -73,36 +73,43 @@ public class Invitation implements Serializable{
 		this.reservation = reservation;
 	}
 
-	public RestaurantGuest getRestaurantSender() {
-		return restaurantSender;
+	public User getUserGuestInvitationSender() {
+		return userGuestInvitationSender;
 	}
 
-	public void setRestaurantSender(RestaurantGuest restaurantSender) {
-		this.restaurantSender = restaurantSender;
+	public void setUserGuestInvitationSender(User userGuestInvitationSender) {
+		this.userGuestInvitationSender = userGuestInvitationSender;
 	}
 
-	public RestaurantGuest getRestaurantInvited() {
-		return restaurantInvited;
+	public User getUserGuestInvitationReceived() {
+		return userGuestInvitationReceived;
 	}
 
-	public void setRestaurantInvited(RestaurantGuest restaurantInvited) {
-		this.restaurantInvited = restaurantInvited;
+	public void setUserGuestInvitationReceived(User userGuestInvitationReceived) {
+		this.userGuestInvitationReceived = userGuestInvitationReceived;
 	}
 
-	public Invitation(String name, Boolean invitationAccepted, Reservation reservation,
-			RestaurantGuest restaurantSender, RestaurantGuest restaurantInvited) {
+	public Invitation(String name, Boolean invitationAccepted, Reservation reservation, User userGuestInvitationSender,
+			User userGuestInvitationReceived) {
 		super();
 		this.name = name;
 		this.invitationAccepted = invitationAccepted;
 		this.reservation = reservation;
-		this.restaurantSender = restaurantSender;
-		this.restaurantInvited = restaurantInvited;
+		this.userGuestInvitationSender = userGuestInvitationSender;
+		this.userGuestInvitationReceived = userGuestInvitationReceived;
+	}
+
+	public Invitation() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public String toString() {
-		return "Invitation [id=" + id + ", name=" + name + "]";
+		return "Invitation [id=" + id + ", name=" + name + ", invitationAccepted=" + invitationAccepted
+				+ ", reservation=" + reservation + "]";
 	}
-	
+
+
 	
 }
