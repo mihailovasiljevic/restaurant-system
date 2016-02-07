@@ -12,7 +12,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Table(name = "USER")
-@NamedQuery(name = "findUserByEmail", query = "SELECT k FROM Korisnik k WHERE k.email like :userEmail")
+@NamedQuery(name = "findUserByEmail", query = "SELECT k FROM User k WHERE k.email like :userEmail")
 public class User implements Serializable{
 
 	private static final long serialVersionUID = 4993219445500647218L;

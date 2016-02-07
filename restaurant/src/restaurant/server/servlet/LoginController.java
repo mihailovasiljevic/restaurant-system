@@ -13,8 +13,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-//import restaurant.server.entity.Korisnik;
-import restaurant.server.session.KorisnikDaoLocal;
+import restaurant.externals.HashPassword;
+import restaurant.server.entity.User;
+import restaurant.server.session.UserDaoLocal;
 
 public class LoginController extends HttpServlet {
 
@@ -23,32 +24,57 @@ public class LoginController extends HttpServlet {
 	private static Logger log = Logger.getLogger(LoginController.class);
 
 	@EJB
-	private KorisnikDaoLocal korisnikDao;
+	private UserDaoLocal userDao;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
 			
-			String korisnickoIme = request.getParameter("korisnickoIme");
-			String lozinka = request.getParameter("lozinka");
+			String userEmail = request.getParameter("userEmail");
+			String userPassword = request.getParameter("userPassword");
 			
-			if ((korisnickoIme == null) || (korisnickoIme.equals("")) || (lozinka == null) || (lozinka.equals(""))) {
-				response.sendRedirect(response.encodeRedirectURL("./login.jsp"));
+			if ((userEmail == null) || (userEmail.equals("")) || (userPassword == null) || (userPassword.equals(""))) {
+				response.sendRedirect(response.encodeRedirectURL("./login_error.jsp"));
 				return;
 			}
 			
-			//Korisnik korisnik = korisnikDao.findKorisnikSaKorisnickimImenomILozinkom(korisnickoIme, lozinka);
+			User user = userDao.findUserByEmail(userEmail);
 			
-			//if (korisnik != null) {	
-			//	HttpSession session = request.getSession(true);
-		//		session.setAttribute("admin", korisnik);
-	//			log.info("Korisnik " + korisnik.getKorisnickoImeKorisnika() + " se prijavio.");
-//				getServletContext().getRequestDispatcher("/ReadController").forward(request, response);
-//			}
-			
+			if(user == null){
+				response.sendRedirect(response.encodeRedirectURL("./login_error.jsp")); //ne postoji korisnik sa prosledjenom email adresom
+				return;
+			}else{
+				if(!HashPassword.isPassword(HashPassword.strToChar(userPassword), user.getSalt(), user.getPassword())){
+					response.sendRedirect(response.encodeRedirectURL("./login_error.jsp")); // email i password se poklapaju
+					return;
+				}else{
+					HttpSession session = request.getSession(true);
+					
+					switch(user.getUserType().getName()){
+						case "GUEST": 
+							session.setAttribute("GUEST", user);
+							log.info("Korisnik " + user.getEmail() + " se prijavio.");
+							getServletContext().getRequestDispatcher("./guest").forward(request, response);
+							return;
+
+						case "SYSTEM_MENAGER": 
+							session.setAttribute("SYSTEM_MENAGER", user);
+							log.info("Korisnik " + user.getEmail() + " se prijavio.");
+							getServletContext().getRequestDispatcher("./SystemMenagerServlet").forward(request, response);
+							return;
+
+						case "RESTAURANT_MENAGER": 
+							session.setAttribute("RESTAURANT_MENAGER", user);
+							log.info("Korisnik " + user.getEmail() + " se prijavio.");
+							getServletContext().getRequestDispatcher("./restaurant-menager").forward(request, response);
+							return;
+						
+					}
+				}
+			}
 		} catch (EJBException e) {
 			if (e.getCause().getClass().equals(NoResultException.class)) {
-				response.sendRedirect(response.encodeRedirectURL("./login.jsp"));
+				response.sendRedirect(response.encodeRedirectURL("./login_error.jsp"));
 			} else {
 				throw e;
 			}

@@ -73,7 +73,7 @@ public class HashPassword {
      * @param str string that needs to be converted.
      * @return array of chars
      */
-    public char[] strToChar(String str){
+    public static char[] strToChar(String str){
         char[] chArray = new char[str.length()];
         for(int i = 0; i < str.length(); i++){
             chArray[i] = str.charAt(i);

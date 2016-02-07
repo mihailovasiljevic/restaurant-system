@@ -40,6 +40,21 @@
       <servlet-name>DeleteController</servlet-name>
       <servlet-class>restaurant.server.servlet.DeleteController</servlet-class>
    </servlet>
+   
+   <servlet>
+      <servlet-name>GuestServlet</servlet-name>
+      <servlet-class>restaurant.server.servlet.GuestServlet</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>SystemMenagerServlet</servlet-name>
+      <servlet-class>restaurant.server.servlet.SystemMenagerServlet</servlet-class>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>RestaurantMenagerServlet</servlet-name>
+      <servlet-class>restaurant.server.servlet.RestaurantMenagerServlet</servlet-class>
+   </servlet>
 
    <servlet-mapping>
       <servlet-name>LogoutController</servlet-name>
@@ -68,7 +83,7 @@
    
    <servlet-mapping>
       <servlet-name>LoginController</servlet-name>
-      <url-pattern>/LoginController</url-pattern>
+      <url-pattern>/login</url-pattern>
    </servlet-mapping>
    
    <servlet-mapping>
@@ -79,6 +94,21 @@
    <servlet-mapping>
       <servlet-name>DeleteController</servlet-name>
       <url-pattern>/DeleteController</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>GuestServlet</servlet-name>
+      <url-pattern>/guest</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>SystemMenagerServlet</servlet-name>
+      <url-pattern>/system-menager</url-pattern>
+   </servlet-mapping>
+   
+   <servlet-mapping>
+      <servlet-name>RestaurantMenagerServlet</servlet-name>
+      <url-pattern>/restaurant-menager</url-pattern>
    </servlet-mapping>
    
    <welcome-file-list>
