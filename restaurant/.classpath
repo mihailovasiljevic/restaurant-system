@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="lib/serp-1.13.1.jar"/>
 	<classpathentry kind="lib" path="lib/xbean-asm-shaded-3.11.jar"/>
 	<classpathentry kind="lib" path="lib/openjpa-asm-shaded-2.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/geronimo-javamail_1.4_mail-1.8.2.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
