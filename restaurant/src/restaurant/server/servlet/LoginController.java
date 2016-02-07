@@ -35,7 +35,7 @@ public class LoginController extends HttpServlet {
 			
 			if ((userEmail == null) || (userEmail.equals("")) || (userPassword == null) || (userPassword.equals(""))) {
 				System.out.println("Neki ili svi parametri prazni.");
-				response.sendRedirect(response.encodeRedirectURL("restaurant/login_error.jsp"));
+				response.sendRedirect(response.encodeRedirectURL("./login_error.jsp"));
 				return;
 			}
 			
@@ -43,12 +43,12 @@ public class LoginController extends HttpServlet {
 			
 			if(user == null){
 				System.out.println("ne postoji korisnik sa prosledjenom email adresom");
-				response.sendRedirect(response.encodeRedirectURL("restaurant/login_error.jsp")); //ne postoji korisnik sa prosledjenom email adresom
+				response.sendRedirect(response.encodeRedirectURL("login_error.jsp")); //ne postoji korisnik sa prosledjenom email adresom
 				return;
 			}else{
 				if(!HashPassword.isPassword(HashPassword.strToChar(userPassword), user.getSalt(), user.getPassword())){
 					System.out.println("email i password se ne poklapaju");
-					response.sendRedirect(response.encodeRedirectURL("restaurant/login_error.jsp")); // email i password se ne poklapaju
+					response.sendRedirect(response.encodeRedirectURL("./login_error.jsp")); // email i password se ne poklapaju
 					return;
 				}else{
 					HttpSession session = request.getSession(true);
@@ -57,19 +57,19 @@ public class LoginController extends HttpServlet {
 						case "GUEST": 
 							session.setAttribute("GUEST", user);
 							System.out.println("Korisnik " + user.getEmail() + " se prijavio.");
-							getServletContext().getRequestDispatcher("restaurant/guest").forward(request, response);
+							response.sendRedirect(response.encodeRedirectURL("./guest"));
 							return;
 
 						case "SYSTEM_MENAGER": 
 							session.setAttribute("SYSTEM_MENAGER", user);
 							System.out.println("Korisnik " + user.getEmail() + " se prijavio.");
-							getServletContext().getRequestDispatcher("restaurant/system-menager").forward(request, response);
+							response.sendRedirect(response.encodeRedirectURL("./system-menager"));
 							return;
 
 						case "RESTAURANT_MENAGER": 
 							session.setAttribute("RESTAURANT_MENAGER", user);
 							System.out.println("Korisnik " + user.getEmail() + " se prijavio.");
-							getServletContext().getRequestDispatcher("restaurant/restaurant-menager").forward(request, response);
+							response.sendRedirect(response.encodeRedirectURL("./restaurant-menager"));
 							return;
 						
 					}
@@ -78,12 +78,14 @@ public class LoginController extends HttpServlet {
 		} catch (EJBException e) {
 			if (e.getCause().getClass().equals(NoResultException.class)) {
 				System.out.println("NEMA REZULTATA");
-				response.sendRedirect(response.encodeRedirectURL("resturant/login_error.jsp"));
+				response.sendRedirect(response.encodeRedirectURL("./login_error.jsp"));
 				return;
 			} else {
+				System.out.println("BACEN EXCEPTION");
 				throw e;
 			}
 		} catch (IOException e) {
+			System.out.println("BACEN EXCEPTION");
 			log.error(e);
 			throw e;
 		}

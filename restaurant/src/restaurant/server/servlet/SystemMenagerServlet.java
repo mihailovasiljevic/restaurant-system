@@ -17,7 +17,6 @@ public class SystemMenagerServlet extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		super.doGet(req, resp);
 		resp.getWriter().print("<html><body>DOBRODOSLI MENADZERU SISTEMA!</body></html>");
 	}
 
@@ -25,6 +24,7 @@ public class SystemMenagerServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		super.doPost(req, resp);
+		doGet(req,resp);
 	}
 	
 }

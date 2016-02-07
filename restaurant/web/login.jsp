@@ -9,7 +9,7 @@
 		<link href="./theme.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
-		<form action="./LoginController" method="post" class="prijavaForma" accept-charset="ISO-8859-1">
+		<form action="./login" method="post" class="prijavaForma" accept-charset="ISO-8859-1">
 			<table class="prijavaTabela">
 				<tr>
 					<td>Korisnicko ime:</td>
