@@ -64,7 +64,8 @@ public class ActivateAccountMDBean implements MessageListener{
 		msg.setRecipients(RecipientType.TO, InternetAddress.parse(user.getEmail()));
 		msg.setSubject("Aktiviacija naloga - sistem restorana");
 		StringBuilder sb = new StringBuilder();
-		sb.append("Ovo je automatski generisana poruka. Molim vas kliknite na link kako biste aktivirali vas nalog.\n");
+		sb.append("Ovo je automatski generisana poruka.Korisnik " + user.getName()+" " + user.getSurname()+" vas je pozvao da potvrdite rezervaciju.");
+		sb.append(" Molim vas kliknite na link kako biste aktivirali vas nalog.\n");
 		sb.append("http://localhost:8080/restaurant/activate?userId="+user.getId()+"&activate=true");
 		msg.setText(sb.toString());
 		msg.setSentDate(new Date());

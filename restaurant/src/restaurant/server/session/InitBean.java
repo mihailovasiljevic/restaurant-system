@@ -21,7 +21,9 @@ import restaurant.server.entity.City;
 import restaurant.server.entity.Country;
 import restaurant.server.entity.Dish;
 import restaurant.server.entity.Friend;
+import restaurant.server.entity.Invitation;
 import restaurant.server.entity.Menu;
+import restaurant.server.entity.Reservation;
 import restaurant.server.entity.Restaurant;
 import restaurant.server.entity.RestaurantTable;
 import restaurant.server.entity.RestaurantType;
@@ -202,7 +204,7 @@ public class InitBean implements Init {
         User guest2 = new User();
         guest2.setName("Mirko");
         guest2.setSurname("Maric");
-        guest2.setEmail("mire_mare@gmail.com");
+        guest2.setEmail("mihailo93@gmail.com");
         guest2.setActivated(true);
         guest2.setNumberOfVisits(0);
         guest2.setUserType(systemMenager);
@@ -221,7 +223,7 @@ public class InitBean implements Init {
         User guest3 = new User();
         guest3.setName("Sanja");
         guest3.setSurname("Popovic");
-        guest3.setEmail("sanjica_33@gmail.com");
+        guest3.setEmail("mihailo.vasiljevic93@gmail.com");
         guest3.setActivated(true);
         guest3.setNumberOfVisits(0);
         guest3.setUserType(systemMenager);
@@ -764,6 +766,65 @@ public class InitBean implements Init {
         conf1.add(table21);
         conf1.add(table22);
         em.merge(conf1);
+		/**
+		 * ------------------------------------------------------
+		 */ 
+        
+		/**
+		 * Create reservation for guest1 and he calls both his friends.
+		 * ------------------------------------------------------
+		 */
+        Reservation res = new Reservation();
+        res.setDate(new Date());
+        res.setForHowLong(2);
+        res.setGrade(3);
+        res.setName("Rezervacija"+res.getId());
+        res.setRestaurant(restaurant1);
+        res.setRestaurantTable(table00);
+        res.setUserGuestReservationMaker(guest1);
+        em.persist(res);
+        
+        restaurant1.add(res);
+        table00.setReserved(true);
+        table00.add(res);
+        table00.setReservedDate(res.getDate());
+        table00.setReservedFor(res.getForHowLong());
+        guest1.add(res);
+        em.merge(restaurant1);
+        em.merge(table00);
+        em.merge(guest1);
+        
+        Invitation inv1 = new Invitation();
+        inv1.setInvitationAccepted(false);
+        inv1.setName("Invitation"+inv1.getId());
+        inv1.setReservation(res);
+        inv1.setUserGuestInvitationReceived(guest2);
+        inv1.setUserGuestInvitationSender(guest1);
+        em.persist(inv1);
+        
+        res.add(inv1);
+        guest1.addInv(inv1);
+        guest2.addInv(inv1);
+        em.merge(res);
+        em.merge(guest1);
+        em.merge(guest2);
+        
+        Invitation inv2 = new Invitation();
+        inv2.setInvitationAccepted(false);
+        inv2.setName("Invitation"+inv1.getId());
+        inv2.setReservation(res);
+        inv2.setUserGuestInvitationReceived(guest3);
+        inv2.setUserGuestInvitationSender(guest1);
+        em.persist(inv2);
+        
+        res.add(inv2);
+        guest1.addInv(inv2);
+        guest3.addInv(inv2);
+        em.merge(res);
+        em.merge(guest1);
+        em.merge(guest3);
+        
+        
 		/**
 		 * ------------------------------------------------------
 		 */ 

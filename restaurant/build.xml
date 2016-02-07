@@ -78,6 +78,7 @@
 			</zipfileset>			
 			<zipfileset dir="${build}">
 				<include name="restaurant/server/session/*.class"/>
+				<include name="restaurant/server/mdb/*.class"/>
 				<include name="restaurant/server/entity/*.class"/>
 				<include name="restaurant/externals/*.class"/>
 			</zipfileset>					
@@ -154,6 +155,19 @@
 			
 			
 		</sql>
+	</target>
+	
+	<!-- Setup -->
+	<target name="testActivation">
+	    <echo message="Slanje meila."/>
+		<java classname="restaurant.client.TestActivation"  fork="true">
+			<classpath>
+				<pathelement path="${build}" />
+				<fileset dir="${lib}">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</java>
 	</target>
 
 </project>

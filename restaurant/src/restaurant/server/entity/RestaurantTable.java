@@ -5,8 +5,7 @@ import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.sql.Time;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,10 +46,6 @@ public class RestaurantTable implements Serializable{
 	@Temporal(TemporalType.DATE)
 	@Column(name = "REST_TABLE_RES_DATE")
 	private Date reservedDate;
-	
-	@Temporal(TemporalType.TIME)
-	@Column(name = "REST_TABLE_RES_TIME")
-	private Time reservedTime;
 	
 	@Column(name = "REST_TABLE_RES_FOR")
 	private Integer reservedFor;  //for how many hours is table reserved
@@ -122,14 +117,6 @@ public class RestaurantTable implements Serializable{
 		this.reservedDate = reservedDate;
 	}
 
-	public Time getReservedTime() {
-		return reservedTime;
-	}
-
-	public void setReservedTime(Time reservedTime) {
-		this.reservedTime = reservedTime;
-	}
-
 	public Integer getReservedFor() {
 		return reservedFor;
 	}
@@ -155,7 +142,7 @@ public class RestaurantTable implements Serializable{
 	}
 
 	public RestaurantTable( String name, Integer row, Integer col, Boolean reserved, Date reservedDate,
-			Time reservedTime, Integer reservedFor, TablesConfiguration tablesConfiguration,
+			Integer reservedFor, TablesConfiguration tablesConfiguration,
 			Set<Reservation> reservations) {
 		super();
 		this.name = name;
@@ -163,7 +150,6 @@ public class RestaurantTable implements Serializable{
 		this.col = col;
 		this.reserved = reserved;
 		this.reservedDate = reservedDate;
-		this.reservedTime = reservedTime;
 		this.reservedFor = reservedFor;
 		this.tablesConfiguration = tablesConfiguration;
 		this.reservations = reservations;

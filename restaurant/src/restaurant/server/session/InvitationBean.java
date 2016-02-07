@@ -20,17 +20,18 @@ import javax.naming.NamingException;
 import restaurant.server.entity.User;
 
 @Stateless
-@Local(ActivateAccountLocal.class)
-@Remote(ActivateAccount.class)
-public class ActivateAccountBean implements ActivateAccount{
+@Local(InvitationLocal.class)
+@Remote(Invitation.class)
+public class InvitationBean implements Invitation{
 	@Resource(name="JmsConnectionFactory")
 	private ConnectionFactory qcf;
 
-	@Resource(name="ActivationQueue")
-	private Queue activationQueue;
+	@Resource(name="InvitationQueue")
+	private Queue invitationQueue;
 	
 	@Override
-	public void activate(User user) {
+	public void invitate(User user) {
+		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		Connection connection = null;
 		Session session = null;
@@ -53,7 +54,7 @@ public class ActivateAccountBean implements ActivateAccount{
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
             // Creates a message producer from the Session to the Topic or Queue
-            producer = session.createProducer(activationQueue);
+            producer = session.createProducer(invitationQueue);
 
             // Creates an object message
             ObjectMessage object = session.createObjectMessage();
