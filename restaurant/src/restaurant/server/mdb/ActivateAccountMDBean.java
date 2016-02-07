@@ -60,7 +60,7 @@ public class ActivateAccountMDBean implements MessageListener{
 
 		// Constructs the message 
 		javax.mail.Message msg = new MimeMessage(session);
-		msg.setFrom(new InternetAddress("sistem_restorana@outlook.com"));
+		msg.setFrom(new InternetAddress("authorit0mv@gmail.com"));
 		msg.setRecipients(RecipientType.TO, InternetAddress.parse(user.getEmail()));
 		msg.setSubject("Aktiviacija naloga - sistem restorana");
 		StringBuilder sb = new StringBuilder();
