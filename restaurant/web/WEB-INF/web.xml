@@ -1,77 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+   <display-name>User Management</display-name>
    <servlet>
-      <display-name>login</display-name>
-      <servlet-name>LoginController</servlet-name>
-      <servlet-class>restaurant.server.servlet.LoginController</servlet-class>
+      <servlet-name>Restaurant reservation RESTful aplication</servlet-name>
+      <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
       <init-param>
-         <param-name>sleep-time-in-seconds</param-name>
-         <param-value>10</param-value>
+         <param-name>jersey.config.server.provider.packages</param-name>
+         <param-value>restaurant.server.routes</param-value>
       </init-param>
-      <load-on-startup>1</load-on-startup>
    </servlet>
    <servlet-mapping>
-      <servlet-name>LoginController</servlet-name>
-      <url-pattern>/login</url-pattern>
+      <servlet-name>Restaurant reservation RESTful aplication</servlet-name>
+      <url-pattern>/api/*</url-pattern>
    </servlet-mapping>
-
-   <servlet>
-      <display-name>guest</display-name>
-      <servlet-name>GuestServlet</servlet-name>
-      <servlet-class>restaurant.server.servlet.GuestServlet</servlet-class>
-      <init-param>
-         <param-name>sleep-time-in-seconds</param-name>
-         <param-value>10</param-value>
-      </init-param>
-      <load-on-startup>1</load-on-startup>
-   </servlet>
-   <servlet-mapping>
-      <servlet-name>GuestServlet</servlet-name>
-      <url-pattern>/guest</url-pattern>
-   </servlet-mapping>
-
-   <servlet>
-      <display-name>system-menager</display-name>
-      <servlet-name>SystemMenagerServlet</servlet-name>
-      <servlet-class>restaurant.server.servlet.SystemMenagerServlet</servlet-class>
-      <init-param>
-         <param-name>sleep-time-in-seconds</param-name>
-         <param-value>10</param-value>
-      </init-param>
-      <load-on-startup>1</load-on-startup>
-   </servlet>
-   <servlet-mapping>
-      <servlet-name>SystemMenagerServlet</servlet-name>
-      <url-pattern>/system-menager</url-pattern>
-   </servlet-mapping>
-
-   <servlet>
-      <display-name>restaurant-menager</display-name>
-      <servlet-name>RestaurantMenagerServlet</servlet-name>
-      <servlet-class>restaurant.server.servlet.RestaurantMenagerServlet</servlet-class>
-      <init-param>
-         <param-name>sleep-time-in-seconds</param-name>
-         <param-value>10</param-value>
-      </init-param>
-      <load-on-startup>1</load-on-startup>
-   </servlet>
-   <servlet-mapping>
-      <servlet-name>RestaurantMenagerServlet</servlet-name>
-      <url-pattern>/restaurant-menager</url-pattern>
-   </servlet-mapping>
-   
-   <welcome-file-list>
-   		<welcome-file>/login.jsp</welcome-file>
-   </welcome-file-list>
-   <error-page>
-		<exception-type>
-			java.lang.Throwable
-		</exception-type>
-		<location>/error.jsp</location>
-   </error-page>
-   <error-page>
-   		<error-code>404</error-code>
-   		<location>/404.jsp</location>
-   </error-page> 
-
 </web-app>

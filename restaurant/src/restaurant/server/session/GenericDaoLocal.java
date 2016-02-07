@@ -17,7 +17,7 @@ public interface GenericDaoLocal<T, ID extends Serializable> {
 
 	public T merge(T entity);
 
-	public void remove(T entity);
+	public boolean remove(T entity);
 
 	public void flush();
 

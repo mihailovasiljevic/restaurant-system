@@ -56,9 +56,14 @@ public abstract class GenericDaoBean<T, ID extends Serializable> implements Gene
 		return entity;
 	}
 
-	public void remove(T entity) {
-		entity = em.merge(entity);
-		em.remove(entity);
+	public boolean remove(T entity) {
+		try {
+			entity = em.merge(entity);
+			em.remove(entity);
+			return true;
+		}catch (Exception ex){
+			return false;
+		}
 	}
 
 	public void flush() {
