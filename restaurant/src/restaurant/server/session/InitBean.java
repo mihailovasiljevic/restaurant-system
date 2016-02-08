@@ -94,7 +94,7 @@ public class InitBean implements Init {
         User systemMenager2 = new User();
         systemMenager2.setName("Mihailo");
         systemMenager2.setSurname("Vasiljevic");
-        systemMenager2.setEmail("mihailo93@gmail.com");
+        systemMenager2.setEmail("mihailo931@gmail.com");
         systemMenager2.setActivated(true);
         systemMenager2.setNumberOfVisits(0);
         systemMenager2.setUserType(systemMenager);
@@ -499,6 +499,12 @@ public class InitBean implements Init {
         domestic.setName("DOMACA KUHINJA");
         domestic.setUserSystemMenager(systemMenager2);
         em.persist(domestic);
+
+        systemMenager1.add(chinese);
+        systemMenager2.add(vegan);
+        systemMenager2.add(domestic);
+        em.merge(systemMenager1);
+        em.merge(systemMenager2);
 		/**
 		 * ------------------------------------------------------
 		 */ 
@@ -853,5 +859,12 @@ public class InitBean implements Init {
         		while (iterator.hasNext()){
         			   System.out.println("Prijatelj: "+ ((User)iterator.next()).getName());  
         		}
+
+
+                System.out.println("Tipovi restorana: " + systemMenager2.getRestaurantTypes().size());
+                Iterator<RestaurantType> iteratorRest = systemMenager2.getRestaurantTypes().iterator();
+                while (iterator.hasNext()){
+                    System.out.println("Tip: "+ (iteratorRest.next()).getName());
+                }
 	}
 }
