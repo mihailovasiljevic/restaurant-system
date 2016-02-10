@@ -58,10 +58,29 @@ public class User implements Serializable{
 	
 	@Column(name = "USER_VIS_NO", nullable = false)
 	private Integer numberOfVisits;
-	
-	@ManyToOne
-	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
-	private Restaurant restaurant;
+
+	@ManyToMany(mappedBy = "users")
+	private Set<Restaurant> restaurantsForGuests = new HashSet<Restaurant>();
+
+	public void addRestaurantForGuest(Restaurant rest) {
+		if (rest != null)
+			getRestaurantsForGuests().remove(rest);
+		rest.addGuest(this);
+		restaurantsForGuests.add(rest);
+	}
+
+	public void removeRestaurantForGuest(Restaurant rest) {
+		if (rest != null){
+			Iterator<User> iterator = rest.getUsers().iterator();
+			while(iterator.hasNext()) {
+				if (iterator.getId == this.getId()) {
+					rest.removeGuest(this);
+					restaurantForGuest.remove(this);
+					break;
+				}
+			}
+		}
+	}
 	
 	@ManyToMany
 	@JoinTable(name="FRIEND",
@@ -285,12 +304,12 @@ public class User implements Serializable{
 		this.numberOfVisits = numberOfVisits;
 	}
 
-	public Restaurant getRestaurant() {
-		return restaurant;
+	public Set<Restaurant> getRestaurantsForGuests() {
+		return restaurantsForGuests;
 	}
 
-	public void setRestaurant(Restaurant restaurant) {
-		this.restaurant = restaurant;
+	public void setRestaurantsForGuests(Set<Restaurant> restaurant) {
+		this.restaurantsForGuests = restaurant;
 	}
 
 	public Set<User> getMyFriends() {
@@ -393,7 +412,7 @@ public class User implements Serializable{
 	public User(String name, String surname, String email, byte[] password,
 			byte[] salt, UserType userType, Address address,
 			Image image, Boolean activated, Integer numberOfVisits,
-			Restaurant restaurant, Set<User> myFriends,
+			Set<Restaurant> restaurantsForGuests, Set<User> myFriends,
 			Set<Invitation> sentInvitations,
 			Set<Invitation> receivedInvitations, Set<Reservation> reservations,
 			Set<Restaurant> restaurants, Set<RestaurantType> restaurantTypes,
@@ -410,7 +429,7 @@ public class User implements Serializable{
 		this.image = image;
 		this.activated = activated;
 		this.numberOfVisits = numberOfVisits;
-		this.restaurant = restaurant;
+		this.restaurantsForGuests = restaurantsForGuests;
 		this.myFriends = myFriends;
 		this.sentInvitations = sentInvitations;
 		this.receivedInvitations = receivedInvitations;

@@ -84,15 +84,25 @@ public class Restaurant implements Serializable{
 		tablesConfiguration.setRestaurant(null);
 		tablesConfigurations.remove(tablesConfiguration);
 	}
-	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
+	@ManyToMany
 	private Set<User> users = new HashSet<User>();
-	
-	public void add(User restaurantGuest) {
-		if (restaurantGuest.getRestaurant() != null)
-			restaurantGuest.getRestaurant().getUsers().remove(restaurantGuest);
-		restaurantGuest.setRestaurant(this);
-		users.add(restaurantGuest);
+
+	public void addGuest(User user) {
+		if (user != null)
+			getUsers().remove(user);
+		users.add(user);
+	}
+
+	public void removeRestaurantForGuest(User user) {
+		if (user != null){
+			Iterator<Restaurant> iterator = user.getRestaurantsForGuests.iterator();
+			while(iterator.hasNext()) {
+				if (iterator.getId == this.getId()) {
+					users.remove(user);
+					break;
+				}
+			}
+		}
 	}
 
 	public void remove(User restaurantGuest) {
