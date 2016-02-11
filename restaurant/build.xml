@@ -56,6 +56,12 @@
 	<target name="war" depends="compile">
 		<war destfile="${dist}/${warname}" webxml="${web}/WEB-INF/web.xml">
 	      <zipfileset dir="${web}">
+			<include name="*"/>
+			  <include name="*/"/>
+			  <include name="*/*"/>
+			  <include name="*/*/"/>
+			  <include name="*/*/*"/>
+			  <include name="*/*/*/"/>
 	        <include name="*.jsp"/>
 	      	<include name="*.css"/>
 	      	<include name="*.js"/>

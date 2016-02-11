@@ -43,7 +43,7 @@ public class LoginController extends HttpServlet {
 			
 			if(user == null){
 				System.out.println("ne postoji korisnik sa prosledjenom email adresom");
-				response.sendRedirect(response.encodeRedirectURL("login_error.jsp")); //ne postoji korisnik sa prosledjenom email adresom
+				response.sendRedirect(response.encodeRedirectURL("./login_error.jsp")); //ne postoji korisnik sa prosledjenom email adresom
 				return;
 			}else{
 				if(!HashPassword.isPassword(HashPassword.strToChar(userPassword), user.getSalt(), user.getPassword())){
@@ -55,21 +55,21 @@ public class LoginController extends HttpServlet {
 					
 					switch(user.getUserType().getName()){
 						case "GUEST": 
-							session.setAttribute("GUEST", user);
+							session.setAttribute("user", user);
 							System.out.println("Korisnik " + user.getEmail() + " se prijavio.");
-							response.sendRedirect(response.encodeRedirectURL("./guest"));
+							response.sendRedirect(response.encodeRedirectURL("./guest/guest.jsp"));
 							return;
 
 						case "SYSTEM_MENAGER": 
-							session.setAttribute("SYSTEM_MENAGER", user);
+							session.setAttribute("user", user);
 							System.out.println("Korisnik " + user.getEmail() + " se prijavio.");
-							response.sendRedirect(response.encodeRedirectURL("./system-menager"));
+							response.sendRedirect(response.encodeRedirectURL("./system-menager/system-menager.jsp"));
 							return;
 
 						case "RESTAURANT_MENAGER": 
-							session.setAttribute("RESTAURANT_MENAGER", user);
+							session.setAttribute("user", user);
 							System.out.println("Korisnik " + user.getEmail() + " se prijavio.");
-							response.sendRedirect(response.encodeRedirectURL("./restaurant-menager"));
+							response.sendRedirect(response.encodeRedirectURL("./restaurant-menager/restaurant-menager.jsp"));
 							return;
 						
 					}
