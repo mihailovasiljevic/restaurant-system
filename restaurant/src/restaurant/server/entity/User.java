@@ -56,13 +56,6 @@ public class User implements Serializable{
 	@Column(name = "USER_ACT", nullable = false)
 	private Boolean activated;
 	
-	@Column(name = "USER_VIS_NO", nullable = false)
-	private Integer numberOfVisits;
-	
-	@ManyToOne
-	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
-	private Restaurant restaurant;
-	
 	@ManyToMany
 	@JoinTable(name="FRIEND",
 				joinColumns=@JoinColumn(name = "USER_OWNER_ID", referencedColumnName = "USER_ID"),
@@ -124,7 +117,21 @@ public class User implements Serializable{
 		reservation.setUserGuestReservationMaker(null);
 		reservations.remove(reservation);
 	}
+
+	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "user") //mappedBy says that owning side is street
+	private Set<Visit> visits = new HashSet<Visit>();
 	
+	public void add(Visit visit) {
+		if (visit.getUser() != null)
+			visit.getUser().getVisits().remove(visit);
+		visit.setUser(this);
+		visits.add(visit);
+	}
+
+	public void remove(Visit visit) {
+		visit.setUser(null);
+		visits.remove(visit);
+	}
 	/*END GUEST FIELDS*/
 
 	
@@ -277,22 +284,6 @@ public class User implements Serializable{
 		this.activated = activated;
 	}
 
-	public Integer getNumberOfVisits() {
-		return numberOfVisits;
-	}
-
-	public void setNumberOfVisits(Integer numberOfVisits) {
-		this.numberOfVisits = numberOfVisits;
-	}
-
-	public Restaurant getRestaurant() {
-		return restaurant;
-	}
-
-	public void setRestaurant(Restaurant restaurant) {
-		this.restaurant = restaurant;
-	}
-
 	public Set<User> getMyFriends() {
 		return myFriends;
 	}
@@ -390,15 +381,24 @@ public class User implements Serializable{
 	}
 
 	
+	
+	public Set<Visit> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(Set<Visit> visits) {
+		this.visits = visits;
+	}
+
 	public User(String name, String surname, String email, byte[] password,
 			byte[] salt, UserType userType, Address address,
-			Image image, Boolean activated, Integer numberOfVisits,
+			Image image, Boolean activated,
 			Restaurant restaurant, Set<User> myFriends,
 			Set<Invitation> sentInvitations,
 			Set<Invitation> receivedInvitations, Set<Reservation> reservations,
 			Set<Restaurant> restaurants, Set<RestaurantType> restaurantTypes,
 			Set<User> restaurantMenagers, User systemMenager,
-			Set<TablesConfiguration> tablesConfigurations, Set<Menu> menus) {
+			Set<TablesConfiguration> tablesConfigurations, Set<Menu> menus, Set<Visit> visits) {
 		super();
 		this.name = name;
 		this.surname = surname;
@@ -409,8 +409,6 @@ public class User implements Serializable{
 		this.address = address;
 		this.image = image;
 		this.activated = activated;
-		this.numberOfVisits = numberOfVisits;
-		this.restaurant = restaurant;
 		this.myFriends = myFriends;
 		this.sentInvitations = sentInvitations;
 		this.receivedInvitations = receivedInvitations;
@@ -421,6 +419,7 @@ public class User implements Serializable{
 		this.systemMenager = systemMenager;
 		this.tablesConfigurations = tablesConfigurations;
 		this.menus = menus;
+		this.visits = visits;
 	}
 
 	public User() {

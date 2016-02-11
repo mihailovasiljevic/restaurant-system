@@ -43,7 +43,7 @@ public class RestaurantTable implements Serializable{
 	@Column(name = "REST_TABLE_RES", nullable = false)
 	private Boolean reserved;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "REST_TABLE_RES_DATE")
 	private Date reservedDate;
 	

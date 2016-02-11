@@ -35,7 +35,7 @@ public class Reservation implements Serializable{
 	@Column(name = "RES_NAME", nullable = false, length=64)
 	private String name;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "RES_DATE", nullable = false)
 	private Date date;
 	
@@ -145,12 +145,13 @@ public class Reservation implements Serializable{
 		this.invitations = invitations;
 	}
 
+
 	public Reservation() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Reservation(String name, Date date, Time time, Integer forHowLong, Integer grade, Restaurant restaurant,
+	public Reservation(String name, Date date, Integer forHowLong, Integer grade, Restaurant restaurant,
 			User userGuestReservationMaker, RestaurantTable restaurantTable, Set<Invitation> invitations) {
 		super();
 		this.name = name;

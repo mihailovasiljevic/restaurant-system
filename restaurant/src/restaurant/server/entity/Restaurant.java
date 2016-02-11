@@ -86,21 +86,6 @@ public class Restaurant implements Serializable{
 	}
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
-	private Set<User> users = new HashSet<User>();
-	
-	public void add(User restaurantGuest) {
-		if (restaurantGuest.getRestaurant() != null)
-			restaurantGuest.getRestaurant().getUsers().remove(restaurantGuest);
-		restaurantGuest.setRestaurant(this);
-		users.add(restaurantGuest);
-	}
-
-	public void remove(User restaurantGuest) {
-		restaurantGuest.setRestaurant(null);
-		users.remove(restaurantGuest);
-	}
-	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
 	private Set<Reservation> reservations = new HashSet<Reservation>();
 	
 	public void add(Reservation reservation) {
@@ -115,6 +100,20 @@ public class Restaurant implements Serializable{
 		reservations.remove(reservation);
 	}
 
+	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
+	private Set<Visit> visits = new HashSet<Visit>();
+	
+	public void add(Visit visit) {
+		if (visit.getRestaurant() != null)
+			visit.getRestaurant().getVisits().remove(visit);
+		visit.setRestaurant(this);
+		visits.add(visit);
+	}
+
+	public void remove(Visit visit) {
+		visit.setRestaurant(null);
+		visits.remove(visit);
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -179,20 +178,21 @@ public class Restaurant implements Serializable{
 		this.tablesConfigurations = tablesConfigurations;
 	}
 
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
-
 	public Set<Reservation> getReservations() {
 		return reservations;
 	}
 
 	public void setReservations(Set<Reservation> reservations) {
 		this.reservations = reservations;
+	}
+
+	
+	public Set<Visit> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(Set<Visit> visits) {
+		this.visits = visits;
 	}
 
 	public Restaurant() {
@@ -202,7 +202,7 @@ public class Restaurant implements Serializable{
 
 	public Restaurant(String name, Integer grade, RestaurantType restaurantType, Address address,
 			User userSystemMenager, Set<Menu> menus, Set<TablesConfiguration> tablesConfigurations,
-			Set<User> users, Set<Reservation> reservations) {
+			Set<User> users, Set<Reservation> reservations, Set<Visit> visits) {
 		super();
 		this.name = name;
 		this.grade = grade;
@@ -211,8 +211,8 @@ public class Restaurant implements Serializable{
 		this.userSystemMenager = userSystemMenager;
 		this.menus = menus;
 		this.tablesConfigurations = tablesConfigurations;
-		this.users = users;
 		this.reservations = reservations;
+		this.visits = visits;
 	}
 
 	@Override
