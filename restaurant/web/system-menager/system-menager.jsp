@@ -36,7 +36,7 @@
       Email: <b><c:out value="${sessionScope.user.email}"/></b>
     </p>
     <p>
-      <a href="./change-user.jsp">Izmeni podatke</a><a href="../logout">Odjavi se</a>
+      <a href="./change-user.jsp">Izmeni podatke</a><a href="../../logout">Odjavi se</a>
     </p>
 
   </body>

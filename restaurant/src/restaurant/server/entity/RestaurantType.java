@@ -1,4 +1,5 @@
 package restaurant.server.entity;
+
 /**
  * 
  * @author Mihailo
@@ -43,31 +44,32 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "RESTAURANT_TYPE")
-public class RestaurantType implements Serializable{
-	
+@NamedQuery(name = "findRestaurantTypeByUserId", query = "SELECT k FROM RestaurantType k WHERE k.userSystemMenager.id like :userId")
+public class RestaurantType implements Serializable {
+
 	private static final long serialVersionUID = 3263127309803325049L;
-	
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "REST_TYPE_ID", unique = true, nullable = false)
 	private Integer id;
-	
-	@Column(name = "REST_TYPE_NAME",nullable = false, length=64)
+
+	@Column(name = "REST_TYPE_NAME", nullable = false, length = 64)
 	private String name;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
 	private User userSystemMenager;
-	
+
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurantType")
 	private Set<Restaurant> restaurants = new HashSet<Restaurant>();
-	
+
 	public void add(Restaurant rst) {
 		if (rst.getRestaurantType() != null)
 			rst.getRestaurantType().getRestaurants().remove(rst);
@@ -117,16 +119,12 @@ public class RestaurantType implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public RestaurantType(String name, User userSystemMenager, Set<Restaurant> restaurants) {
+	public RestaurantType(String name, User userSystemMenager,
+			Set<Restaurant> restaurants) {
 		super();
 		this.name = name;
 		this.userSystemMenager = userSystemMenager;
 		this.restaurants = restaurants;
-	}
-
-	@Override
-	public String toString() {
-		return "RestaurantType [id=" + id + ", name=" + name + "]";
 	}
 
 
