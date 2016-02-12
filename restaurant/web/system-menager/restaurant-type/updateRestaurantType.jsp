@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Dodajte novi tip restorana</title>
+<title>Izmena tipa restorana</title>
 
 <meta HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <meta HTTP-EQUIV="Expires" CONTENT="-1">
@@ -46,7 +46,7 @@
 	</p>
 
 	<div class="container">
-		<form action="../../api/restaurant-type/createRestaurantType" method="post"
+		<form action="../../api/restaurant-type/updateRestaurantType" method="post"
 			class="prijavaForma" accept-charset="UTF-8">
 			<div class="row">
 				<div class="col-sm-4">&nbsp;</div>
@@ -59,7 +59,7 @@
 				<div class="col-sm-4">&nbsp;</div>
 				<div class="col-sm-4"></div>
 				<div class="col-sm-4">
-					<input type="submit" name="submit" value="Dodaj tip">
+					<input type="submit" name="submit" value="Izmeni tip">
 				</div>
 			</div>
 		</form>

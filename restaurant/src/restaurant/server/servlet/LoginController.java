@@ -29,10 +29,6 @@ public class LoginController extends HttpServlet {
 
 	@EJB
 	private UserDaoLocal userDao;
-	
-
-	@EJB
-	private RestaurantTypeDaoLocal typeDao;
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -79,8 +75,6 @@ public class LoginController extends HttpServlet {
 						case "SYSTEM_MENAGER": 
 							session.setAttribute("user", user);
 							System.out.println("Korisnik " + user.getEmail() + " se prijavio.");
-							List<RestaurantType> types = typeDao.findRestaurantTypeByUserId(user.getId());
-							session.setAttribute("restaurantTypes", types);
 							response.sendRedirect(response.encodeRedirectURL("./system-menager/system-menager.jsp"));
 							return;
 

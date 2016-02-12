@@ -1,4 +1,4 @@
-package restaurant.server.servlet;
+package restaurant.server.servlet.restaurantTypes;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import restaurant.externals.mapper.RestaurantTypeMapper;
 import restaurant.server.entity.RestaurantType;
 import restaurant.server.entity.User;
 import restaurant.server.session.RestaurantTypeDaoLocal;
@@ -34,14 +37,14 @@ public class CreateRestaurantTypeController extends HttpServlet {
 		
 		if(req.getSession().getAttribute("user") == null){
 			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("./login.jsp"));
+			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
 			return;
 		}else{
 			User user = (User)req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if(!(user.getUserType().getName()).equals("SYSTEM_MENAGER")){
 				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("./insufficient_privileges.jsp"));
+				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
 				return;
 			}
 			try{
@@ -52,7 +55,7 @@ public class CreateRestaurantTypeController extends HttpServlet {
 				// Proveriti samo da li je nesto uneo u polje!
 				if(name == null || name.equals("") || name.equals(" ")){
 					System.out.println("Polje je prazno!");
-					resp.sendRedirect(resp.encodeRedirectURL("./system-menager/restaurant-type/createRestaurantType.jsp"));
+					resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant-type/createRestaurantType.jsp"));
 					return;
 				}
 				
@@ -63,9 +66,17 @@ public class CreateRestaurantTypeController extends HttpServlet {
 				restaurantTypeDao.persist(rt);
 				
 				System.out.println("Sacuvan tip!");
-				resp.sendRedirect(resp.encodeRedirectURL("./system-menager/restaurant-type/restaurantTypes.jsp"));
+				/*
+				resp.setContentType("application/json"); 
+				RestaurantTypeMapper rtm = new RestaurantTypeMapper();
+				ObjectMapper objMap = new ObjectMapper();
+				objMap.writeValue(resp.getOutputStream(), rtm.objectToJSON(rt));
+				*/
+				resp.sendRedirect(resp.encodeRedirectURL("./restaurantTypes"));
 				
 			}catch (IOException e) {
+				System.out.println("Unos nije uspeo.");
+				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant-type/createRestaurantType.jsp"));
 				log.error(e);
 				throw e;
 			}

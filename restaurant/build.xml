@@ -68,6 +68,7 @@
 	      </zipfileset>
 	      <classes dir="build">
 	      	 <include name="restaurant/server/servlet/*.class"/>
+	      	<include name="restaurant/server/servlet/*/*.class"/>
 	        <include name="restaurant/server/entity/*.class"/>
 	      	<include name="messages/*.properties"/>  
 	      	<include name="log4j.properties"/>
@@ -87,6 +88,7 @@
 				<include name="restaurant/server/mdb/*.class"/>
 				<include name="restaurant/server/entity/*.class"/>
 				<include name="restaurant/externals/*.class"/>
+				<include name="restaurant/externals/*/*.class"/>
 			</zipfileset>					
 		</jar>
 	</target>

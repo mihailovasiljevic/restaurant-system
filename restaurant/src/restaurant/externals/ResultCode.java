@@ -2,7 +2,9 @@ package restaurant.externals;
 
 
 public enum ResultCode {
-    TRUE("TRUE"), FALSE("FALSE"), USER_NOT_FOUND("USER_NOT_FOUND");
+    TUPLE_ADDED("Torka dodata."), TUPLE_NOT_ADDED("Desila greska i torka nije dodata."),
+    TUPLE_UPDATED("Torka izmenjena."), TUPLE_NOT_UPDATED("Desila greska i torka nije izmenjena."),
+    TUPLE_DELETED("Torka obrisana."), TUPLE_NOT_DELETED("Desila greska i torka nije obrisana.");
 
 
 

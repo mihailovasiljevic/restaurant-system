@@ -19,14 +19,19 @@
 
 	</head>
   <body>
+  
     <c:if test="${sessionScope.user == null}" >
       <c:redirect url="../login.jsp" />
     </c:if>
+    
+    <c:if test="${sessionScope.user.userType.name ne 'SYSTEM_MENAGER'}">
+		<c:redirect url="../../insufficient_privileges.jsp" />
+	</c:if>
 
     <p>
-      <a href="./restaurant-type/restaurantTypes.jsp">Tipovi restorana</a>
-      <a href="./restaurant/restaurants.jsp">Restorani</a>
-      <a href="./restaurant-menager/menagers.jsp">Menadzeri</a>
+      <a href="../api/restaurant-type/restaurantTypes">Tipovi restorana</a>
+      <a href="../api/restaurant/restaurants">Restorani</a>
+      <a href="../api/restaurant-menager/menagers">Menadzeri</a>
     </p>
 
     <p>

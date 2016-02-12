@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
@@ -63,6 +63,16 @@
 				<tr>
 					<td>${i.id}</td>
 					<td>${i.name}</td>
+					<form action="../../api/restaurant-type/updateRestaurantType"
+						method="post" class="prijavaForma" accept-charset="UTF-8">
+					<td><button type='submit' value="${i.id}" name="typeId">Izmeni
+							tip</button></td>
+					</form>
+					<form action="../../api/restaurant-type/deleteRestaurantType"
+						method="post" class="prijavaForma" accept-charset="UTF-8">
+						<td><button type='submit' value="${i.id}" id="${i.id}"
+								name="typeId">Obrisi tip</button></td>
+					</form>
 				</tr>
 			</c:forEach>
 		</table>
@@ -73,7 +83,7 @@
 		<p>Nema elemenata. Dodajte jedan.</p>
 		<c:out value="${sessionScope.user.restaurantTypes}" />
 	</c:if>
-	
+
 	<p>
 		<a href="./system-menager.jsp"><< Nazad</a> <a href="../../logout">Odjavi
 			se</a>
