@@ -13,6 +13,7 @@ import javax.persistence.Query;
 @Local(RestaurantTypeDaoLocal.class)
 public class RestaurantTypeDaoBean extends GenericDaoBean<RestaurantType, Integer>
 implements RestaurantTypeDaoLocal{
+	@SuppressWarnings("unchecked")
 	public List<RestaurantType>  findRestaurantTypeByUserId(Integer id){
         Query q = em.createNamedQuery("findRestaurantTypeByUserId");
         q.setParameter("userId", id);

@@ -76,6 +76,21 @@
 		<servlet-name>UpdateRestaurantTypeController</servlet-name>
 		<url-pattern>/api/restaurant-type/updateRestaurantType</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<display-name>readRestaurant</display-name>
+		<servlet-name>ReadRestaurantsController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurants.ReadRestaurantsController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReadRestaurantsController</servlet-name>
+		<url-pattern>/api/restaurant/restaurants</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<display-name>logout</display-name>

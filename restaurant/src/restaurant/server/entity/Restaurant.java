@@ -24,11 +24,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "RESTAURANT")
+@NamedQuery(name = "findRestaurantByUserId", query = "SELECT k FROM Restaurant k WHERE k.userSystemMenager.id like :userId")
 public class Restaurant implements Serializable{
 		
 	private static final long serialVersionUID = -2100264736088386350L;
