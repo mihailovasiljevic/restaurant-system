@@ -49,7 +49,7 @@
 	<table>
 		<tr>
 			<td>&nbsp;</td>
-			<td><a href="./createRestaurantType.jsp">Dodaj restoran</a></td>
+			<td><a href="../../api/restaurant/prepareInsertRestaurant">Dodaj restoran</a></td>
 		</tr>
 	</table>
 	<c:if test="${fn:length(sessionScope.restaurants) > 0}">
@@ -66,7 +66,7 @@
 				<tr>
 					<td>${i.id}</td>
 					<td>${i.name}</td>
-					<td>${i.address.brojUUlici}</td>
+					<td>${i.address.brojUUlici} ${i.address.street.name} ${i.address.street.city.name} ${i.address.street.city.country.name}</td>
 					<td>${i.grade}</td>
 					<td>${i.restaurantType.name}</td>
 					<form action="../../api/restaurant-type/updateRestaurant"

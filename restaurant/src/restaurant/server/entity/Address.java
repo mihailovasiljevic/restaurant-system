@@ -14,11 +14,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "ADDRESS")
+
 public class Address implements Serializable{
 
 	private static final long serialVersionUID = -4694497404092498742L;
@@ -39,8 +42,13 @@ public class Address implements Serializable{
 	private Set<Restaurant> restaurants = new HashSet<Restaurant>();
 	
 	public void add(Restaurant restaurant) {
-		if (restaurant.getAddress() != null)
+		System.out.println("[Pozvan metod]: Address.add()");
+		System.out.println("[Tip restorana: ] " + restaurant.getAddress());
+		if (restaurant.getAddress() != null){
+			System.out.println("[Restorani u adresi velicina: ] " + restaurant.getAddress().getRestaurants().size());
 			restaurant.getAddress().getRestaurants().remove(restaurant);
+			System.out.println("[Tip restorana: ] " + restaurant.getName());
+		}
 		restaurant.setAddress(this);
 		restaurants.add(restaurant);
 	}
