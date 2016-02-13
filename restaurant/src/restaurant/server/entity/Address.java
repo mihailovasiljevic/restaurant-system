@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -38,7 +39,7 @@ public class Address implements Serializable{
 	@JoinColumn(name = "STREET_ID", referencedColumnName = "STREET_ID")
 	private Street street;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "address") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "address") //mappedBy says that owning side is street
 	private Set<Restaurant> restaurants = new HashSet<Restaurant>();
 	
 	public void add(Restaurant restaurant) {
@@ -58,7 +59,7 @@ public class Address implements Serializable{
 		restaurants.remove(restaurant);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "address") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "address") //mappedBy says that owning side is street
 	private Set<User> users = new HashSet<User>();
 	
 	public void add(User guest) {
