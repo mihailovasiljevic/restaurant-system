@@ -1,7 +1,9 @@
 package restaurant.server.servlet.restaurants;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
@@ -109,6 +111,7 @@ public class CreateRestaurantController extends HttpServlet{
 					address = addressDao.findById(addressId);
 					address.add(persisted);
 					rt = restaurantTypeDao.findById(typeId);
+					HashSet<Restaurant> lista = (HashSet<Restaurant>) rt.getRestaurants();
 					rt.add(persisted);
 					addressDao.merge(address);
 					restaurantTypeDao.merge(rt);
@@ -127,7 +130,7 @@ public class CreateRestaurantController extends HttpServlet{
 					}
 					Address address = new Address();
 					Street street = streetDao.findById(streetId);
-					if(street != null){
+					if(street == null){
 						System.out.println("Obrisana ulica u medjuvremenu!");
 						resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
 						return;	
@@ -159,23 +162,13 @@ public class CreateRestaurantController extends HttpServlet{
 						resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant/createRestaurant.jsp"));
 						return;	
 					}
-					try{
+					
+					rt = restaurantTypeDao.findById(typeId);
 					address.add(restaurant);
 					rt.add(restaurant);
 					addressDao.merge(address);
 					restaurantTypeDao.merge(rt);
-					}catch(Exception ex){
-						System.out.println("Exception");
-					}
-					Iterator<Restaurant> iteratora = address.getRestaurants().iterator();
-					while(iteratora.hasNext()){
-						System.out.println("U adresi: " + iteratora.next().getName());
-					}
-					
-					Iterator<Restaurant> iteratorrt = rt.getRestaurants().iterator();
-					while(iteratorrt.hasNext()){
-						System.out.println("U tipu restorana: " + iteratorrt.next().getName());
-					}
+
 				}
 				
 				resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));

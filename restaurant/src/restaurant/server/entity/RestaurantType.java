@@ -40,6 +40,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -67,7 +68,7 @@ public class RestaurantType implements Serializable {
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
 	private User userSystemMenager;
 
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurantType")
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurantType")
 	private Set<Restaurant> restaurants = new HashSet<Restaurant>();
 
 	public void add(Restaurant rst) {

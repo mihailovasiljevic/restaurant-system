@@ -20,6 +20,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -57,7 +58,7 @@ public class Restaurant implements Serializable{
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
 	private User userSystemMenager;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurant") //mappedBy says that owning side is street
 	private Set<Menu> menus = new HashSet<Menu>();
 	
 	public void add(Menu menu) {
@@ -72,7 +73,7 @@ public class Restaurant implements Serializable{
 		menus.remove(menu);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurant") //mappedBy says that owning side is street
 	private Set<TablesConfiguration> tablesConfigurations = new HashSet<TablesConfiguration>();
 	
 	public void add(TablesConfiguration tablesConfiguration) {
@@ -87,7 +88,7 @@ public class Restaurant implements Serializable{
 		tablesConfigurations.remove(tablesConfiguration);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurant") //mappedBy says that owning side is street
 	private Set<Reservation> reservations = new HashSet<Reservation>();
 	
 	public void add(Reservation reservation) {
@@ -102,7 +103,7 @@ public class Restaurant implements Serializable{
 		reservations.remove(reservation);
 	}
 
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurant") //mappedBy says that owning side is street
 	private Set<Visit> visits = new HashSet<Visit>();
 	
 	public void add(Visit visit) {

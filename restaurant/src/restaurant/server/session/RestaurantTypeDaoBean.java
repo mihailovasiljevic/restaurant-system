@@ -2,6 +2,7 @@ package restaurant.server.session;
 
 import java.util.List;
 
+import restaurant.server.entity.Restaurant;
 import restaurant.server.entity.RestaurantType;
 import restaurant.server.entity.User;
 
@@ -22,4 +23,5 @@ implements RestaurantTypeDaoLocal{
         resultList = (List<RestaurantType>)q.getResultList();
         return resultList;
 	}
+
 }

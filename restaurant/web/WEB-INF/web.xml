@@ -121,6 +121,36 @@
 		<servlet-name>CreateRestaurantController</servlet-name>
 		<url-pattern>/api/restaurant/createRestaurant</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<display-name>deleteRestaurantController</display-name>
+		<servlet-name>DeleteRestaurantController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurants.DeleteRestaurantController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteRestaurantController</servlet-name>
+		<url-pattern>/api/restaurant/deleteRestaurant</url-pattern>
+	</servlet-mapping>	
+
+	<servlet>
+		<display-name>updateRestaurantController</display-name>
+		<servlet-name>UpdateRestaurantController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurants.UpdateRestaurantController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UpdateRestaurantController</servlet-name>
+		<url-pattern>/api/restaurant/updateRestaurant</url-pattern>
+	</servlet-mapping>	
 
 	<servlet>
 		<display-name>logout</display-name>

@@ -40,6 +40,11 @@
 		<c:redirect url="../../insufficient_privileges.jsp" />
 	</c:if>
 
+
+	<c:if test="${sessionScope.updateRestaurantType == null}">
+		<c:redirect url="../../api/restaurant-type/restaurantTypes" />
+	</c:if>
+
 	<p>
 		<b><u>Tipovi restorana</u></b> <a href="../restaurant/restaurants.jsp">Restorani</a>
 		<a href="../restaurant-menager/menagers.jsp">Menadzeri</a>

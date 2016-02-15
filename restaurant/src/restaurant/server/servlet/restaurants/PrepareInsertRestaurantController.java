@@ -1,6 +1,7 @@
 package restaurant.server.servlet.restaurants;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -21,28 +22,27 @@ import restaurant.server.session.CountryDaoLocal;
 import restaurant.server.session.RestaurantTypeDaoLocal;
 import restaurant.server.session.StreetDaoLocal;
 
-public class PrepareInsertRestaurantController extends HttpServlet{
+public class PrepareInsertRestaurantController extends HttpServlet {
 
 	private static final long serialVersionUID = -661923629723616385L;
-	
+
 	@EJB
 	private StreetDaoLocal streetDao;
-	
+
 	@EJB
 	private RestaurantTypeDaoLocal restaurantTypeDao;
-	
+
 	@EJB
 	private CountryDaoLocal countryDao;
-	
+
 	@EJB
 	private CityDaoLocal cityDao;
-	
+
 	@EJB
 	private AddressDaoLocal addressDao;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
 			System.out.println("Nema korisnika na sesiji");
@@ -52,38 +52,56 @@ public class PrepareInsertRestaurantController extends HttpServlet{
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
-				System.out
-						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp
-						.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
 				return;
 			}
-			
+
 			List<Street> streets = streetDao.findAll();
 			List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
 			List<Country> countries = countryDao.findAll();
 			List<City> cities = cityDao.findAll();
-			List<Address> addresses = addressDao.findAll();
+			try {
+				List<Address> addresses = addressDao.findAll();
+				req.getSession().setAttribute("addresses", addresses);
+			} catch (Exception ex) {
+				System.out.println(ex.getMessage());
+				List<Address> addresses= new ArrayList<>();
+				Address ad1 = addressDao.findById(1);
+				Address ad2 = addressDao.findById(2);
+				Address ad3 = addressDao.findById(3);
+				Address ad4 = addressDao.findById(4);
+				Address ad5 = addressDao.findById(5);
+				Address ad6 = addressDao.findById(6);
+				Address ad7 = addressDao.findById(7);
+				Address ad8 = addressDao.findById(8);
+				Address ad9 = addressDao.findById(9);
+				Address ad10 = addressDao.findById(10);
+				addresses.add(ad1);
+				addresses.add(ad2);
+				req.getSession().setAttribute("addresses", addresses);
+			}
 			req.getSession().setAttribute("streets", streets);
 			req.getSession().setAttribute("restaurantTypes", restaurantTypes);
 			req.getSession().setAttribute("countries", countries);
 			req.getSession().setAttribute("cities", cities);
-			req.getSession().setAttribute("addresses", addresses);
-
 			
-			System.out.println("Street + RestaurantType lists put on session.");
-			resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant/createRestaurant.jsp"));
-			return;
+
+			if (req.getParameter("restaurantId") == null) {
+				System.out.println("Street + RestaurantType lists put on session.");
+				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant/createRestaurant.jsp"));
+				return;
+			} else {
+				req.getRequestDispatcher("./updateRestaurant").forward(req, resp);
+				return;
+			}
 		}
 	}
 
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(req, resp);
 	}
-	
-	
 
 }

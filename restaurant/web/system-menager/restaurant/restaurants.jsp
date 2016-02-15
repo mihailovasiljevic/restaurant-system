@@ -69,12 +69,12 @@
 					<td>${i.address.brojUUlici} ${i.address.street.name} ${i.address.street.city.name} ${i.address.street.city.country.name}</td>
 					<td>${i.grade}</td>
 					<td>${i.restaurantType.name}</td>
-					<form action="../../api/restaurant-type/updateRestaurant"
-						method="post" class="prijavaForma" accept-charset="UTF-8">
+					<form action="../../api/restaurant/prepareInsertRestaurant"
+						method="get" class="prijavaForma" accept-charset="UTF-8">
 					<td><button type='submit' value="${i.id}" name="restaurantId">Izmeni
 							tip</button></td>
 					</form>
-					<form action="../../api/restaurant-type/deleteRestaurant"
+					<form action="../../api/restaurant/deleteRestaurant"
 						method="post" class="prijavaForma" accept-charset="UTF-8">
 						<td><button type='submit' value="${i.id}" id="${i.id}"
 								name="restaurantId">Obrisi tip</button></td>
