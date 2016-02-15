@@ -1,6 +1,7 @@
 package restaurant.server.servlet.restaurants;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -8,6 +9,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import restaurant.server.entity.Restaurant;
 import restaurant.server.entity.RestaurantType;
@@ -27,10 +30,13 @@ public class ReadRestaurantsController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-			if (req.getSession().getAttribute("user") == null) {
-				System.out.println("Nema korisnika na sesiji");
-				resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
-				return;
+			if((String)req.getParameter("mapData") != null){
+					List<Restaurant> restaurants = restaurantDao.findAll(); //query to get only few data
+					ObjectMapper mapper = new ObjectMapper();
+			        resp.setContentType("application/json");
+			        PrintWriter out = resp.getWriter();
+			        mapper.writeValue(out, restaurants);
+					return;
 			} else {
 				User user = (User) req.getSession().getAttribute("user");
 				System.out.println("User type: " + user.getUserType().getName());

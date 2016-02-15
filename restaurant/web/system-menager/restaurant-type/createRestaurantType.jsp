@@ -42,7 +42,7 @@
 
 	<p>
 		<b><u>Tipovi restorana</u></b> <a href="../restaurant/restaurants.jsp">Restorani</a>
-		<a href="../restaurant-menager/menagers.jsp">Menadzeri</a>
+		<a href="../restaurant-menager/restaurantMenagers.jsp">Menadzeri</a>
 	</p>
 
 	<div class="container">

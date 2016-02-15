@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Sistem za rezervaciju restorana</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Google maps code -->
+    <script type="text/javascript"
+    src="http://maps.google.com/maps/api/js?sensor=false">
+    </script>
+    <script type="text/javascript">
+      function initialize() {
+        var position = new google.maps.LatLng(45.251667,  19.836944);
+        var myOptions = {
+          zoom: 10,
+          center: position,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(
+            document.getElementById("map_canvas"),
+            myOptions);
+
+        var marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            title:"This is the place."
+        });  
+
+        var contentString = 'Hello <strong>World</strong>!';
+        var infowindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.open(map,marker);
+        });
+       geocoder = new google.maps.Geocoder();
+       codeAddress(map, geocoder);   
+       loadRestaurants();
+      }
+        function codeAddress(map, geocoder) {
+            geocoder.geocode( { 'address': "Bulevar oslobođenja 18, Novi Sad, Serbia"}, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                });
+              } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+              }
+            });
+          }  
+
+    </script>
+    
+    <!-- Get restaurants -->
+    <script type= "text/javascript">
+        function loadRestaurants(){
+            $.ajaxSetup({async:false});
+        	$.ajax({
+        		  url: "./api/restaurant/restaurants",
+        		  type: 'post',
+
+        		  data: {
+        		   mapData:JSON.stringify({}),    
+        		   cache: false,
+        		   dataType:'json'
+        		},
+        		  success: function (data, status) {
+        		    console.log(data);
+        		    console.log(status);
+        		  },
+        		  error: function (xhr, desc, err) {
+        		    console.log(xhr);
+        		  },
+        		}).done(function(data){                   
+                    var obj = jQuery.parseJSON(data);
+                    console.log(obj); 
+                });
+        	$.ajaxSetup({async:true});
+        }
+    </script>
+
+</head>
+
+<body onload="initialize()">
+
+    <!-- Navigation -->
+    <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
+    <nav id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <a id="menu-close" href="#" class="btn btn-light btn-lg pull-right toggle"><i class="fa fa-times"></i></a>
+            <li class="sidebar-brand">
+                <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
+            </li>
+            <li>
+                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+            </li>
+            <li>
+                <a href="#services" onclick = $("#menu-close").click(); >Prijavite se </a>
+            </li>
+            <li>
+                <a href="#portfolio" onclick = $("#menu-close").click(); >Registrujte se</a>
+            </li>
+
+        </ul>
+    </nav>
+
+    <!-- Header -->
+    <header id="top" class="header">
+        <div class="text-vertical-center">
+            <h1>Restorani na dohvat ruke</h1>
+            <h3>Rezervišite vaš termin već danas!</h3>
+            <br>
+            <a href="#restaurants" class="btn btn-dark btn-lg">Pogledajte restorane</a>
+        </div>
+    </header>
+
+    <!-- About -->
+    <section id="restaurants" class="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2>Upoznajte vašu sledeću destinaciju za obrok!</h2>
+                    <p class="lead"><div id="map_canvas" style="width:100%; height:500px"></div></p>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container -->
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1 text-center">
+                    <h4><strong>Reserve Now</strong>
+                    </h4>
+                    <p>21000 Novi Sad Srbija</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fa fa-phone fa-fw"></i> (123) 456-7890</li>
+                        <li><i class="fa fa-envelope-o fa-fw"></i>  <a href="mailto:name@example.com">mihailo93@gmail.com</a>
+                        </li>
+                    </ul>
+                    <br>
+                    <ul class="list-inline">
+                        <li>
+                            <a href="#"><i class="fa fa-facebook fa-fw fa-3x"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-twitter fa-fw fa-3x"></i></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-dribbble fa-fw fa-3x"></i></a>
+                        </li>
+                    </ul>
+                    <hr class="small">
+                    <p class="text-muted">Copyright &copy; Reserve Now 2016</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script>
+    // Closes the sidebar menu
+    $("#menu-close").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+
+    // Opens the sidebar menu
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#sidebar-wrapper").toggleClass("active");
+    });
+
+    // Scrolls to the selected menu item on the page
+    $(function() {
+        $('a[href*=#]:not([href=#])').click(function() {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') || location.hostname == this.hostname) {
+
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top
+                    }, 1000);
+                    return false;
+                }
+            }
+        });
+    });
+    </script>
+
+</body>
+
+</html>

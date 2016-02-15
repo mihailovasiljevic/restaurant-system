@@ -14,7 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "USER")
 @NamedQueries({
 	@NamedQuery(name = "findUserByEmail", query = "SELECT k FROM User k WHERE k.email like :userEmail"),
-	@NamedQuery(name = "findMenagerByUserId", query = "SELECT k FROM User k WHERE k.systemMenager.id like :userId")
+	@NamedQuery(name = "findRestaurantMenagerBySystemMenagerId", query = "SELECT k FROM User k WHERE k.systemMenager.id like :userId")
 }) 
 
 
@@ -78,7 +78,7 @@ public class User implements Serializable{
 		myFriends.remove(friend);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userGuestInvitationSender") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userGuestInvitationSender") //mappedBy says that owning side is street
 	private Set<Invitation> sentInvitations = new HashSet<Invitation>();
 	
 	public void add(Invitation invitation) {
@@ -93,7 +93,7 @@ public class User implements Serializable{
 		sentInvitations.remove(invitation);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userGuestInvitationReceived") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userGuestInvitationReceived") //mappedBy says that owning side is street
 	private Set<Invitation> receivedInvitations = new HashSet<Invitation>();
 	
 	public void addInv(Invitation invitation) {
@@ -108,7 +108,7 @@ public class User implements Serializable{
 		receivedInvitations.remove(invitation);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userGuestReservationMaker") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userGuestReservationMaker") //mappedBy says that owning side is street
 	private Set<Reservation> reservations = new HashSet<Reservation>();
 	
 	public void add(Reservation reservation) {
@@ -123,7 +123,7 @@ public class User implements Serializable{
 		reservations.remove(reservation);
 	}
 
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "user") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "user") //mappedBy says that owning side is street
 	private Set<Visit> visits = new HashSet<Visit>();
 	
 	public void add(Visit visit) {
@@ -142,7 +142,7 @@ public class User implements Serializable{
 	
 	/* SYSTEM MENAGER FIELDS*/
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userSystemMenager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userSystemMenager") //mappedBy says that owning side is street
 	private Set<Restaurant> restaurants = new HashSet<Restaurant>();
 	
 	public void add(Restaurant restaurant) {
@@ -157,7 +157,7 @@ public class User implements Serializable{
 		restaurants.remove(restaurant);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userSystemMenager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userSystemMenager") //mappedBy says that owning side is street
 	private Set<RestaurantType> restaurantTypes = new HashSet<RestaurantType>();
 	
 	public void add(RestaurantType restaurantType) {
@@ -172,7 +172,7 @@ public class User implements Serializable{
 		restaurantTypes.remove(restaurantType);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "systemMenager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "systemMenager") //mappedBy says that owning side is street
 	private Set<User> restaurantMenagers = new HashSet<User>();
 	
 	public void add(User restaurantMenager) {
@@ -194,7 +194,7 @@ public class User implements Serializable{
 	@JoinColumn(name = "USER_SYS_MEN_ID", referencedColumnName = "USER_ID")
 	private User systemMenager;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userRestaurantMenager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userRestaurantMenager") //mappedBy says that owning side is street
 	private Set<TablesConfiguration> tablesConfigurations = new HashSet<TablesConfiguration>();
 	
 	public void add(TablesConfiguration tablesConfiguration) {
@@ -209,7 +209,7 @@ public class User implements Serializable{
 		tablesConfigurations.remove(tablesConfiguration);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userRestaurantMenager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userRestaurantMenager") //mappedBy says that owning side is street
 	private Set<Menu> menus = new HashSet<Menu>();
 	
 	public void add(Menu menu) {

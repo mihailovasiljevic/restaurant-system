@@ -142,7 +142,7 @@ public class InitBean implements Init {
         
         em.persist(restaurantMenager1);
         
-        systemMenager1.add(restaurantMenager1);
+        systemMenager2.add(restaurantMenager1);
         em.merge(systemMenager2);
         
         User restaurantMenager2 = new User();
@@ -164,7 +164,7 @@ public class InitBean implements Init {
         
         em.persist(restaurantMenager2);
         
-        systemMenager1.add(restaurantMenager2);
+        systemMenager2.add(restaurantMenager2);
         em.merge(systemMenager2);
         
         restaurantMenager.add(restaurantMenager1);
@@ -286,52 +286,52 @@ public class InitBean implements Init {
 		 * ------------------------------------------------------
 		 */
         Street nineJugs = new Street();
-        nineJugs.setName("Devet Jugovica");
+        nineJugs.setName("Jovana Cvijića");
         nineJugs.setCity(noviSad);
         em.persist(nineJugs);
         
         Street princeMarko = new Street();
-        princeMarko.setName("Kraljevica Marka");
+        princeMarko.setName("Kraljevića Marka");
         princeMarko.setCity(noviSad);
         em.persist(princeMarko);       
         
         Street kosovo = new Street();
-        kosovo.setName("Kosovska");
+        kosovo.setName("Karađorđeva");
         kosovo.setCity(noviSad);
         em.persist(kosovo);   
         
         Street jjzmaj = new Street();
-        jjzmaj.setName("Jovana Jovanovica Zmaja");
+        jjzmaj.setName("Lukijana Mušickog");
         jjzmaj.setCity(noviSad);
         em.persist(jjzmaj);  
         
         Street green = new Street();
-        green.setName("Zelena");
+        green.setName("Vuka Karadžića");
         green.setCity(noviSad);
         em.persist(green);   
         
         Street bulOsl = new Street();
-        bulOsl.setName("Bulevar oslobodjenja");
+        bulOsl.setName("Vojvode Bojovića");
         bulOsl.setCity(noviSad);
         em.persist(bulOsl); 
         
         Street jna = new Street();
-        jna.setName("Jugoslovenske narodne armije");
+        jna.setName("Gundulićeva");
         jna.setCity(belgrade);
         em.persist(jna);  
         
         Street tito = new Street();
-        tito.setName("Marsala Tita");
+        tito.setName("Maršala Tita");
         tito.setCity(belgrade);
         em.persist(tito);  
         
         Street urosPredic = new Street();
-        urosPredic.setName("Urosa Predica");
+        urosPredic.setName("Uroša predića");
         urosPredic.setCity(belgrade);
         em.persist(urosPredic);  
         
         Street ppnj = new Street();
-        ppnj.setName("Petra I Petrovica Njegosa");
+        ppnj.setName("Njegoševa");
         ppnj.setCity(belgrade);
         em.persist(ppnj);  
         

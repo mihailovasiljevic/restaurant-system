@@ -15,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -22,6 +24,9 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "MENU")
+@NamedQueries({
+	@NamedQuery(name = "findMenusByUserId", query = "SELECT k FROM Menu k WHERE k.userRestaurantMenager.id like :userId"),
+})
 public class Menu implements Serializable{
 
 	private static final long serialVersionUID = -6982448549960182702L;
@@ -35,11 +40,11 @@ public class Menu implements Serializable{
 	@Column(name = "MENU_NAME", nullable = false, length=64)
 	private String name;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "MENU_DATE_FROM", nullable = false)
 	private Date dateFrom;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "MENU_DATE_TO")
 	private Date dateTo;
 	
@@ -50,6 +55,9 @@ public class Menu implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
 	private Restaurant restaurant;
+	
+	@Column(name = "MENU_CURR", nullable = true) //nullable dok se ne promeni  insert dao bean
+	private Boolean current;
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "menu") //mappedBy says that owning side is street
 	private Set<Dish> dishes = new HashSet<Dish>();
@@ -126,9 +134,19 @@ public class Menu implements Serializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	
+
+	public Boolean getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(Boolean current) {
+		this.current = current;
+	}
 
 	public Menu(String name, Date dateFrom, Date dateTo, User userRestaurantMenager, Restaurant restaurant,
-			Set<Dish> dishes) {
+			Set<Dish> dishes, Boolean current) {
 		super();
 		this.name = name;
 		this.dateFrom = dateFrom;
@@ -136,6 +154,7 @@ public class Menu implements Serializable{
 		this.userRestaurantMenager = userRestaurantMenager;
 		this.restaurant = restaurant;
 		this.dishes = dishes;
+		this.current = current;
 	}
 
 	@Override

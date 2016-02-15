@@ -10,10 +10,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "VISIT")
+@NamedQueries({
+	@NamedQuery(name = "findUserVisitsNo", query = "SELECT COUNT(k) FROM Visit k WHERE k.user.id like :userId"),
+	@NamedQuery(name = "findUserVisitsNoByRestaurant", query = "SELECT COUNT(k) FROM Visit k WHERE k.user.id like :userId AND k.restaurant.id like :restaurantId")
+
+})
 public class Visit implements Serializable{
 
 	private static final long serialVersionUID = 7709612463789023979L;

@@ -31,7 +31,7 @@
     <p>
       <a href="../api/restaurant-type/restaurantTypes">Tipovi restorana</a>
       <a href="../api/restaurant/restaurants">Restorani</a>
-      <a href="../api/restaurant-menager/menagers">Menadzeri</a>
+      <a href="../api/restaurant-menager/restaurantMenagers">Menadzeri</a>
     </p>
 
     <p>
