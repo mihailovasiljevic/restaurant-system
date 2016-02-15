@@ -1,16 +1,229 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
-   <display-name>User Management</display-name>
-   <servlet>
-      <servlet-name>Restaurant reservation RESTful aplication</servlet-name>
-      <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-      <init-param>
-         <param-name>jersey.config.server.provider.packages</param-name>
-         <param-value>restaurant.server.routes</param-value>
-      </init-param>
-   </servlet>
-   <servlet-mapping>
-      <servlet-name>Restaurant reservation RESTful aplication</servlet-name>
-      <url-pattern>/api/*</url-pattern>
-   </servlet-mapping>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<servlet>
+		<display-name>login</display-name>
+		<servlet-name>LoginController</servlet-name>
+		<servlet-class>restaurant.server.servlet.LoginController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginController</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>createRestaurantType</display-name>
+		<servlet-name>CreateRestaurantTypeController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurantTypes.CreateRestaurantTypeController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateRestaurantTypeController</servlet-name>
+		<url-pattern>/api/restaurant-type/createRestaurantType</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>readRestaurantTypes</display-name>
+		<servlet-name>ReadRestaurantTypesController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurantTypes.ReadRestaurantTypesController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReadRestaurantTypesController</servlet-name>
+		<url-pattern>/api/restaurant-type/restaurantTypes</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>deleteRestaurantType</display-name>
+		<servlet-name>DeleteRestaurantTypeController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurantTypes.DeleteRestaurantTypeController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteRestaurantTypeController</servlet-name>
+		<url-pattern>/api/restaurant-type/deleteRestaurantType</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>updateRestaurantType</display-name>
+		<servlet-name>UpdateRestaurantTypeController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurantTypes.UpdateRestaurantTypeController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UpdateRestaurantTypeController</servlet-name>
+		<url-pattern>/api/restaurant-type/updateRestaurantType</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>readRestaurant</display-name>
+		<servlet-name>ReadRestaurantsController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurants.ReadRestaurantsController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReadRestaurantsController</servlet-name>
+		<url-pattern>/api/restaurant/restaurants</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>prepareInsertRestaurant</display-name>
+		<servlet-name>PrepareInsertRestaurantController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurants.PrepareInsertRestaurantController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PrepareInsertRestaurantController</servlet-name>
+		<url-pattern>/api/restaurant/prepareInsertRestaurant</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<display-name>createRestaurantController</display-name>
+		<servlet-name>CreateRestaurantController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurants.CreateRestaurantController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateRestaurantController</servlet-name>
+		<url-pattern>/api/restaurant/createRestaurant</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<display-name>deleteRestaurantController</display-name>
+		<servlet-name>DeleteRestaurantController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurants.DeleteRestaurantController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteRestaurantController</servlet-name>
+		<url-pattern>/api/restaurant/deleteRestaurant</url-pattern>
+	</servlet-mapping>	
+
+	<servlet>
+		<display-name>updateRestaurantController</display-name>
+		<servlet-name>UpdateRestaurantController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurants.UpdateRestaurantController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UpdateRestaurantController</servlet-name>
+		<url-pattern>/api/restaurant/updateRestaurant</url-pattern>
+	</servlet-mapping>	
+
+	<servlet>
+		<display-name>logout</display-name>
+		<servlet-name>LogoutController</servlet-name>
+		<servlet-class>restaurant.server.servlet.LogoutController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutController</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+
+
+
+	<servlet>
+		<display-name>guest</display-name>
+		<servlet-name>GuestServlet</servlet-name>
+		<servlet-class>restaurant.server.servlet.GuestServlet</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GuestServlet</servlet-name>
+		<url-pattern>/guest</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>system-menager</display-name>
+		<servlet-name>SystemMenagerServlet</servlet-name>
+		<servlet-class>restaurant.server.servlet.SystemMenagerServlet</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SystemMenagerServlet</servlet-name>
+		<url-pattern>/system-menager</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>restaurant-menager</display-name>
+		<servlet-name>RestaurantMenagerServlet</servlet-name>
+		<servlet-class>restaurant.server.servlet.RestaurantMenagerServlet</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RestaurantMenagerServlet</servlet-name>
+		<url-pattern>/restaurant-menager</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>/login.jsp</welcome-file>
+	</welcome-file-list>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/error.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/404.jsp</location>
+	</error-page>
+
 </web-app>

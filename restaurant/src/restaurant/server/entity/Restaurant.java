@@ -20,15 +20,18 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "RESTAURANT")
+@NamedQuery(name = "findRestaurantByUserId", query = "SELECT k FROM Restaurant k WHERE k.userSystemMenager.id like :userId")
 public class Restaurant implements Serializable{
 		
 	private static final long serialVersionUID = -2100264736088386350L;
@@ -55,7 +58,7 @@ public class Restaurant implements Serializable{
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
 	private User userSystemMenager;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurant") //mappedBy says that owning side is street
 	private Set<Menu> menus = new HashSet<Menu>();
 	
 	public void add(Menu menu) {
@@ -70,7 +73,7 @@ public class Restaurant implements Serializable{
 		menus.remove(menu);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurant") //mappedBy says that owning side is street
 	private Set<TablesConfiguration> tablesConfigurations = new HashSet<TablesConfiguration>();
 	
 	public void add(TablesConfiguration tablesConfiguration) {
@@ -84,33 +87,8 @@ public class Restaurant implements Serializable{
 		tablesConfiguration.setRestaurant(null);
 		tablesConfigurations.remove(tablesConfiguration);
 	}
-	@ManyToMany
-	private Set<User> users = new HashSet<User>();
-
-	public void addGuest(User user) {
-		if (user != null)
-			getUsers().remove(user);
-		users.add(user);
-	}
-
-	public void removeRestaurantForGuest(User user) {
-		if (user != null){
-			Iterator<Restaurant> iterator = user.getRestaurantsForGuests.iterator();
-			while(iterator.hasNext()) {
-				if (iterator.getId == this.getId()) {
-					users.remove(user);
-					break;
-				}
-			}
-		}
-	}
-
-	public void remove(User restaurantGuest) {
-		restaurantGuest.setRestaurant(null);
-		users.remove(restaurantGuest);
-	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurant") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurant") //mappedBy says that owning side is street
 	private Set<Reservation> reservations = new HashSet<Reservation>();
 	
 	public void add(Reservation reservation) {
@@ -125,6 +103,20 @@ public class Restaurant implements Serializable{
 		reservations.remove(reservation);
 	}
 
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurant") //mappedBy says that owning side is street
+	private Set<Visit> visits = new HashSet<Visit>();
+	
+	public void add(Visit visit) {
+		if (visit.getRestaurant() != null)
+			visit.getRestaurant().getVisits().remove(visit);
+		visit.setRestaurant(this);
+		visits.add(visit);
+	}
+
+	public void remove(Visit visit) {
+		visit.setRestaurant(null);
+		visits.remove(visit);
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -189,20 +181,21 @@ public class Restaurant implements Serializable{
 		this.tablesConfigurations = tablesConfigurations;
 	}
 
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
-
 	public Set<Reservation> getReservations() {
 		return reservations;
 	}
 
 	public void setReservations(Set<Reservation> reservations) {
 		this.reservations = reservations;
+	}
+
+	
+	public Set<Visit> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(Set<Visit> visits) {
+		this.visits = visits;
 	}
 
 	public Restaurant() {
@@ -212,7 +205,7 @@ public class Restaurant implements Serializable{
 
 	public Restaurant(String name, Integer grade, RestaurantType restaurantType, Address address,
 			User userSystemMenager, Set<Menu> menus, Set<TablesConfiguration> tablesConfigurations,
-			Set<User> users, Set<Reservation> reservations) {
+			Set<User> users, Set<Reservation> reservations, Set<Visit> visits) {
 		super();
 		this.name = name;
 		this.grade = grade;
@@ -221,8 +214,8 @@ public class Restaurant implements Serializable{
 		this.userSystemMenager = userSystemMenager;
 		this.menus = menus;
 		this.tablesConfigurations = tablesConfigurations;
-		this.users = users;
 		this.reservations = reservations;
+		this.visits = visits;
 	}
 
 	@Override

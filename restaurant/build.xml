@@ -67,7 +67,8 @@
 	      	<include name="*.js"/>
 	      </zipfileset>
 	      <classes dir="build">
-	      	 <include name="restaurant/server/routes/*.class"/>
+	      	 <include name="restaurant/server/servlet/*.class"/>
+	      	<include name="restaurant/server/servlet/*/*.class"/>
 	        <include name="restaurant/server/entity/*.class"/>
 	      	<include name="messages/*.properties"/>  
 	      	<include name="log4j.properties"/>
@@ -87,6 +88,7 @@
 				<include name="restaurant/server/mdb/*.class"/>
 				<include name="restaurant/server/entity/*.class"/>
 				<include name="restaurant/externals/*.class"/>
+				<include name="restaurant/externals/*/*.class"/>
 			</zipfileset>					
 		</jar>
 	</target>
@@ -158,7 +160,7 @@
 			DROP TABLE IF EXISTS TABLES_CONFIGURATION;
 			DROP TABLE IF EXISTS USER;
 			DROP TABLE IF EXISTS USER_TYPE;
-			
+			DROP TABLE IF EXISTS VISIT;
 			
 		</sql>
 	</target>

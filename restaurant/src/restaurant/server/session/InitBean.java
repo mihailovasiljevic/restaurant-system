@@ -1,5 +1,6 @@
 package restaurant.server.session;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -31,6 +32,7 @@ import restaurant.server.entity.Street;
 import restaurant.server.entity.TablesConfiguration;
 import restaurant.server.entity.User;
 import restaurant.server.entity.UserType;
+import restaurant.server.entity.Visit;
 
 @Stateless
 @Remote(Init.class)
@@ -76,7 +78,6 @@ public class InitBean implements Init {
         systemMenager1.setSurname("Jovanovic");
         systemMenager1.setEmail("marko_jovanovic@gmail.com");
         systemMenager1.setActivated(true);
-        systemMenager1.setNumberOfVisits(0);
         systemMenager1.setUserType(systemMenager);
         
         salt = new byte[16];
@@ -96,7 +97,6 @@ public class InitBean implements Init {
         systemMenager2.setSurname("Vasiljevic");
         systemMenager2.setEmail("mihailo931@gmail.com");
         systemMenager2.setActivated(true);
-        systemMenager2.setNumberOfVisits(0);
         systemMenager2.setUserType(systemMenager);
         
         salt = new byte[16];
@@ -128,7 +128,6 @@ public class InitBean implements Init {
         restaurantMenager1.setSurname("Stefanovic");
         restaurantMenager1.setEmail("nik_stefan@gmail.com");
         restaurantMenager1.setActivated(true);
-        restaurantMenager1.setNumberOfVisits(0);
         restaurantMenager1.setUserType(restaurantMenager);
         
         salt = new byte[16];
@@ -151,7 +150,6 @@ public class InitBean implements Init {
         restaurantMenager2.setSurname("Jankovic");
         restaurantMenager2.setEmail("jan_jan@gmail.com");
         restaurantMenager2.setActivated(true);
-        restaurantMenager2.setNumberOfVisits(0);
         restaurantMenager2.setUserType(restaurantMenager);
         
         salt = new byte[16];
@@ -187,7 +185,6 @@ public class InitBean implements Init {
         guest1.setSurname("Stefanovic");
         guest1.setEmail("stefan_stephen@gmail.com");
         guest1.setActivated(true);
-        guest1.setNumberOfVisits(0);
         guest1.setUserType(systemMenager);
         
         salt = new byte[16];
@@ -206,7 +203,6 @@ public class InitBean implements Init {
         guest2.setSurname("Maric");
         guest2.setEmail("mihailo93@gmail.com");
         guest2.setActivated(true);
-        guest2.setNumberOfVisits(0);
         guest2.setUserType(systemMenager);
         
         salt = new byte[16];
@@ -225,7 +221,6 @@ public class InitBean implements Init {
         guest3.setSurname("Popovic");
         guest3.setEmail("mihailo.vasiljevic93@gmail.com");
         guest3.setActivated(true);
-        guest3.setNumberOfVisits(0);
         guest3.setUserType(systemMenager);
         
         salt = new byte[16];
@@ -487,17 +482,14 @@ public class InitBean implements Init {
 		 */
         RestaurantType chinese = new RestaurantType();
         chinese.setName("KINESKI");
-        chinese.setUserSystemMenager(systemMenager1);
         em.persist(chinese);
         
         RestaurantType vegan = new RestaurantType();
         vegan.setName("VEGANSKI");
-        vegan.setUserSystemMenager(systemMenager2);
         em.persist(vegan);
         
         RestaurantType domestic = new RestaurantType();
         domestic.setName("DOMACA KUHINJA");
-        domestic.setUserSystemMenager(systemMenager2);
         em.persist(domestic);
 
         systemMenager1.add(chinese);
@@ -518,9 +510,6 @@ public class InitBean implements Init {
         restaurant1.setRestaurantType(domestic);
         restaurant1.setUserSystemMenager(systemMenager2);
         restaurant1.setAddress(rest1);
-        restaurant1.add(guest1);
-        restaurant1.add(guest2);
-        restaurant1.add(guest3);
         
         em.persist(restaurant1);
         
@@ -529,12 +518,6 @@ public class InitBean implements Init {
         em.merge(rest1);
         
         
-        guest1.setRestaurant(restaurant1);
-        guest2.setRestaurant(restaurant1);
-        guest3.setRestaurant(restaurant1);
-        em.merge(guest1);
-        em.merge(guest2);
-        em.merge(guest3);
         
         
         Restaurant restaurant2 = new Restaurant();
@@ -551,7 +534,21 @@ public class InitBean implements Init {
 		/**
 		 * ------------------------------------------------------
 		 */ 
+		/**
+		 * Create visits.
+		 * ------------------------------------------------------
+		 */
+        	Visit visit1 = new Visit();
+        	visit1.setGrade(4);
+        	em.persist(visit1);
+        	restaurant1.add(visit1);
+        	guest1.add(visit1);
+        	em.merge(restaurant1);
+        	em.merge(guest1);
         
+		/**
+		 * ------------------------------------------------------
+		 */         
 		/**
 		 * Create friends.
 		 * ------------------------------------------------------
@@ -864,7 +861,7 @@ public class InitBean implements Init {
                 System.out.println("Tipovi restorana: " + systemMenager2.getRestaurantTypes().size());
                 Iterator<RestaurantType> iteratorRest = systemMenager2.getRestaurantTypes().iterator();
                 while (iterator.hasNext()){
-                    System.out.println("Tip: "+ (iteratorRest.next()).getName());
+                    System.out.println("Tip: "+ ((RestaurantType)iteratorRest.next()).getId());
                 }
 	}
 }

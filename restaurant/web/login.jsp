@@ -46,7 +46,7 @@
 			  </div>
 			  <div class="row">
 					<div class="col-sm-4">&nbsp;</div>
-					<div class="col-sm-4">Lozinka: <input type="text" name="userPassword"></div>
+					<div class="col-sm-4">Lozinka: <input type="password" name="userPassword"></div>
 					<div class="col-sm-4"></div>
 			  </div>
 				<div class="row">
@@ -54,7 +54,7 @@
 					<div class="col-sm-4"></div>
 					<div class="col-sm-4"><input type="submit" name="submit" value="Prijavi se"></div>
 				</div>
-	   </form>
-	 </div>
+	   		</form>
+		 </div>
 	<body>
 </html>

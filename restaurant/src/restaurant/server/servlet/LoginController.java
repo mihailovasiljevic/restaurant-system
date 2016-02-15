@@ -1,6 +1,8 @@
 package restaurant.server.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -14,17 +16,20 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import restaurant.externals.HashPassword;
+import restaurant.server.entity.RestaurantType;
 import restaurant.server.entity.User;
+import restaurant.server.session.RestaurantTypeDaoLocal;
 import restaurant.server.session.UserDaoLocal;
 
 public class LoginController extends HttpServlet {
 
 	private static final long serialVersionUID = -7345471861052209628L;
-	
+
 	private static Logger log = Logger.getLogger(LoginController.class);
 
 	@EJB
 	private UserDaoLocal userDao;
+
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -41,11 +46,18 @@ public class LoginController extends HttpServlet {
 			
 			User user = userDao.findUserByEmail(userEmail);
 			
+			
+			
 			if(user == null){
 				System.out.println("ne postoji korisnik sa prosledjenom email adresom");
 				response.sendRedirect(response.encodeRedirectURL("./login_error.jsp")); //ne postoji korisnik sa prosledjenom email adresom
 				return;
-			}else{
+			}else if(!user.getActivated()){
+				System.out.println("Korisnicki nalog nije aktiviran");
+				response.sendRedirect(response.encodeRedirectURL("./not_activated.jsp")); //nalog jos uvek nije aktiviran
+				return;
+			}
+			else{
 				if(!HashPassword.isPassword(HashPassword.strToChar(userPassword), user.getSalt(), user.getPassword())){
 					System.out.println("email i password se ne poklapaju");
 					response.sendRedirect(response.encodeRedirectURL("./login_error.jsp")); // email i password se ne poklapaju
@@ -91,7 +103,8 @@ public class LoginController extends HttpServlet {
 		}
 	}
 
-	protected void doPost(HttpServletRequest request, 	HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 }
