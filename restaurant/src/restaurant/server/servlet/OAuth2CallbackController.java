@@ -1,8 +1,11 @@
 package restaurant.server.servlet;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +18,16 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import restaurant.externals.HashPassword;
+import restaurant.server.entity.Image;
+import restaurant.server.entity.User;
+import restaurant.server.entity.UserType;
+import restaurant.server.session.ImageDaoLocal;
+import restaurant.server.session.UserDaoLocal;
+import restaurant.server.session.UserTypeDaoLocal;
 
 public class OAuth2CallbackController extends HttpServlet {
 
@@ -30,7 +43,13 @@ public class OAuth2CallbackController extends HttpServlet {
 	private static final String apiKey = "1041612393341-odrlaea6k2b54m753c3j0q6m7232f1on.apps.googleusercontent.com";
 	private static final String apiSecret = "QifnBUGa3koMyXpEvUyQ24HF";
 	private static final String callbackUrl = "http://localhost:8080/restaurant/oauth2callback";
-
+	
+	@EJB
+	private UserDaoLocal userDao;
+	@EJB 
+	private ImageDaoLocal imageDao;
+	@EJB
+	private UserTypeDaoLocal userTypeDao;
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -64,8 +83,81 @@ public class OAuth2CallbackController extends HttpServlet {
 		System.out.println();
 		System.out.println("Thats it man! Go and build something awesome with Scribe! :)");
 		in.close();
-		resp.getWriter().write(response.getCode());
-		resp.getWriter().write(response.getBody());
+		ObjectMapper resultMapper = new ObjectMapper();
+		String googleId = "";
+		String googleEmail = "";
+		String googleName = "";
+		String googleSurname = "";
+		String picturePath = "";
+		ObjectMapper mapper = new ObjectMapper();
+		HashMap<String, String> data = mapper.readValue(response.getBody(), HashMap.class);
+		for(String key : data.keySet()){
+			if(key.equals("id"))
+				googleId = data.get(key);
+			else if(key.equals("email"))
+				googleEmail = data.get(key);
+			else if(key.equals("name"))
+				googleName = data.get(key);
+			else if(key.equals("family_name"))
+				googleSurname = data.get(key);
+			else if(key.equals("picture"))
+				picturePath = data.get(key);
+		}
+		
+		List<User> users = userDao.findAll();
+		/*Proveriti da li je korisnik vec registrovan i ima nalog*/
+		for(User u: users){
+			if(HashPassword.isPassword(HashPassword.strToChar(googleId),u.getSalt(), u.getPassword())){
+				req.getSession().setAttribute("user", u);
+				resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
+				return;
+			}
+		}
+		/*Korisnik nema nalog, registruj ga*/
+		Image image = new Image();
+		String[] split = googleEmail.split("@");
+		image.setRealName(split[0] + ".jpg");
+		image.setName(split[0] + ".jpg");
+		image.setPath(picturePath);
+		imageDao.persist(image);
+		
+		User user = new User();
+		if(googleName.equals(""))
+			googleName = "NEPOZNATO";
+		if(googleSurname.equals(""))
+			googleSurname = "NEPOZNATO";
+		user.setName(googleName);
+		user.setSurname(googleSurname);
+		user.setEmail(googleEmail);
+		byte[] salt = HashPassword.getNextSalt();
+		byte[] hashedId = HashPassword.hashPassword(HashPassword.strToChar(googleId), salt);
+		user.setSalt(salt);
+		user.setPassword(hashedId);
+		user.setActivated(true);
+		user.setIsSessionActive(true);
+		
+		List<UserType> userTypes = userTypeDao.findAll();
+		
+		for(UserType userType : userTypes){
+			if(userType.getName().equals("GUEST")){
+				user.setUserType(userType);
+				userDao.persist(user);
+				image.setUser(user);
+				imageDao.merge(image);
+				user.setImage(image);
+				userDao.merge(user);
+				userTypeDao.merge(userType);
+				userType.add(user);
+				userTypeDao.merge(userType);
+				
+			}
+		}
+		
+
+		
+		req.getSession().setAttribute("user", user);
+		resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
+		return;
 	}
 
 	@Override

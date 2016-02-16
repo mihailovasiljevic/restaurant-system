@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -29,7 +30,7 @@ public class UserType implements Serializable{
 	@Column(name = "USER_TYPE_NAME", nullable = false, length=64)
 	private String name;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userType")
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userType")
 	private Set<User> users = new HashSet<User>();
 	
 	public void add(User rst) {

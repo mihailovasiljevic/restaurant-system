@@ -42,6 +42,16 @@ public class User implements Serializable{
 
     @Column(name = "USER_SALT", nullable = false, length = 260)
     private byte[] salt;
+   
+    @Column(name = "USER_SESSION_ACTIVE", nullable = false)
+    private Boolean isSessionActive = false;
+    
+    
+    @Column(name = "USER_ACCOUNT_TYPE", nullable = false)
+    private String accountType = "LOCAL";
+    
+    @Column(name = "USER_SESSION_ID", nullable = false)
+    private String sessionId = "";
 
 	@ManyToOne
 	@JoinColumn(name = "USER_TYPE_ID", referencedColumnName = "USER_TYPE_ID", nullable = false)
@@ -394,22 +404,50 @@ public class User implements Serializable{
 	public void setVisits(Set<Visit> visits) {
 		this.visits = visits;
 	}
+	
 
-	public User(String name, String surname, String email, byte[] password,
-			byte[] salt, UserType userType, Address address,
-			Image image, Boolean activated,
-			Restaurant restaurant, Set<User> myFriends,
-			Set<Invitation> sentInvitations,
-			Set<Invitation> receivedInvitations, Set<Reservation> reservations,
-			Set<Restaurant> restaurants, Set<RestaurantType> restaurantTypes,
-			Set<User> restaurantMenagers, User systemMenager,
-			Set<TablesConfiguration> tablesConfigurations, Set<Menu> menus, Set<Visit> visits) {
+	public Boolean getIsSessionActive() {
+		return isSessionActive;
+	}
+
+	public void setIsSessionActive(Boolean isSessionActive) {
+		this.isSessionActive = isSessionActive;
+	}
+
+	public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
+	
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+
+
+
+	public User(String name, String surname, String email, byte[] password, byte[] salt, Boolean isSessionActive,
+			String accountType, String sessionId, UserType userType, Address address, Image image, Boolean activated,
+			Set<User> myFriends, Set<Invitation> sentInvitations, Set<Invitation> receivedInvitations,
+			Set<Reservation> reservations, Set<Visit> visits, Set<Restaurant> restaurants,
+			Set<RestaurantType> restaurantTypes, Set<User> restaurantMenagers, User systemMenager,
+			Set<TablesConfiguration> tablesConfigurations, Set<Menu> menus) {
 		super();
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
 		this.password = password;
 		this.salt = salt;
+		this.isSessionActive = isSessionActive;
+		this.accountType = accountType;
+		this.sessionId = sessionId;
 		this.userType = userType;
 		this.address = address;
 		this.image = image;
@@ -418,13 +456,13 @@ public class User implements Serializable{
 		this.sentInvitations = sentInvitations;
 		this.receivedInvitations = receivedInvitations;
 		this.reservations = reservations;
+		this.visits = visits;
 		this.restaurants = restaurants;
 		this.restaurantTypes = restaurantTypes;
 		this.restaurantMenagers = restaurantMenagers;
 		this.systemMenager = systemMenager;
 		this.tablesConfigurations = tablesConfigurations;
 		this.menus = menus;
-		this.visits = visits;
 	}
 
 	public User() {

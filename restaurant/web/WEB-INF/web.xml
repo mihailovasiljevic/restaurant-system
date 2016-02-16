@@ -339,6 +339,21 @@
 		<servlet-name>OAuth2FacebookCallbackController</servlet-name>
 		<url-pattern>/oauth2facebookcallback</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<display-name>checkSession</display-name>
+		<servlet-name>CheckCookieController</servlet-name>
+		<servlet-class>restaurant.server.servlet.CheckCookieController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CheckCookieController</servlet-name>
+		<url-pattern>/checkSession</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<display-name>guest</display-name>
@@ -386,7 +401,7 @@
 	</servlet-mapping>
 
 	<welcome-file-list>
-		<welcome-file>/index.html</welcome-file>
+		<welcome-file>/index.jsp</welcome-file>
 	</welcome-file-list>
 	<error-page>
 		<exception-type>java.lang.Throwable</exception-type>
