@@ -220,7 +220,7 @@
                        
                               $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "./login",
+                                      url: "./register",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
@@ -234,14 +234,14 @@
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
-                                        if(data != "GRESKA"){
+                                        if(data != "USPEH"){
                                              $("#myModal").modal('hide');
                                              $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
                                              $("#registrationModal").modal('show');
                                             return;
-                                        }else 
-                                             $("#registrationModal #message").text("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na adresu: " + data);
-                                             $("#registrationModal").modal('show');
+                                        }else {
+                                            $("#registrationModal #message").append("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ");                                     		
+                                        	$("#registrationModal").modal('show');
                                         }
                                         $( "#email-error" ).text(data);
                                         //alert("Data: "+ data);

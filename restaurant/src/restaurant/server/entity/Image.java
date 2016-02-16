@@ -23,7 +23,7 @@ public class Image implements Serializable{
 	private Integer id;
 	
 	@Column(name = "IMAGE_NAME",nullable = false, length=256, unique = true)
-	private String name;
+	private byte[] name;
 	
 	@Column(name = "IMAGE_REAL_NAME",nullable = false, length=256, unique = true)
 	private String realName;
@@ -42,12 +42,12 @@ public class Image implements Serializable{
 		this.id = id;
 	}
 
-	public String getName() {
+	public byte[] getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setName(byte[] uploadImageHashedName) {
+		this.name = uploadImageHashedName;
 	}
 
 	public String getPath() {
@@ -81,7 +81,7 @@ public class Image implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Image(String name, String path, User user, String realName) {
+	public Image(byte[] name, String path, User user, String realName) {
 		super();
 		this.name = name;
 		this.path = path;

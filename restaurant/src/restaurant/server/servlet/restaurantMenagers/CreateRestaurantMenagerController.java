@@ -176,7 +176,7 @@ public class CreateRestaurantMenagerController extends HttpServlet {
 
 			String realName = (String) req.getSession().getAttribute("uploadImageRealName");
 			if (realName != null) {
-				String hashedName = (String) req.getSession().getAttribute("uploadImageHashedName");
+				byte[] hashedName = (byte[]) req.getSession().getAttribute("uploadImageHashedName");
 				String path = (String) req.getSession().getAttribute("uploadImagePath");
 				Image image = new Image();
 				image.setName(hashedName);

@@ -279,6 +279,21 @@
 		<servlet-name>LogoutController</servlet-name>
 		<url-pattern>/logout</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<display-name>register</display-name>
+		<servlet-name>RegistrationController</servlet-name>
+		<servlet-class>restaurant.server.servlet.RegistrationController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RegistrationController</servlet-name>
+		<url-pattern>/register</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<display-name>googlePlus</display-name>

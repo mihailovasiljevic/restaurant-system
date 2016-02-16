@@ -28,7 +28,7 @@ import restaurant.server.entity.UserType;
 import restaurant.server.session.ImageDaoLocal;
 import restaurant.server.session.UserDaoLocal;
 import restaurant.server.session.UserTypeDaoLocal;
-
+import restaurant.externals.*;
 public class OAuth2CallbackController extends HttpServlet {
 
 	private static final long serialVersionUID = 3351131772587828321L;
@@ -117,7 +117,8 @@ public class OAuth2CallbackController extends HttpServlet {
 		Image image = new Image();
 		String[] split = googleEmail.split("@");
 		image.setRealName(split[0] + ".jpg");
-		image.setName(split[0] + ".jpg");
+		byte[] salt = HashPassword.getNextSalt();
+		image.setName(HashPassword.hashPassword(HashPassword.strToChar(split[0] + ".jpg"), salt));
 		image.setPath(picturePath);
 		imageDao.persist(image);
 		
@@ -129,7 +130,7 @@ public class OAuth2CallbackController extends HttpServlet {
 		user.setName(googleName);
 		user.setSurname(googleSurname);
 		user.setEmail(googleEmail);
-		byte[] salt = HashPassword.getNextSalt();
+		salt = HashPassword.getNextSalt();
 		byte[] hashedId = HashPassword.hashPassword(HashPassword.strToChar(googleId), salt);
 		user.setSalt(salt);
 		user.setPassword(hashedId);
