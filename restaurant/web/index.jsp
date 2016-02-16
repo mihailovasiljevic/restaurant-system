@@ -106,7 +106,221 @@
                                 $.ajaxSetup({async:true});
                             }
                     });
+                
+            
+            function validateEmail(email) {
+                var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(email);
+            }
+                    $("#btn-signup").click(
+                    function(){
+                        var userEmailsu = $("#userEmailsu").val();
+                        var userName = $("#userName").val();
+                        var userSurname = $("#userSurname").val();
+                        var userPasswordsu = $("#userPasswordsu").val();
+                        var userPasswordsuRepeat = $("#userPasswordsuRepeat").val();
+                        var uploadFile = $("#uploadFile");
+                        var allGood = false;
+                            if( userEmailsu == "" || userEmailsu == undefined || userEmailsu == null ) {
+                                $("#emailsu-error").text("Polje za email adresu ne sme biti prazno!");
+
+                                allGood = false;
+                            } else {
+                                if(!validateEmail(userEmailsu)){
+                                    $("#emailsu-error").text("Neispravna email adresa!");
+                                    allGood = false 
+                                }
+                                else{
+                                    $("#emailsu-error").text("");
+
+                                    allGood = true;
+                                }
+                            }  
+                        
+                            if( userName == "" || userName == undefined || userName == null ) {
+                                $("#name-error").text("Polje za ime ne sme biti prazno!");
+
+                                allGood = false;
+                            } else {
+                               $("#name-error").text("");
+                                
+                                if(allGood != false)
+                                    allGood = true;
+                            } 
+                        
+                            if( userSurname == "" || userSurname == undefined || userSurname == null ) {
+                                $("#surname-error").text("Polje za prezime ne sme biti prazno!");
+
+                                allGood = false;
+                            } else {
+                               $("#surname-error").text("");
+                                
+                                if(allGood != false)
+                                    allGood = true;
+                            } 
+                        
+                                                
+                            if( userPasswordsu == "" || userPasswordsu == undefined || userPasswordsu == null ) {
+                                $("#passwordsu-error").text("Polje za lozinku ne sme biti prazno!");
+
+                                allGood = false;
+                            } else {
+                               $("#passwordsu-error").text("");
+                                
+                                if(allGood != false)
+                                    allGood = true;
+                            } 
+
+                            if( userPasswordsuRepeat == "" || userPasswordsuRepeat == undefined || userPasswordsuRepeat == null ) {
+                                $("#repeatPassword-error").text("Polje za ponovljenu lozinku ne sme biti prazno!");
+
+                                allGood = false;
+                            } else {
+                               $("#repeatPassword-error").text("");
+                                
+                                if(allGood != false)
+                                    allGood = true;
+                            }  
+                            if(userPasswordsu != userPasswordsuRepeat || userPasswordsu == "" || userPasswordsu == undefined || userPasswordsu == null || userPasswordsuRepeat == "" || userPasswordsuRepeat == undefined || userPasswordsuRepeat == null ){
+                                 $("#repeatPassword-error").text("Lozinke se ne poklapaju!!");
+
+                                allGood = false;
+                            }else{
+                               $("#repeatPassword-error").text("");
+                                
+                                if(allGood != false)
+                                    allGood = true;
+                            }
+                            var answer="";
+                            if(allGood == true){
+                                if(document.getElementById("uploadFile").files[0] != null){
+                                    performAjaxSubmitSlika(userEmailsu, userName, userSurname, userPasswordsu);
+                                }
+
+                            }
+                    });
+            
+            
+            
+            
             });
+        
+        function performAjaxSubmitSlika(userEmailsu, userName, userSurname, userPasswordsu) {
+            var uploadItem = document.getElementById("uploadFile").files[0];
+            var formdata = new FormData();
+            formdata.append("image-upload", uploadItem);	  
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open("POST","/restaurant/fileUpload", true);
+            xhr.send(formdata);
+
+            xhr.onload = function(e) {
+                    if (this.status == 200) {
+                       
+                              $.ajaxSetup({async:false});
+                                $.ajax({
+                                      url: "./login",
+                                      type: 'post',
+                                      contentType: "application/x-www-form-urlencoded",
+                                      data: {
+                                       registrationData:JSON.stringify({
+                                           userEmail:userEmailsu,
+                                           userPassword:userPasswordsu,
+                                           userName: userName,
+                                           userSurname: userSurname
+                                       }),    
+                                       cache: false,
+                                       dataType:'json'
+                                    },
+                                      success: function (data, status) {
+                                        if(data != "GRESKA"){
+                                             $("#myModal").modal('hide');
+                                             $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
+                                             $("#registrationModal").modal('show');
+                                            return;
+                                        }else 
+                                             $("#registrationModal #message").text("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na adresu: " + data);
+                                             $("#registrationModal").modal('show');
+                                        }
+                                        $( "#email-error" ).text(data);
+                                        //alert("Data: "+ data);
+                                        console.log(data);
+                                        console.log(status);
+                                      },
+                                      error: function (xhr, desc, err) {
+                                        console.log(xhr);
+                                      },
+                                    });
+                                $.ajaxSetup({async:true});
+                        
+                        
+                        
+                    }else if(this.status == 500){
+                        alert("Dogodila se greska prilikom postavljanja slike. Molimo ponovite proces registracije.");
+                        window.location.href="/restaurant/index.jsp"
+                    }
+            };	        		
+        }
+        
+        $(document).on('click', '#close-preview', function(){ 
+            $('.image-preview').popover('hide');
+            // Hover befor close the preview
+            $('.image-preview').hover(
+                function () {
+                   $('.image-preview').popover('show');
+                }, 
+                 function () {
+                   $('.image-preview').popover('hide');
+                }
+            );    
+        });
+
+        $(function() {
+            // Create the close button
+            var closebtn = $('<button/>', {
+                type:"button",
+                text: 'x',
+                id: 'close-preview',
+                style: 'font-size: initial;',
+            });
+            closebtn.attr("class","close pull-right");
+            // Set the popover default content
+            $('.image-preview').popover({
+                trigger:'manual',
+                html:true,
+                title: "<strong>Preview</strong>"+$(closebtn)[0].outerHTML,
+                content: "There's no image",
+                placement:'bottom'
+            });
+            // Clear event
+            $('.image-preview-clear').click(function(){
+                $('.image-preview').attr("data-content","").popover('hide');
+                $('.image-preview-filename').val("");
+                $('.image-preview-clear').hide();
+                $('.image-preview-input input:file').val("");
+                $(".image-preview-input-title").text("Browse"); 
+            }); 
+            // Create the preview image
+            $(".image-preview-input input:file").change(function (){     
+                var img = $('<img/>', {
+                    id: 'dynamic',
+                    width:250,
+                    height:200
+                });      
+                var file = this.files[0];
+                var reader = new FileReader();
+                // Set preview image into the popover data-content
+                reader.onload = function (e) {
+                    $(".image-preview-input-title").text("Change");
+                    $(".image-preview-clear").show();
+                    $(".image-preview-filename").val(file.name);            
+                    img.attr('src', e.target.result);
+                    $(".image-preview").attr("data-content",$(img)[0].outerHTML).popover("show");
+                }        
+                reader.readAsDataURL(file);
+            });  
+        });
 
     </script>
     
@@ -209,6 +423,28 @@
         </div>
     </footer>
     
+    
+            <!-- Registration Modal -->
+        <div id="registrationModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Informacija o registraciji</h4>
+              </div>
+              <div class="modal-body">
+                  <span id="message"></span>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zatvori</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+    
  <!-- Modal log in-->
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
@@ -216,7 +452,7 @@
       <!-- Modal content-->
       <div class="modal-content">
 
- <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">                    
+ <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-10 col-md-offset-3 col-sm-6 col-sm-offset-2">                    
             <div class="panel panel-info" >
                     <div class="panel-heading">
                         <div class="panel-title">Prijava</div>
@@ -286,7 +522,7 @@
                         </div>                     
                     </div>  
         </div>
-        <div id="signupbox" style="display:none; margin-top:50px" class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+        <div id="signupbox" style="display:none; margin-top:50px" class="mainbox col-md-10 col-md-offset-3 col-sm-8 col-sm-offset-2">
                     <div class="panel panel-info">
                         <div class="panel-heading">
                             <div class="panel-title">Registracija</div>
@@ -303,37 +539,83 @@
                                 
                                   
                                 <div class="form-group">
-                                    <label for="userEmailsu" class="col-md-3 control-label">Email</label>
+                                    <label for="userEmailsu" class="col-md-3 control-label">Email*</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control" name="userEmailsu" placeholder="Email">
+                                        <input type="text" class="form-control" name="userEmailsu" placeholder="Email" id="userEmailsu" required>
+                                    </div>
+                                    <div style="margin-top:10px" class="form-group">
+                                        <!-- ERROR PROVIDER -->
+                                        <span id = "emailsu-error" class="label label-danger"></span>
                                     </div>
                                 </div>
                                     
                                 <div class="form-group">
-                                    <label for="userName" class="col-md-3 control-label">Ime</label>
+                                    <label for="userName" class="col-md-3 control-label">Ime*</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control" name="userName" placeholder="Vaše ime">
+                                        <input type="text" class="form-control" name="userName" placeholder="Vaše ime" id="userName" required>
+                                    </div>
+                                    <div style="margin-top:10px" class="form-group">
+                                        <!-- ERROR PROVIDER -->
+                                        <span id = "name-error" class="label label-danger"></span>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="userSurname" class="col-md-3 control-label">Prezime</label>
+                                    <label for="userSurname" class="col-md-3 control-label">Prezime*</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control" name="userSurname" placeholder="Vaše prezime">
+                                        <input type="text" class="form-control" name="userSurname" placeholder="Vaše prezime" id="userSurname" required>
                                     </div>
+                                     <div style="margin-top:10px" class="form-group">
+                                        <!-- ERROR PROVIDER -->
+                                        <span id = "surname-error" class="label label-danger"></span>
+                                    </div>                                   
                                 </div>
                                 <div class="form-group">
-                                    <label for="userPasswordsu" class="col-md-3 control-label">Lozinka</label>
+                                    <label for="userPasswordsu" class="col-md-3 control-label">Lozinka*</label>
                                     <div class="col-md-9">
-                                        <input type="password" class="form-control" name="userPasswordsu" placeholder="Lozinka">
+                                        <input type="password" class="form-control" name="userPasswordsu" placeholder="Lozinka" id="userPasswordsu" required>
                                     </div>
+                                    <div style="margin-top:10px" class="form-group">
+                                        <!-- ERROR PROVIDER -->
+                                        <span id = "passwordsu-error" class="label label-danger"></span>
+                                    </div>                                    
                                 </div>
                                     
                                 <div class="form-group">
-                                    <label for="userPasswordsuRepeat" class="col-md-3 control-label">Ponovo unesite lozinku</label>
+                                    <label for="userPasswordsuRepeat" class="col-md-3 control-label">Ponovo unesite lozinku*</label>
                                     <div class="col-md-9">
-                                        <input type="password" class="form-control" name="userPasswordsuRepeat" placeholder="Ponovite lozinku">
+                                        <input type="password" class="form-control" name="userPasswordsuRepeat" placeholder="Ponovite lozinku" id="userPasswordsuRepeat" required>
                                     </div>
+                                    <div style="margin-top:10px" class="form-group">
+                                        <!-- ERROR PROVIDER -->
+                                        <span id = "repeatPassword-error" class="label label-danger"></span>
+                                    </div>                                    
                                 </div>
+                                 <div class="form-group">
+                                        <div class="row">    
+                                            <div class="col-xs-12 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-2">  
+                                                <!-- image-preview-filename input [CUT FROM HERE]-->
+                                                <div class="input-group image-preview">
+                                                    <input type="text" class="form-control image-preview-filename" disabled="disabled"> <!-- don't give a name === doesn't send on POST/GET -->
+                                                    <span class="input-group-btn">
+                                                        <!-- image-preview-clear button -->
+                                                        <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
+                                                            <span class="glyphicon glyphicon-remove"></span> Clear
+                                                        </button>
+                                                        <!-- image-preview-input -->
+                                                        <div class="btn btn-default image-preview-input">
+                                                            <span class="glyphicon glyphicon-folder-open"></span>
+                                                            <span class="image-preview-input-title">Browse</span>
+                                                            <input type="file" accept="image/png, image/jpeg, image/gif" name="uploadFile" id="uploadFile"/> <!-- rename it -->
+                                                        </div>
+                                                    </span>
+                                                </div><!-- /input-group image-preview [TO HERE]--> 
+                                            </div>
+                                        </div>
+                                    <div style="margin-top:10px" class="form-group">
+                                        <!-- ERROR PROVIDER -->
+                                        <span id = "fileUpload-error" class="label label-danger"></span>
+                                    </div>                                    
+                                </div>                               
 
                                 <div class="form-group">
                                     <!-- Button -->                                        
@@ -368,6 +650,8 @@
         </div>
       
     </div>
+      
+      
 
     <!-- jQuery -->
     <script src="js/jquery.js"></script>

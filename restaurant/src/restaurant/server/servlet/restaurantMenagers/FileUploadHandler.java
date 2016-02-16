@@ -3,6 +3,7 @@ package restaurant.server.servlet.restaurantMenagers;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.activation.MimetypesFileTypeMap;
@@ -15,7 +16,10 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import restaurant.externals.HashPassword;
+import restaurant.externals.ResultCode;
 import restaurant.server.session.ImageDaoLocal;
 
 
@@ -36,6 +40,9 @@ public class FileUploadHandler extends HttpServlet{
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //process only if its multipart content
+		ObjectMapper mapper = new ObjectMapper();
+        response.setContentType("application/json; charset=utf-8");
+        
         if(ServletFileUpload.isMultipartContent(request)){
             try {
             	DiskFileItemFactory dfif = new DiskFileItemFactory();
@@ -51,35 +58,44 @@ public class FileUploadHandler extends HttpServlet{
 	                        salt = HashPassword.getNextSalt();
 	                        char[] charName = HashPassword.strToChar(name);
 	                        hashedName = HashPassword.hashPassword(charName, salt);
-	                        String path = getServletContext().getRealPath(".")+"/images" + File.separator + hashedName;
-	                        File file = new File(path);
-	                        item.write( file);
+	                        String path = getServletContext().getRealPath("")+"/images" + File.separator + hashedName;
+	                        File file = new File(getServletContext().getRealPath("")+"/images" + File.separator + hashedName);
+	                        try{
+	                        	item.write( file);
+	                        }catch(Exception ex){
+	                        	System.out.println(ex.getMessage());
+	                        }
 	                        request.getSession().setAttribute("uploadImageRealName", name);
 	                        request.getSession().setAttribute("uploadImageHashedName", hashedName);
 	                        request.getSession().setAttribute("uploadImagePath", path);
                     	}else{
-            				System.out.println("Nije odgovarajuci tip.");
-            				response.sendRedirect(response.encodeRedirectURL("../../system-menager/restaurant-menager/createRestaurantMenager.jsp"));
-            				return;
+                            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                            PrintWriter out = response.getWriter();
+                            mapper.writeValue(out, ResultCode.REGISTER_USER_FILE_UPLOAD_SUCC.toString());
+                    		return;
                     	}
                     }
                 }
                 
 
             } catch (Exception ex) {
-				System.out.println("Nije odgovarajuci tip.");
-				response.sendRedirect(response.encodeRedirectURL("../../system-menager/restaurant-menager/createRestaurantMenager.jsp"));
-				return;
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                PrintWriter out = response.getWriter();
+                mapper.writeValue(out, ResultCode.REGISTER_USER_FILE_UPLOAD_SUCC.toString());
+        		return;
             }          
          
         }else{
-			System.out.println("Nije odgovarajuci tip.");
-			response.sendRedirect(response.encodeRedirectURL("../../system-menager/restaurant-menager/createRestaurantMenager.jsp"));
-			return;
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            PrintWriter out = response.getWriter();
+            mapper.writeValue(out, ResultCode.REGISTER_USER_FILE_UPLOAD_SUCC.toString());
+    		return;
         }
         
-		System.out.println("Uspeh!");
-		response.sendRedirect(response.encodeRedirectURL("../../system-menager/restaurant-menager/createRestaurantMenager.jsp"));
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        PrintWriter out = response.getWriter();
+        mapper.writeValue(out, ResultCode.REGISTER_USER_FILE_UPLOAD_SUCC.toString());
 		return;
      
     }

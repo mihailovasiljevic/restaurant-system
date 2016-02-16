@@ -239,7 +239,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>FileUploadHandler</servlet-name>
-		<url-pattern>/api/restaurant-menager/fileUpload</url-pattern>
+		<url-pattern>/fileUpload</url-pattern>
 	</servlet-mapping>
 
 	<security-constraint>
