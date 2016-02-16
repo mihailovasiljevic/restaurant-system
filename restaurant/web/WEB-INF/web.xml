@@ -294,6 +294,21 @@
 		<servlet-name>RegistrationController</servlet-name>
 		<url-pattern>/register</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<display-name>activate</display-name>
+		<servlet-name>ActivateController</servlet-name>
+		<servlet-class>restaurant.server.servlet.ActivateController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ActivateController</servlet-name>
+		<url-pattern>/activate</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<display-name>googlePlus</display-name>

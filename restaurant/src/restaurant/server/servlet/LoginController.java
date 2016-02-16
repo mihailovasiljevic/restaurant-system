@@ -78,6 +78,7 @@ public class LoginController extends HttpServlet {
 				return;
 			}
 			
+			
 			User user = userDao.findUserByEmail(userEmail);
 			
 			if(user == null){

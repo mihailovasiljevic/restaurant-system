@@ -52,6 +52,9 @@ public class User implements Serializable{
     
     @Column(name = "USER_SESSION_ID", nullable = false)
     private String sessionId = "";
+    
+    @Column(name = "USER_ACTIVATION_TOKEN")
+    private byte[] token;
 
 	@ManyToOne
 	@JoinColumn(name = "USER_TYPE_ID", referencedColumnName = "USER_TYPE_ID", nullable = false)
@@ -431,14 +434,20 @@ public class User implements Serializable{
 		this.sessionId = sessionId;
 	}
 
+	public byte[] getToken() {
+		return token;
+	}
 
+	public void setToken(byte[] token) {
+		this.token = token;
+	}
 
 	public User(String name, String surname, String email, byte[] password, byte[] salt, Boolean isSessionActive,
 			String accountType, String sessionId, UserType userType, Address address, Image image, Boolean activated,
 			Set<User> myFriends, Set<Invitation> sentInvitations, Set<Invitation> receivedInvitations,
 			Set<Reservation> reservations, Set<Visit> visits, Set<Restaurant> restaurants,
 			Set<RestaurantType> restaurantTypes, Set<User> restaurantMenagers, User systemMenager,
-			Set<TablesConfiguration> tablesConfigurations, Set<Menu> menus) {
+			Set<TablesConfiguration> tablesConfigurations, Set<Menu> menus, byte[] token) {
 		super();
 		this.name = name;
 		this.surname = surname;
@@ -463,6 +472,7 @@ public class User implements Serializable{
 		this.systemMenager = systemMenager;
 		this.tablesConfigurations = tablesConfigurations;
 		this.menus = menus;
+		this.token = token;
 	}
 
 	public User() {

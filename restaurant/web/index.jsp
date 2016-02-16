@@ -195,7 +195,48 @@
                             if(allGood == true){
                                 if(document.getElementById("uploadFile").files[0] != null){
                                     performAjaxSubmitSlika(userEmailsu, userName, userSurname, userPasswordsu);
-                                }
+                                }else{
+                                    $.ajaxSetup({async:false});
+                                    $.ajax({
+                                          url: "./register",
+                                          type: 'post',
+                                          contentType: "application/x-www-form-urlencoded",
+                                          data: {
+                                           registrationData:JSON.stringify({
+                                               userEmail:userEmailsu,
+                                               userPassword:userPasswordsu,
+                                               userName: userName,
+                                               userSurname: userSurname
+                                           }),    
+                                           cache: false,
+                                           dataType:'json'
+                                        },
+                                          success: function (data, status) {
+                                            if(data != "USPEH"){
+                                                $("#myModal").modal('hide');
+                                                $("#loginbox").modal('hide');
+                                                $("#signupbox").modal('hide');
+                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
+                                                 $("#registrationModal").modal('show');
+                                                return;
+                                            }else {
+                                                $("#myModal").modal('hide');
+                                                $("#loginbox").modal('hide');
+                                                $("#signupbox").modal('hide');
+                                                $("#registrationModal #message").text("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ");                                     		
+                                                $("#registrationModal").modal('show');
+                                            }
+                                            $( "#email-error" ).text(data);
+                                            //alert("Data: "+ data);
+                                            console.log(data);
+                                            console.log(status);
+                                          },
+                                          error: function (xhr, desc, err) {
+                                            console.log(xhr);
+                                          },
+                                        });
+                                    $.ajaxSetup({async:true});
+                                    }
 
                             }
                     });
@@ -235,12 +276,17 @@
                                     },
                                       success: function (data, status) {
                                         if(data != "USPEH"){
-                                             $("#myModal").modal('hide');
+                                                $("#myModal").modal('hide');
+                                                $("#loginbox").modal('hide');
+                                                $("#signupbox").modal('hide');
                                              $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
                                              $("#registrationModal").modal('show');
                                             return;
                                         }else {
-                                            $("#registrationModal #message").append("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ");                                     		
+                                                $("#myModal").modal('hide');
+                                                $("#loginbox").modal('hide');
+                                                $("#signupbox").modal('hide');
+                                            $("#registrationModal #message").text("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ");                                     		
                                         	$("#registrationModal").modal('show');
                                         }
                                         $( "#email-error" ).text(data);

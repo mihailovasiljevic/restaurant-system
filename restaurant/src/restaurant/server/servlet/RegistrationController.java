@@ -19,6 +19,9 @@ import restaurant.server.session.UserDaoLocal;
 import restaurant.server.entity.*;
 import java.util.Enumeration;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+
 public class RegistrationController extends HttpServlet{
 	@EJB
 	private UserDaoLocal userDao;
@@ -57,10 +60,18 @@ public class RegistrationController extends HttpServlet{
 	        resultMapper.writeValue(out, ResultCode.REGISTER_USER_FIELD_EMPTY.toString());
 			return;
 		}
-		Enumeration<String> attributes = req.getSession().getAttributeNames();
-		while(attributes.hasMoreElements()){
-			System.out.print(attributes.nextElement());
+		
+		List<User> users = userDao.findAll();
+		/*Proveriti da li je korisnik vec registrovan i ima nalog*/
+		for(User u: users){
+			if(u.getEmail().equals(userEmail)){
+		        resp.setContentType("application/json; charset=utf-8");
+		        PrintWriter out = resp.getWriter();
+		        resultMapper.writeValue(out, ResultCode.REGISTER_USER_ALREADY_EXISTS.toString());
+				return;
+			}
 		}
+		
 		String uploadImageRealName = (String) req.getSession().getAttribute("uploadImageRealName");
 		byte[] uploadImageHashedName = (byte[]) req.getSession().getAttribute("uploadImageHashedName");
 		String uploadImagePath = (String) req.getSession().getAttribute("uploadImagePath");
@@ -72,16 +83,6 @@ public class RegistrationController extends HttpServlet{
 			
 			imageDao.persist(image);
 					
-			List<User> users = userDao.findAll();
-			/*Proveriti da li je korisnik vec registrovan i ima nalog*/
-			for(User u: users){
-				if(u.getEmail().equals(userEmail)){
-			        resp.setContentType("application/json; charset=utf-8");
-			        PrintWriter out = resp.getWriter();
-			        resultMapper.writeValue(out, ResultCode.REGISTER_USER_ALREADY_EXISTS.toString());
-					return;
-				}
-			}
 			
 			User user = new User();
 
@@ -111,6 +112,49 @@ public class RegistrationController extends HttpServlet{
 					imageDao.merge(image);
 					user.setImage(image);
 
+					byte[] tokenSalt = ByteBuffer.allocate(4).putInt(user.getId()).array();
+					byte[] token = HashPassword.hashPassword(HashPassword.strToChar(user.getEmail()), tokenSalt);
+					user.setToken(token);
+					
+					userDao.merge(user);
+					userTypeDao.merge(userType);
+					userType.add(user);
+					userTypeDao.merge(userType);
+			        activateAccountDao.activate(user);
+			        break;
+					
+				}
+			}
+		}else{
+			User user = new User();
+
+			user.setName(userName);
+			user.setSurname(userSurname);
+			user.setEmail(userEmail);
+			byte[] salt = HashPassword.getNextSalt();
+			byte[] hashedId = HashPassword.hashPassword(HashPassword.strToChar(userPassword), salt);
+			user.setSalt(salt);
+			user.setPassword(hashedId);
+			user.setActivated(false);
+			user.setIsSessionActive(false);
+			
+			List<UserType> userTypes = userTypeDao.findAll();
+			
+			for(UserType userType : userTypes){
+				if(userType.getName().equals("GUEST")){
+					user.setUserType(userType);
+					User persisted = userDao.persist(user);
+					if(persisted == null){
+				        resp.setContentType("application/json; charset=utf-8");
+				        PrintWriter out = resp.getWriter();
+				        resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+						return;
+					}
+					
+					byte[] tokenSalt = ByteBuffer.allocate(4).putInt(user.getId()).array();
+					byte[] token = HashPassword.hashPassword(HashPassword.strToChar(user.getEmail()), tokenSalt);
+					user.setToken(token);
+					
 					userDao.merge(user);
 					userTypeDao.merge(userType);
 					userType.add(user);
