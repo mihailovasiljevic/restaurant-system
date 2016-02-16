@@ -280,7 +280,65 @@
 		<url-pattern>/logout</url-pattern>
 	</servlet-mapping>
 
-
+	<servlet>
+		<display-name>googlePlus</display-name>
+		<servlet-name>GooglePlusServlet</servlet-name>
+		<servlet-class>restaurant.server.servlet.GooglePlusServlet</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GooglePlusServlet</servlet-name>
+		<url-pattern>/googlePlus</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<display-name>oauth2callback</display-name>
+		<servlet-name>OAuth2CallbackController</servlet-name>
+		<servlet-class>restaurant.server.servlet.OAuth2CallbackController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>OAuth2CallbackController</servlet-name>
+		<url-pattern>/oauth2callback</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<display-name>facebook</display-name>
+		<servlet-name>FacebookController</servlet-name>
+		<servlet-class>restaurant.server.servlet.FacebookController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FacebookController</servlet-name>
+		<url-pattern>/facebook</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<display-name>oauth2facebookcallback</display-name>
+		<servlet-name>OAuth2FacebookCallbackController</servlet-name>
+		<servlet-class>restaurant.server.servlet.OAuth2FacebookCallbackController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>OAuth2FacebookCallbackController</servlet-name>
+		<url-pattern>/oauth2facebookcallback</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<display-name>guest</display-name>

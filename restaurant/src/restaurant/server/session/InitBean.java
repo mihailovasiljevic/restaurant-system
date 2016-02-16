@@ -286,47 +286,47 @@ public class InitBean implements Init {
 		 * ------------------------------------------------------
 		 */
         Street nineJugs = new Street();
-        nineJugs.setName("Jovana Cvijića");
+        nineJugs.setName("Jovana Cvijica");
         nineJugs.setCity(noviSad);
         em.persist(nineJugs);
         
         Street princeMarko = new Street();
-        princeMarko.setName("Kraljevića Marka");
+        princeMarko.setName("Kraljevica Marka");
         princeMarko.setCity(noviSad);
         em.persist(princeMarko);       
         
         Street kosovo = new Street();
-        kosovo.setName("Karađorđeva");
+        kosovo.setName("Karadjordjeva");
         kosovo.setCity(noviSad);
         em.persist(kosovo);   
         
         Street jjzmaj = new Street();
-        jjzmaj.setName("Lukijana Mušickog");
+        jjzmaj.setName("Lukijana Musickog");
         jjzmaj.setCity(noviSad);
         em.persist(jjzmaj);  
         
         Street green = new Street();
-        green.setName("Vuka Karadžića");
+        green.setName("Vuka Karadzica");
         green.setCity(noviSad);
         em.persist(green);   
         
         Street bulOsl = new Street();
-        bulOsl.setName("Vojvode Bojovića");
+        bulOsl.setName("Vojvode Bojovica");
         bulOsl.setCity(noviSad);
         em.persist(bulOsl); 
         
         Street jna = new Street();
-        jna.setName("Gundulićeva");
+        jna.setName("Gunduliceva");
         jna.setCity(belgrade);
         em.persist(jna);  
         
         Street tito = new Street();
-        tito.setName("Maršala Tita");
+        tito.setName("Marsala Tita");
         tito.setCity(belgrade);
         em.persist(tito);  
         
         Street urosPredic = new Street();
-        urosPredic.setName("Uroša predića");
+        urosPredic.setName("Uroša predica");
         urosPredic.setCity(belgrade);
         em.persist(urosPredic);  
         
@@ -509,13 +509,13 @@ public class InitBean implements Init {
         restaurant1.setName("RESTORAN KARADJORDJE");
         restaurant1.setRestaurantType(domestic);
         restaurant1.setUserSystemMenager(systemMenager2);
-        restaurant1.setAddress(rest1);
+        restaurant1.setAddress(sys1);
         
         em.persist(restaurant1);
         
         
-        rest1.add(restaurant1);
-        em.merge(rest1);
+        sys1.add(restaurant1);
+        em.merge(sys1);
         
         
         
@@ -524,12 +524,12 @@ public class InitBean implements Init {
         restaurant2.setName("GOGO RESTORAN");
         restaurant2.setRestaurantType(chinese);
         restaurant2.setUserSystemMenager(systemMenager2);
-        restaurant2.setAddress(rest2);
+        restaurant2.setAddress(men2);
         
         em.persist(restaurant2);
         
-        rest2.add(restaurant2);
-        em.merge(rest1);
+        men2.add(restaurant2);
+        em.merge(men2);
         
 		/**
 		 * ------------------------------------------------------

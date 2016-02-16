@@ -18,10 +18,10 @@ import restaurant.server.entity.User;
 import restaurant.server.session.RestaurantDaoLocal;
 import restaurant.server.session.RestaurantTypeDaoLocal;
 
-public class ReadRestaurantsController extends HttpServlet{
+public class ReadRestaurantsController extends HttpServlet {
 
 	private static final long serialVersionUID = -6124263314361111772L;
-	@EJB 
+	@EJB
 	private RestaurantTypeDaoLocal restaurantTypeDao;
 	@EJB
 	private RestaurantDaoLocal restaurantDao;
@@ -31,9 +31,12 @@ public class ReadRestaurantsController extends HttpServlet{
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 			if((String)req.getParameter("mapData") != null){
-					List<Restaurant> restaurants = restaurantDao.findAll(); //query to get only few data
+					String query = "SELECT i.name, i.address.brojUUlici, i.address.street.name,i.address.street.city.name, i.address.street.city.country.name, i.restaurantType.name"
+							+ " FROM Restaurant i where i.id > 0";
+					List<Restaurant> restaurants = restaurantDao.findBy(query);
+
 					ObjectMapper mapper = new ObjectMapper();
-			        resp.setContentType("application/json");
+			        resp.setContentType("application/json; charset=utf-8");
 			        PrintWriter out = resp.getWriter();
 			        mapper.writeValue(out, restaurants);
 					return;
@@ -68,12 +71,9 @@ public class ReadRestaurantsController extends HttpServlet{
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(req, resp);
 	}
-	
-	
 
 }
