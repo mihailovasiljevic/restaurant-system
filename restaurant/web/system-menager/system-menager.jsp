@@ -39,10 +39,178 @@
 
         $(document).ready(function(){
                 
+            //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
+    
+                $("#btn-type").click(
+                    function(){
+                        var typeName = $("#typeName").val();
+                        var allGood = false;
+                            if( typeName == "" || typeName == undefined || typeName == null ) {
+                                $("#typeName-error").text("Polje za naziv tipa ne sme biti prazno.");
+
+                                allGood = false;
+                            } else {
+                                $("#typeName-error").text("");
+
+                                allGood = true;
+                            }  
+
+                            if(allGood == true){
+                                $.ajaxSetup({async:false});
+                                $.ajax({
+                                      url: "../api/restaurant-type/createRestaurantType",
+                                      type: 'post',
+                                      contentType: "application/x-www-form-urlencoded",
+                                      data: {
+                                       restaurantTypeData:JSON.stringify({
+                                           typeName:typeName
+                                       }),    
+                                       cache: false,
+                                       dataType:'json'
+                                    },
+                                      success: function (data, status) {
+                                        if(data == "USPEH"){
+                                             window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
+                                             return;
+                                        }else{
+                                            $("#typeName-error").text(data);
+                                            return;
+                                        }
+                                        //alert("Data: "+ data);
+                                        console.log(data);
+                                        console.log(status);
+                                      },
+                                      error: function (xhr, desc, err) {
+                                        console.log(xhr);
+                                      },
+                                    });
+                                $.ajaxSetup({async:true});
+                            }
+                    });
+                 $("#btn-updateType").click(
+                    function(){
+                        var typeName = $("#typeName").val();
+                        var allGood = false;
+                            if( typeName == "" || typeName == undefined || typeName == null ) {
+                                $("#typeName-error").text("Polje za naziv tipa ne sme biti prazno.");
+
+                                allGood = false;
+                            } else {
+                                $("#typeName-error").text("");
+
+                                allGood = true;
+                            }  
+
+                            if(allGood == true){
+                                $.ajaxSetup({async:false});
+                                $.ajax({
+                                      url: "../api/restaurant-type/updateRestaurantType",
+                                      type: 'post',
+                                      contentType: "application/x-www-form-urlencoded",
+                                      data: {
+                                       restaurantTypeData:JSON.stringify({
+                                           typeName:typeName
+                                       }),    
+                                       cache: false,
+                                       dataType:'json'
+                                    },
+                                      success: function (data, status) {
+                                        if(data == "USPEH"){
+                                             window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
+                                             return;
+                                        }else{
+                                            $("#typeName-error").text(data);
+                                            return;
+                                        }
+                                        //alert("Data: "+ data);
+                                        console.log(data);
+                                        console.log(status);
+                                      },
+                                      error: function (xhr, desc, err) {
+                                        console.log(xhr);
+                                      },
+                                    });
+                                $.ajaxSetup({async:true});
+                            }
+                    });   
+                    $( "#restaurantTable" ).on( "click", "i", function( event ) {
+                            var typeId = $(this).children().last().val();
+                        
+                                $.ajaxSetup({async:false});
+                                $.ajax({
+                                      url: "../api/restaurant-type/updateRestaurantType",
+                                      type: 'post',
+                                      contentType: "application/x-www-form-urlencoded",
+                                      data: {
+                                       restaurantTypeId:JSON.stringify({
+                                           typeId:typeId
+                                       }),    
+                                       cache: false,
+                                       dataType:'json'
+                                    },
+                                      success: function (data, status) {
+                                        if(data != "GRESKA"){
+                                             $('#typeName').val(data);
+                                             $('#btn-type').attr('id','btn-updateType');
+                                             return;
+                                        }else{
+                                            $("#updateBox").hide();
+                                            $("#myModal").hide();
+                                            return;
+                                        }
+                                        //alert("Data: "+ data);
+                                        console.log(data);
+                                        console.log(status);
+                                      },
+                                      error: function (xhr, desc, err) {
+                                        console.log(xhr);
+                                      },
+                                    });
+                                $.ajaxSetup({async:true});
+                            
+                    });
+                    $("#updateButton").click(
+                    function(){
+                        var typeId = $('#hiddenUpdate').val();
+                        
+                                $.ajaxSetup({async:false});
+                                $.ajax({
+                                      url: "../api/restaurant-type/updateRestaurantType",
+                                      type: 'post',
+                                      contentType: "application/x-www-form-urlencoded",
+                                      data: {
+                                       restaurantTypeId:JSON.stringify({
+                                           typeId:typeId
+                                       }),    
+                                       cache: false,
+                                       dataType:'json'
+                                    },
+                                      success: function (data, status) {
+                                        if(data != "GRESKA"){
+                                             $('#typeName').val(data);
+                                             $('#btn-type').attr('id','btn-updateType');
+                                             return;
+                                        }else{
+                                            $("#updateBox").hide();
+                                            $("#myModal").hide();
+                                            return;
+                                        }
+                                        //alert("Data: "+ data);
+                                        console.log(data);
+                                        console.log(status);
+                                      },
+                                      error: function (xhr, desc, err) {
+                                        console.log(xhr);
+                                      },
+                                    });
+                                $.ajaxSetup({async:true});
+                            
+                    });
+            
             
         });
         
-        $.fn.pageMe = function(opts){
+        var pageMe = function(opts){
             var $this = this,
                 defaults = {
                     perPage: 7,
@@ -252,6 +420,7 @@
 			   
                 <div class="container">
                     <div class="row">
+                        
                         <c:if test="${fn:length(sessionScope.restaurantTypes) > 0}">
                           <div class="table-responsive">
                             <table class="table table-hover">
@@ -260,7 +429,7 @@
                                   <th>Identifikator</th>
                                   <th>Ime</th>
                                   <th>&nbsp;</th>
-                                  <th>&nbsp;</th>
+                                  <th><button type="submit" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();">Dodaj tip</button></th>
                                 </tr>
                               </thead>
                               <tbody id="restaurantTable">
@@ -268,14 +437,11 @@
                                     <tr>
                                         <td>${i.id}</td>
                                         <td>${i.name}</td>
-                                        <form action="../../api/restaurant-type/updateRestaurantType"
-                                            method="post" class="prijavaForma" accept-charset="UTF-8">
-                                        <td><a class="btn mini blue-stripe" href="#">Izmeni
-                                                tip</a></td>
-                                        </form>
+                                        <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
+                                            tip</button></i></td>
                                         <form action="../../api/restaurant-type/deleteRestaurantType"
                                             method="post" class="prijavaForma" accept-charset="UTF-8">
-                                            <td><a href="#" class="confirm-delete btn mini red-stripe" role="button" data-title="${i.name}" data-id="${i.id}">Obrisi tip</a></td>
+                                            <td><button type="submit" class="confirm-delete btn mini red-stripe" data-title="${i.name}" data-id="${i.id}">Obrisi tip</button></td>
                                         </form>
                                     </tr>
                                 </c:forEach> 
@@ -362,88 +528,18 @@
           </div>
         </div>
     
- <!-- Modal log in-->
+ <!-- Modal create/update-->
   <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
     
       <!-- Modal content-->
       <div class="modal-content">
-
- <div id="loginbox" style="margin-top:50px;" class="mainbox col-md-10 col-md-offset-3 col-sm-6 col-sm-offset-2">                    
-            <div class="panel panel-info" >
-                    <div class="panel-heading">
-                        <div class="panel-title">Prijava</div>
-                        <div style="float:right; font-size: 80%; position: relative; top:-10px"><a href="#" data-dismiss="modal">Zaboravljena lozinka?</a></div>
-                    </div>     
-
-                    <div style="padding-top:30px" class="panel-body" >
-
-                        <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-                            
-                        <form id="loginform" class="form-horizontal" role="form">
-                                    
-                            <div style="margin-bottom: 25px" class="input-group">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                        <input id="userEmail" type="text" class="form-control" name="userEmail" value="" placeholder="email">                                        
-                                    </div>
-                                
-                            <div style="margin-bottom: 25px" class="input-group">
-                                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                        <input id="userPassword" type="password" class="form-control" name="userPassword" placeholder="lozinka">
-                                    </div>
-                                    
-
-                                
-                            <div class="input-group">
-                                      <div class="checkbox">
-                                        <label>
-                                          <input id="login-remember" type="checkbox" name="remember" value="1"> Zapamti me
-                                        </label>
-                                      </div>
-                                    </div>
-
-
-                                <div style="margin-top:10px" class="form-group">
-                                    <!-- Button -->
-
-                                    <div class="col-sm-12 controls">
-                                      <a id="btn-login" href="#" class="btn btn-success">Prijavi se  </a>
-                                      <a id="btn-fblogin" href="#" class="btn btn-primary">Facebook</a>
-                                      <a id="btn-fblogin" href="http://localhost:8080/restaurant/googlePlus" class="btn btn-danger">Google+</a>          
-                                    </div>
-                                </div>
-                            
-                              <div style="margin-top:10px" class="form-group">
-                                    <!-- ERROR PROVIDER -->
-                                    <span id = "email-error" class="label label-danger"></span>
-                                </div>
-                            
-                                <div style="margin-top:10px" class="form-group">
-                                    <span id = "password-error" class="label label-danger"></span>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-md-12 control">
-                                        <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
-                                            Nemate nalog?! 
-                                        <a href="#" onClick="$('#loginbox').hide(); $('#signupbox').show()">
-                                            Registrujte se
-                                        </a>
-                                        </div>
-                                    </div>
-                                </div>    
-                            </form>     
-
-
-
-                        </div>                     
-                    </div>  
-        </div>
-        <div id="signupbox" style="display:none; margin-top:50px" class="mainbox col-md-10 col-md-offset-3 col-sm-8 col-sm-offset-2">
+          
+        <div id="updatebox" style="display:none; margin-top:50px" class="mainbox col-md-10 col-md-offset-3 col-sm-8 col-sm-offset-2">
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <div class="panel-title">Registracija</div>
-                            <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="#" onclick="$('#signupbox').hide(); $('#loginbox').show()">Prijava</a></div>
+                            <div class="panel-title">Azuriranje tipa</div>
+                            <div style="float:right; font-size: 85%; position: relative; top:-20px"><button type="button" class="close" data-dismiss="modal" onclick="$('#updatebox').hide">&times;</button></div>
                         </div>  
                         <div class="panel-body" >
                             <form id="signupform" class="form-horizontal" role="form">
@@ -456,103 +552,27 @@
                                 
                                   
                                 <div class="form-group">
-                                    <label for="userEmailsu" class="col-md-3 control-label">Email*</label>
+                                    <label for="userEmailsu" class="col-md-3 control-label">Naziv*</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control" name="userEmailsu" placeholder="Email" id="userEmailsu" required>
+                                        <input type="text" class="form-control" name="typeName" placeholder="Tekstualni opis tipa" id="typeName" required>
                                     </div>
                                     <div style="margin-top:10px" class="form-group">
                                         <!-- ERROR PROVIDER -->
-                                        <span id = "emailsu-error" class="label label-danger"></span>
+                                        <span id = "typeName-error" class="label label-danger"></span>
                                     </div>
                                 </div>
-                                    
-                                <div class="form-group">
-                                    <label for="userName" class="col-md-3 control-label">Ime*</label>
-                                    <div class="col-md-9">
-                                        <input type="text" class="form-control" name="userName" placeholder="Vaše ime" id="userName" required>
-                                    </div>
-                                    <div style="margin-top:10px" class="form-group">
-                                        <!-- ERROR PROVIDER -->
-                                        <span id = "name-error" class="label label-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="userSurname" class="col-md-3 control-label">Prezime*</label>
-                                    <div class="col-md-9">
-                                        <input type="text" class="form-control" name="userSurname" placeholder="Vaše prezime" id="userSurname" required>
-                                    </div>
-                                     <div style="margin-top:10px" class="form-group">
-                                        <!-- ERROR PROVIDER -->
-                                        <span id = "surname-error" class="label label-danger"></span>
-                                    </div>                                   
-                                </div>
-                                <div class="form-group">
-                                    <label for="userPasswordsu" class="col-md-3 control-label">Lozinka*</label>
-                                    <div class="col-md-9">
-                                        <input type="password" class="form-control" name="userPasswordsu" placeholder="Lozinka" id="userPasswordsu" required>
-                                    </div>
-                                    <div style="margin-top:10px" class="form-group">
-                                        <!-- ERROR PROVIDER -->
-                                        <span id = "passwordsu-error" class="label label-danger"></span>
-                                    </div>                                    
-                                </div>
-                                    
-                                <div class="form-group">
-                                    <label for="userPasswordsuRepeat" class="col-md-3 control-label">Ponovo unesite lozinku*</label>
-                                    <div class="col-md-9">
-                                        <input type="password" class="form-control" name="userPasswordsuRepeat" placeholder="Ponovite lozinku" id="userPasswordsuRepeat" required>
-                                    </div>
-                                    <div style="margin-top:10px" class="form-group">
-                                        <!-- ERROR PROVIDER -->
-                                        <span id = "repeatPassword-error" class="label label-danger"></span>
-                                    </div>                                    
-                                </div>
-                                 <div class="form-group">
-                                        <div class="row">    
-                                            <div class="col-xs-12 col-md-8 col-md-offset-3 col-sm-8 col-sm-offset-2">  
-                                                <!-- image-preview-filename input [CUT FROM HERE]-->
-                                                <div class="input-group image-preview">
-                                                    <input type="text" class="form-control image-preview-filename" disabled="disabled"> <!-- don't give a name === doesn't send on POST/GET -->
-                                                    <span class="input-group-btn">
-                                                        <!-- image-preview-clear button -->
-                                                        <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
-                                                            <span class="glyphicon glyphicon-remove"></span> Clear
-                                                        </button>
-                                                        <!-- image-preview-input -->
-                                                        <div class="btn btn-default image-preview-input">
-                                                            <span class="glyphicon glyphicon-folder-open"></span>
-                                                            <span class="image-preview-input-title">Browse</span>
-                                                            <input type="file" accept="image/png, image/jpeg, image/gif" name="uploadFile" id="uploadFile"/> <!-- rename it -->
-                                                        </div>
-                                                    </span>
-                                                </div><!-- /input-group image-preview [TO HERE]--> 
-                                            </div>
-                                        </div>
-                                    <div style="margin-top:10px" class="form-group">
-                                        <!-- ERROR PROVIDER -->
-                                        <span id = "fileUpload-error" class="label label-danger"></span>
-                                    </div>                                    
-                                </div>                               
-
                                 <div class="form-group">
                                     <!-- Button -->                                        
                                     <div class="col-md-offset-3 col-md-9">
-                                        <button id="btn-signup" type="button" class="btn btn-info"><i class="icon-hand-right"></i> &nbsp Registrujte se</button>
-                                        <span style="margin-left:8px;">ili koristite</span>  
+                                        	<c:if test="${sessionScope.updateRestaurantType == null}">
+                                               <button id="btn-type" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Azurirajte tip</button>
+                                            </c:if>
+                                        	<c:if test="${sessionScope.updateRestaurantType != null}">
+                                               <button id="btn-updateType" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Azurirajte tip</button>
+                                            </c:if>                                        
+
                                     </div>
-                                </div>
-                                
-                                <div style="border-top: 1px solid #999; padding-top:20px"  class="form-group">
-                                    
-                                    <div class="col-md-offset-3 col-md-9">
-                                        <button id="btn-fbsignup" type="button" class="btn btn-primary"><i class="icon-facebook"></i>Facebook</button>
-                                        <button id="btn-fbsignup" type="button" class="btn btn-danger"><i class="icon-google"></i>Google</button>
-                                    </div>                                           
-                                        
-                                </div>
-                                
-                                
-                                
+                                </div>              
                             </form>
                          </div>
                     </div>

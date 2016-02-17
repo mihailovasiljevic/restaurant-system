@@ -1,6 +1,8 @@
 package restaurant.server.servlet.restaurantTypes;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
@@ -9,6 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import restaurant.server.entity.RestaurantType;
 import restaurant.server.entity.User;
@@ -46,36 +50,48 @@ public class UpdateRestaurantTypeController extends HttpServlet {
 			 * izmena. Nakon obavljene izmene iz sesije se unistava objekat.
 			 */
 			if (req.getSession().getAttribute("updateRestaurantType") == null) {
-				int typeId;
+				int typeId = -1;
 				try {
-					typeId = Integer.parseInt(req.getParameter("typeId"));
+					ObjectMapper resultMapper = new ObjectMapper();
+					ObjectMapper mapper = new ObjectMapper();
+					HashMap<String, String> data = mapper.readValue(req.getParameter("restaurantTypeId"), HashMap.class);
+					for(String key : data.keySet()){
+						if(key.equals("typeId"))
+							typeId = Integer.parseInt(data.get(key));
+					}
 					RestaurantType rt = restaurantTypeDao.findById(typeId);
 					if (rt != null) {
 						req.getSession().setAttribute("updateRestaurantType",
 								rt);
-						System.out
-								.println("Zakacen restoran za izmenu na sesiju.");
-						resp.sendRedirect(resp
-								.encodeRedirectURL("../../system-menager/restaurant-type/updateRestaurantType.jsp"));
-					} else {
-						System.out
-								.println("Ne postoji tip, mozda ga je neko obrisao u medjuvremenu.");
-						resp.sendRedirect(resp
-								.encodeRedirectURL("./restaurantTypes"));
-					}
+				        resp.setContentType("application/json; charset=utf-8");
+				        PrintWriter out = resp.getWriter();
+				        resultMapper.writeValue(out, rt.getName());
+						return;
+					} else {					
+				        resp.setContentType("application/json; charset=utf-8");
+				        PrintWriter out = resp.getWriter();
+				        resultMapper.writeValue(out, "GRESKA");
+						return;
+						}
 				} catch (Exception ex) {
-					System.out
-							.println("Neko je mozda obrisao u medjuvremenu objekat.");
-					resp.sendRedirect(resp
-							.encodeRedirectURL("./restaurantTypes"));
+					ObjectMapper resultMapper = new ObjectMapper();;
+					
+			        resp.setContentType("application/json; charset=utf-8");
+			        PrintWriter out = resp.getWriter();
+			        resultMapper.writeValue(out, "GRESKA");
 					return;
 				}
 			} else {
 				try {
-					String name;
-					name = req.getParameter("typeName");
-					Pattern whitespace = Pattern.compile("\\s*?");
-					// Proveriti samo da li je nesto uneo u polje!
+					String name = null;
+					ObjectMapper resultMapper = new ObjectMapper();
+					ObjectMapper mapper = new ObjectMapper();
+					HashMap<String, String> data = mapper.readValue(req.getParameter("restaurantTypeData"), HashMap.class);
+					for(String key : data.keySet()){
+						if(key.equals("typeName"))
+							name = data.get(key);
+					}
+					
 					if (name == null || name.equals("") || name.equals(" ")) {
 						System.out.println("Polje je prazno!");
 						resp.sendRedirect(resp
@@ -86,25 +102,31 @@ public class UpdateRestaurantTypeController extends HttpServlet {
 							.getAttribute("updateRestaurantType");
 					if (rt != null) {
 						rt.setName(name);
-						restaurantTypeDao.merge(rt);
-						System.out.println("Izmenjen tip!");
-						resp.sendRedirect(resp
-								.encodeRedirectURL("./restaurantTypes"));
+						RestaurantType merged = restaurantTypeDao.merge(rt);
+						if(merged != null){
+					        resp.setContentType("application/json; charset=utf-8");
+					        PrintWriter out = resp.getWriter();
+					        resultMapper.writeValue(out, "USPEH");
+						}else{
+					        resp.setContentType("application/json; charset=utf-8");
+					        PrintWriter out = resp.getWriter();
+					        resultMapper.writeValue(out, "Nije uspelo azuriranje.");
+						}
 					} else {
-						System.out
-								.println("Ne postoji tip, mozda ga je neko obrisao u medjuvremenu.");
-						resp.sendRedirect(resp
-								.encodeRedirectURL("./restaurantTypes"));
+				        resp.setContentType("application/json; charset=utf-8");
+				        PrintWriter out = resp.getWriter();
+				        resultMapper.writeValue(out, "Nije uspelo azuriranje.");
 					}
 					removeSessionObject(req);
 					return;
 
 				} catch (IOException e) {
-					System.out.println("Izmena nije uspela.");
-					resp.sendRedirect(resp
-							.encodeRedirectURL("./restaurantTypes"));
-					removeSessionObject(req);
-					throw e;
+					ObjectMapper resultMapper = new ObjectMapper();;
+					
+			        resp.setContentType("application/json; charset=utf-8");
+			        PrintWriter out = resp.getWriter();
+			        resultMapper.writeValue(out, "Nije uspelo azuriranje");
+					return;
 				}
 			}
 
