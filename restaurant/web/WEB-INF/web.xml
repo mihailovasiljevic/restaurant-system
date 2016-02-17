@@ -243,6 +243,21 @@
 	</servlet-mapping>
 
 	<servlet>
+		<display-name>prepareUpdateRestaurantMenagerController</display-name>
+		<servlet-name>PrepareUpdateRestaurantMenagerController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurantMenagers.PrepareUpdateRestaurantMenagerController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PrepareUpdateRestaurantMenagerController</servlet-name>
+		<url-pattern>/api/restaurant-menager/prepareUpdateRestaurantMenager</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<display-name>fileUpload</display-name>
 		<servlet-name>FileUploadHandler</servlet-name>
 		<servlet-class>restaurant.server.servlet.restaurantMenagers.FileUploadHandler</servlet-class>
@@ -256,29 +271,6 @@
 		<servlet-name>FileUploadHandler</servlet-name>
 		<url-pattern>/fileUpload</url-pattern>
 	</servlet-mapping>
-
-	<security-constraint>
-		<display-name>excluded</display-name>
-		<web-resource-collection>
-			<web-resource-name>No Access</web-resource-name>
-			<url-pattern>/images/*</url-pattern>
-		</web-resource-collection>
-		<web-resource-collection>
-			<web-resource-name>No Access</web-resource-name>
-			<url-pattern>/images/*</url-pattern>
-			<http-method>DELETE</http-method>
-			<http-method>PUT</http-method>
-			<http-method>HEAD</http-method>
-			<http-method>OPTIONS</http-method>
-			<http-method>TRACE</http-method>
-			<http-method>GET</http-method>
-			<http-method>POST</http-method>
-		</web-resource-collection>
-		<auth-constraint />
-		<user-data-constraint>
-			<transport-guarantee>NONE</transport-guarantee>
-		</user-data-constraint>
-	</security-constraint>
 
 	<servlet>
 		<display-name>logout</display-name>

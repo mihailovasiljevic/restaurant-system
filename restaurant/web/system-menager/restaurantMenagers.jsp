@@ -38,78 +38,155 @@
     <script>
 
         $(document).ready(function(){
-                
+                var imageFileName="";
             //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
                 $('#btn-updateType').hide();
                  $("#btn-updateType").click(
                     function(){
-                        var typeName = $("#typeName").val();
+                        var userEmailsu = $("#userEmailsu").val();
+                        var userName = $("#userName").val();
+                        var userSurname = $("#userSurname").val();
+                        var userPasswordsu = $("#userPasswordsu").val();
+                        var userPasswordsuRepeat = $("#userPasswordsuRepeat").val();
+                        var uploadFile = $("#uploadFile");
                         var allGood = false;
-                            if( typeName == "" || typeName == undefined || typeName == null ) {
-                                $("#typeName-error").text("Polje za naziv tipa ne sme biti prazno.");
+                            if( userEmailsu == "" || userEmailsu == undefined || userEmailsu == null ) {
+                                $("#emailsu-error").text("Polje za email adresu ne sme biti prazno!");
 
                                 allGood = false;
                             } else {
-                                $("#typeName-error").text("");
+                                if(!validateEmail(userEmailsu)){
+                                    $("#emailsu-error").text("Neispravna email adresa!");
+                                    allGood = false 
+                                }
+                                else{
+                                    $("#emailsu-error").text("");
 
-                                allGood = true;
+                                    allGood = true;
+                                }
                             }  
+                        
+                            if( userName == "" || userName == undefined || userName == null ) {
+                                $("#name-error").text("Polje za ime ne sme biti prazno!");
 
+                                allGood = false;
+                            } else {
+                               $("#name-error").text("");
+                                
+                                if(allGood != false)
+                                    allGood = true;
+                            } 
+                        
+                            if( userSurname == "" || userSurname == undefined || userSurname == null ) {
+                                $("#surname-error").text("Polje za prezime ne sme biti prazno!");
+
+                                allGood = false;
+                            } else {
+                               $("#surname-error").text("");
+                                
+                                if(allGood != false)
+                                    allGood = true;
+                            } 
+                        
+                                                 
+
+                            if( (userPasswordsuRepeat == "" || userPasswordsuRepeat == undefined || userPasswordsuRepeat == null) && userPasswordsu != "") {
+                                $("#repeatPassword-error").text("Pokusavate da izmenite lozinku, tako da ovo polje ne sme biti prazno!");
+
+                                allGood = false;
+                            } else {
+                               $("#repeatPassword-error").text("");
+                                
+                                if(allGood != false)
+                                    allGood = true;
+                            }  
+                            if(userPasswordsu != userPasswordsuRepeat){
+                                 $("#repeatPassword-error").text("Lozinke se ne poklapaju!!");
+
+                                allGood = false;
+                            }else{
+                               $("#repeatPassword-error").text("");
+                                
+                                if(allGood != false)
+                                    allGood = true;
+                            }
+                            var answer="";
                             if(allGood == true){
-                                $.ajaxSetup({async:false});
-                                $.ajax({
-                                      url: "../api/restaurant-type/updateRestaurantType",
-                                      type: 'post',
-                                      contentType: "application/x-www-form-urlencoded",
-                                      data: {
-                                       restaurantTypeData:JSON.stringify({
-                                           typeName:typeName
-                                       }),    
-                                       cache: false,
-                                       dataType:'json'
-                                    },
-                                      success: function (data, status) {
-                                        if(data == "USPEH"){
-                                             window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
-                                             $('#btn-updateType').hide();
-                                             $('#btn-type').show();
-                                             return;
-                                        }else{
-                                            $("#typeName-error").text(data);
-                                            return;
-                                        }
-                                        //alert("Data: "+ data);
-                                        console.log(data);
-                                        console.log(status);
-                                      },
-                                      error: function (xhr, desc, err) {
-                                        console.log(xhr);
-                                      },
-                                    });
-                                $.ajaxSetup({async:true});
+                                if(document.getElementById("uploadFile").files[0] != null && imageFileName != document.getElementById("uploadFile").files[0].name.replace(/\s+/g, '') ){
+                                    performAjaxSubmitSlika(userEmailsu, userName, userSurname, userPasswordsu);
+                                }else{
+                                    $.ajaxSetup({async:false});
+                                    $.ajax({
+                                          url: "../api/restaurant-menager/updateRestaurantMenager",
+                                          type: 'post',
+                                          contentType: "application/x-www-form-urlencoded",
+                                          data: {
+                                           registrationData:JSON.stringify({
+                                               userEmail:userEmailsu,
+                                               userPassword:userPasswordsu,
+                                               userName: userName,
+                                               userSurname: userSurname
+                                           }),    
+                                           cache: false,
+                                           dataType:'json'
+                                        },
+                                          success: function (data, status) {
+                                            if(data != "USPEH"){
+                                                $("#myModal").hide();
+                                                $("#updatebox").hide();
+                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
+                                                 $("#registrationModal").show();
+                                                return;
+                                            }else {
+                                                $("#myModal").hide();
+                                                $("#updatebox").hide();
+                                                $("#registrationModal #message").text("Uspesno ste dodali menadzera restorana.");                                     		
+                                                $("#registrationModal").show();
+                                                window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
+                                                return;
+                                            }
+                                            $( "#email-error" ).text(data);
+                                            //alert("Data: "+ data);
+                                            console.log(data);
+                                            console.log(status);
+                                          },
+                                          error: function (xhr, desc, err) {
+                                            console.log(xhr);
+                                          },
+                                        });
+                                    $.ajaxSetup({async:true});
+                                    }
+
                             }
                     });   
             
                     $( "#restaurantTable" ).on( "click", "i", function( event ) {
-                            var typeId = $(this).children().last().val();
+                            var userId = $(this).children().last().val();
                         
                                 $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "../api/restaurant-type/prepareUpdateRestaurantType",
+                                      url: "../api/restaurant-menager/prepareUpdateRestaurantMenager",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
-                                       restaurantTypeId:JSON.stringify({
-                                           typeId:typeId
+                                       restaurantMenagerId:JSON.stringify({
+                                           userId:userId
                                        }),    
                                        cache: false,
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
                                         if(data != "GRESKA"){
-                                            if($('#typeName').val() != "" && $('#typeName').val() != null && $('#typeName').val() != undefined)
-                                                $('#typeName').val("");
-                                             $('#typeName').val(data);
+                                             $('#userEmailsu').val(data.email);
+                                            $('#userName').val(data.name);
+                                            $('#userSurname').val(data.surname);
+                                            $('#userPasswordsu').val(data.password);
+                                            $('#userPasswordsuRepeat').val(data.password);
+                                            
+                                            imageFileName = data.imageRealName;
+                                            if(imageFileName != ""){
+                                                $("#repeatPassword-error").text("Ovaj korisnik ima sliku. Ako ne zelite da je promenite ostavite ovo polje prazno.");
+                                            }
                                              $('#btn-updateType').show();
                                              $('#btn-type').hide();
                                              $("#typeName-error").text("");
@@ -629,7 +706,7 @@
                                         <td>${i.id}</td>
                                         <td>${i.name}</td>
                                         <td>${i.surname}</td>
-                                        <td>${i.email}}</td>
+                                        <td>${i.email}</td>
                                         <c:if test="${i.image == null}">
                                             <td><img src="../img/noPicture.png" class="img-responsive" alt="" width="32px" height="32px"></td>
                                         </c:if>
@@ -639,7 +716,7 @@
                                         <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
                                             menadzera</button></i></td>
                                             
-                                        <td><a href="#" data-href="../api/restaurant-menager/deleteRestaurantMenager?restaurantMenagerId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi menadzera</a></td>
+                                        <td><a href="#" data-href="../api/restaurant-menager/deleteRestaurantMenager?userId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi menadzera</a></td>
                                     </tr>
                                 </c:forEach> 
                                 </tbody>
@@ -864,14 +941,14 @@
                     <h4 class="modal-title" id="myModalLabel">Potvrdite brisanje
             
                 <div class="modal-body">
-                    <p>Pokusavate da obrisete tip restorana. Ako tip ima povezanih restorana NECE biti obrisan. Mozete brisati samo tipove koji nemaju za sebe nista povezano.</p>
+                    <p>Pokusavate da obrisete menadzera restorana. Ako menadzer ima konfiguracije ili menije ili je menadzer nekog restorana necete moci da ga obrsete.</p>
                     <p>Da li zelite da nastavite?</p>
                     <p class="debug-url"></p>
                 </div>
                 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-danger btn-ok">Delete</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Odustajem</button>
+                    <a class="btn btn-danger btn-ok">Obrisi</a>
                 </div>
             </div>
         </div>

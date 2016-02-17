@@ -1,12 +1,10 @@
 package restaurant.server.servlet.restaurantMenagers;
 
-import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -58,8 +56,8 @@ public class FileUploadHandler extends HttpServlet{
 	                        salt = HashPassword.getNextSalt();
 	                        char[] charName = HashPassword.strToChar(name);
 	                        hashedName = HashPassword.hashPassword(charName, salt);
-	                        String path = "localhost:8080/restaurant/images" + File.separator + hashedName;
-	                        File file = new File(getServletContext().getRealPath("")+"/images" + File.separator + hashedName);
+	                        String path = getServletContext().getContextPath()+"/images" + File.separator + hashedName;
+	                        File file = new File(getServletContext().getContextPath()+"/images" + File.separator + hashedName);
 	                        try{
 	                        	item.write( file);
 	                        }catch(Exception ex){
