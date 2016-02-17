@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import restaurant.server.entity.Restaurant;
+import restaurant.server.entity.*;
 import restaurant.server.entity.RestaurantType;
 import restaurant.server.entity.User;
-import restaurant.server.session.RestaurantDaoLocal;
+import restaurant.server.session.*;
 import restaurant.server.session.RestaurantTypeDaoLocal;
 
 public class ReadRestaurantsController extends HttpServlet {
@@ -25,52 +25,39 @@ public class ReadRestaurantsController extends HttpServlet {
 	private RestaurantTypeDaoLocal restaurantTypeDao;
 	@EJB
 	private RestaurantDaoLocal restaurantDao;
+	@EJB
+	private StreetDaoLocal streetDao;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-			if((String)req.getParameter("mapData") != null){
-					String query = "SELECT i.name, i.address.brojUUlici, i.address.street.name,i.address.street.city.name, i.address.street.city.country.name, i.restaurantType.name"
-							+ " FROM Restaurant i where i.id > 0";
-					List<Restaurant> restaurants = restaurantDao.findBy(query);
-
-					ObjectMapper mapper = new ObjectMapper();
-			        resp.setContentType("application/json; charset=utf-8");
-			        PrintWriter out = resp.getWriter();
-			        mapper.writeValue(out, restaurants);
-					return;
-			} else {
-				User user = (User) req.getSession().getAttribute("user");
-				System.out.println("User type: " + user.getUserType().getName());
-				if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
-					System.out
-							.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-					resp.sendRedirect(resp
-							.encodeRedirectURL("../../insufficient_privileges.jsp"));
-					return;
-				}
-				List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
-				List<RestaurantType> sessionRestaurantTypes = (List<RestaurantType> )req.getSession().getAttribute("restaurantTypes");
-				if(sessionRestaurantTypes == null)
-					req.getSession().setAttribute("restaurantTypes", restaurantTypes);
-				else{
-					sessionRestaurantTypes = null;
-					req.getSession().removeAttribute("restaurantTypes");
-					req.getSession().setAttribute("restaurantTypes", restaurantTypes);
-				}
-				
-				System.out.println("Iscitani tipovi!");
-				
-				List<Restaurant> restaurants = restaurantDao.findAll();
-				req.getSession().setAttribute("restaurants", restaurants);
-				
-				ObjectMapper mapper = new ObjectMapper();
-		        resp.setContentType("application/json; charset=utf-8");
-		        PrintWriter out = resp.getWriter();
-		        mapper.writeValue(out, restaurants);
+		if (req.getSession().getAttribute("user") == null) {
+			System.out.println("Nema korisnika na sesiji");
+			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			return;
+		} else {
+			User user = (User) req.getSession().getAttribute("user");
+			System.out.println("User type: " + user.getUserType().getName());
+			if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
+				System.out
+						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
+				resp.sendRedirect(resp
+						.encodeRedirectURL("../../insufficient_privileges.jsp"));
 				return;
 			}
+			
+			List<Restaurant> restaurants = restaurantDao.findAll();
+			req.getSession().setAttribute("restaurants", restaurants);
+
+			List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
+			req.getSession().setAttribute("restaurantTypes", restaurantTypes);
+			
+			List<Street> streets = streetDao.findAll();
+			req.getSession().setAttribute("streets", streets);
+			
+			resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurants.jsp"));
+		}
 	}
 
 	@Override

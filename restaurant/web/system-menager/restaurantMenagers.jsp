@@ -666,7 +666,7 @@
 							Tipovi restorana </a>
 						</li>
 						<li id="restaurant" >
-							<a href="../api/restaurant/restaurans" id="aRestaurant">
+							<a href="../api/restaurant/restaurants" id="aRestaurant">
 							<i class="glyphicon glyphicon-registration-mark"></i>
 							Restoran </a>
 						</li>
@@ -686,7 +686,7 @@
                 <div class="container">
                     <div class="row">
                         <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();">Dodaj menadzera restorana</button>
-                        <c:if test="${fn:length(sessionScope.restaurantTypes) > 0}">
+                        <c:if test="${fn:length(sessionScope.restaurantMenagers) > 0}">
                           <div class="table-responsive">
                             <table class="table table-hover">
                               <thead>
@@ -726,7 +726,7 @@
                                 <ul class="pagination pagination-lg pager" id="myPager"></ul>
                             </div>
                         </c:if>
-                        <c:if test="${fn:length(sessionScope.restaurantTypes) == 0}">
+                        <c:if test="${fn:length(sessionScope.restaurantMenagers) == 0}">
                             <span class="label label-info">Nema menadzera. Dodajte jedan.</span>
                         </c:if>
                     </div>

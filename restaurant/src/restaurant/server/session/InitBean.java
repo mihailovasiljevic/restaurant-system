@@ -42,77 +42,125 @@ public class InitBean implements Init {
 	EntityManager em;
 	
 	public void init() {
-		
-		/**
-		 * Create types of user.
-		 * ------------------------------------------------------
-		 */
-		
-		UserType guest = new UserType();
-		guest.setName("GUEST");
-		em.persist(guest);
-		
-		UserType systemMenager = new UserType();
-		systemMenager.setName("SYSTEM_MENAGER");
-		em.persist(systemMenager);
-		
-		UserType restaurantMenager = new UserType();
-		restaurantMenager.setName("RESTAURANT_MENAGER");
-		em.persist(restaurantMenager);
-		
 		/**
 		 * ------------------------------------------------------
-		 */
-		
-		/**
-		 * Create system menagers.
-		 * ------------------------------------------------------
-		 */
-		
-		//prepare password hashing
-        byte[] salt;
-        byte[] hashedPassword;
+		 */ 
         
-        User systemMenager1 = new User();
-        systemMenager1.setName("Marko");
-        systemMenager1.setSurname("Jovanovic");
-        systemMenager1.setEmail("marko_jovanovic@gmail.com");
-        systemMenager1.setActivated(true);
-        systemMenager1.setUserType(systemMenager);
+		/**
+		 * Create country.
+		 * ------------------------------------------------------
+		 */
+        Country serbia = new Country();
+        serbia.setName("Serbia");
+        em.persist(serbia);
         
-        salt = new byte[16];
-        hashedPassword = new byte[256];
-        salt = HashPassword.getNextSalt();
-        systemMenager1.setSalt(salt);
-        char[] pass = {'m','a','r','k','o'};
-        hashedPassword = HashPassword.hashPassword(pass, systemMenager1.getSalt());
-        systemMenager1.setPassword(hashedPassword);
+        Country england = new Country();
+        england.setName("Egnland");
+        em.persist(england);
+        
+		/**
+		 * ------------------------------------------------------
+		 */ 
+        
+		/**
+		 * Create city.
+		 * ------------------------------------------------------
+		 */
+        City noviSad = new City();
+        noviSad.setName("Novi Sad");
+        noviSad.setCountry(serbia);
+        em.persist(noviSad);
+        
+        City belgrade = new City();
+        belgrade.setName("Beograd");
+        belgrade.setCountry(serbia);
+        em.persist(belgrade);
+        
+        serbia.add(noviSad);
+        serbia.add(belgrade);
+        
+        em.merge(serbia);
+		/**
+		 * ------------------------------------------------------
+		 */ 
+        
+		/**
+		 * Create street.
+		 * ------------------------------------------------------
+		 */
+        Street nineJugs = new Street();
+        nineJugs.setName("Devet Jugovica");
+        nineJugs.setCity(noviSad);
+        em.persist(nineJugs);
+        
+        Street princeMarko = new Street();
+        princeMarko.setName("Kraljevica Marka");
+        princeMarko.setCity(noviSad);
+        em.persist(princeMarko);       
+        
+        Street kosovo = new Street();
+        kosovo.setName("Kosovska");
+        kosovo.setCity(noviSad);
+        em.persist(kosovo);   
+        
+        Street jjzmaj = new Street();
+        jjzmaj.setName("Jovana Jovanovica Zmaja");
+        jjzmaj.setCity(noviSad);
+        em.persist(jjzmaj);  
+        
+        Street green = new Street();
+        green.setName("Zelena");
+        green.setCity(noviSad);
+        em.persist(green);   
+        
+        Street bulOsl = new Street();
+        bulOsl.setName("Bulevar oslobodjenja");
+        bulOsl.setCity(noviSad);
+        em.persist(bulOsl); 
+        
+        Street jna = new Street();
+        jna.setName("Jugoslovenske narodne armije");
+        jna.setCity(belgrade);
+        em.persist(jna);  
+        
+        Street tito = new Street();
+        tito.setName("Marsala Tita");
+        tito.setCity(belgrade);
+        em.persist(tito);  
+        
+        Street urosPredic = new Street();
+        urosPredic.setName("Urosa Predica");
+        urosPredic.setCity(belgrade);
+        em.persist(urosPredic);  
+        
+        Street ppnj = new Street();
+        ppnj.setName("Petra I Petrovica Njegosa");
+        ppnj.setCity(belgrade);
+        em.persist(ppnj);  
+        
+        Street bulKingAlex = new Street();
+        bulKingAlex.setName("Bulevar kralja Aleksandra");
+        bulKingAlex.setCity(belgrade);
+        em.persist(bulKingAlex);  
+        
 
         
         
-        em.persist(systemMenager1);
+        noviSad.add(nineJugs);
+        noviSad.add(princeMarko);
+        noviSad.add(kosovo);
+        noviSad.add(jjzmaj);
+        noviSad.add(bulOsl);
+        noviSad.add(green);
         
-        User systemMenager2 = new User();
-        systemMenager2.setName("Mihailo");
-        systemMenager2.setSurname("Vasiljevic");
-        systemMenager2.setEmail("mihailo931@gmail.com");
-        systemMenager2.setActivated(true);
-        systemMenager2.setUserType(systemMenager);
+        em.merge(noviSad);
         
-        salt = new byte[16];
-        hashedPassword = new byte[256];
-        salt = HashPassword.getNextSalt();
-        char[] pass2 = {'m','i','h','a','i','l','o'};
-        hashedPassword = HashPassword.hashPassword(pass2, salt);
-        
-        systemMenager2.setPassword(hashedPassword);
-        systemMenager2.setSalt(salt);
-        
-        em.persist(systemMenager2);
-        
-        systemMenager.add(systemMenager1);
-        systemMenager.add(systemMenager2);
-        em.merge(systemMenager);
+        belgrade.add(jna);
+        belgrade.add(tito);
+        belgrade.add(urosPredic);
+        belgrade.add(ppnj);
+        belgrade.add(bulKingAlex);
+        em.merge(belgrade);
 	}
 
 }

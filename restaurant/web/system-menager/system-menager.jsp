@@ -417,7 +417,7 @@
 							Tipovi restorana </a>
 						</li>
 						<li id="restaurant" id="aRestaurant">
-							<a href="../api/restaurant/restaurants" target="_blank">
+							<a href="../api/restaurant/restaurants">
 							<i class="glyphicon glyphicon-registration-mark"></i>
 							Restoran </a>
 						</li>
