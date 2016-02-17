@@ -50,7 +50,7 @@ public class ReadRestaurantsController extends HttpServlet {
 							.encodeRedirectURL("../../insufficient_privileges.jsp"));
 					return;
 				}
-				List<RestaurantType> restaurantTypes = restaurantTypeDao.findRestaurantTypeByUserId(user.getId());
+				List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
 				List<RestaurantType> sessionRestaurantTypes = (List<RestaurantType> )req.getSession().getAttribute("restaurantTypes");
 				if(sessionRestaurantTypes == null)
 					req.getSession().setAttribute("restaurantTypes", restaurantTypes);
@@ -62,11 +62,14 @@ public class ReadRestaurantsController extends HttpServlet {
 				
 				System.out.println("Iscitani tipovi!");
 				
-				List<Restaurant> restaurants = restaurantDao.findRestaurantByUserId(user.getId());
+				List<Restaurant> restaurants = restaurantDao.findAll();
 				req.getSession().setAttribute("restaurants", restaurants);
-				System.out.println("Iscitani tipovi!");
 				
-				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant/restaurants.jsp"));
+				ObjectMapper mapper = new ObjectMapper();
+		        resp.setContentType("application/json; charset=utf-8");
+		        PrintWriter out = resp.getWriter();
+		        mapper.writeValue(out, restaurants);
+				return;
 			}
 	}
 

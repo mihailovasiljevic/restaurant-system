@@ -88,7 +88,7 @@
                                              window.location.href = "/restaurant/guest/guest.jsp";
                                             return;
                                         }else if(data == "USPEH__SISTEM_MENADZER"){
-                                             window.location.href = "/restaurant/system-menager/system-menager.jsp";
+                                             window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                             return;
                                         }else if(data == "USPEH__RESTORAN_MENADZER"){
                                              window.location.href = "/restaurant/restaurant-menager/restaurant-menager.jsp";
@@ -405,10 +405,6 @@
             <li>
                 <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
             </li>
-            <li>
-                <a href="#portfolio" onclick = $("#menu-close").click(); >Registrujte se</a>
-            </li>
-
         </ul>
     </nav>
 

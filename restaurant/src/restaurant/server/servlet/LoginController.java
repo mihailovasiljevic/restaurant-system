@@ -49,9 +49,9 @@ public class LoginController extends HttpServlet {
 				User user = (User)request.getSession().getAttribute("user");
 				
 				switch(user.getUserType().getName()){
-					case "GUEST": response.sendRedirect(response.encodeRedirectURL("../../system-menager/system-menager.jsp")); return;
-					case "SYSTEM_MENAGER": response.sendRedirect(response.encodeRedirectURL("../../restaurantmenager/restaurant-menager.jsp")); return;
-					case "RESTAURANT_MENAGER": response.sendRedirect(response.encodeRedirectURL("../../guest/guest.jsp")); return;
+					case "GUEST": response.sendRedirect(response.encodeRedirectURL("../../guest/guest.jsp")); return;
+					case "SYSTEM_MENAGER": response.sendRedirect(response.encodeRedirectURL("/api/restaurant-type/restaurantTypes")); return;
+					case "RESTAURANT_MENAGER": response.sendRedirect(response.encodeRedirectURL("../../restaurant-menager/restaurant-menager.jsp")); return;
 				}
 				
 			}
