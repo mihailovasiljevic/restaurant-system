@@ -40,7 +40,7 @@
         $(document).ready(function(){
                 
             //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
-    
+                $('#btn-updateType').hide();
                 $("#btn-type").click(
                     function(){
                         var typeName = $("#typeName").val();
@@ -117,6 +117,8 @@
                                       success: function (data, status) {
                                         if(data == "USPEH"){
                                              window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
+                                             $('#btn-updateType').hide();
+                                             $('#btn-type').show();
                                              return;
                                         }else{
                                             $("#typeName-error").text(data);
@@ -138,7 +140,7 @@
                         
                                 $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "../api/restaurant-type/updateRestaurantType",
+                                      url: "../api/restaurant-type/prepareUpdateRestaurantType",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
@@ -150,8 +152,12 @@
                                     },
                                       success: function (data, status) {
                                         if(data != "GRESKA"){
+                                            if($('#typeName').val() != "" && $('#typeName').val() != null && $('#typeName').val() != undefined)
+                                                $('#typeName').val("");
                                              $('#typeName').val(data);
-                                             $('#btn-type').attr('id','btn-updateType');
+                                             $('#btn-updateType').show();
+                                             $('#btn-type').hide();
+                                             $("#typeName-error").text("");
                                              return;
                                         }else{
                                             $("#updateBox").hide();
@@ -169,13 +175,13 @@
                                 $.ajaxSetup({async:true});
                             
                     });
-                    $("#updateButton").click(
-                    function(){
-                        var typeId = $('#hiddenUpdate').val();
+            
+                    $( "#restaurantTable" ).on( "click", "i", function( event ) {
+                            var typeId = $(this).children().last().val();
                         
                                 $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "../api/restaurant-type/updateRestaurantType",
+                                      url: "../api/restaurant-type/prepareUpdateRestaurantType",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
@@ -187,8 +193,12 @@
                                     },
                                       success: function (data, status) {
                                         if(data != "GRESKA"){
+                                            if($('#typeName').val() != "" && $('#typeName').val() != null && $('#typeName').val() != undefined)
+                                                $('#typeName').val("");
                                              $('#typeName').val(data);
-                                             $('#btn-type').attr('id','btn-updateType');
+                                             $('#btn-updateType').show();
+                                             $('#btn-type').hide();
+                                             $("#typeName-error").text("");
                                              return;
                                         }else{
                                             $("#updateBox").hide();
@@ -205,6 +215,12 @@
                                     });
                                 $.ajaxSetup({async:true});
                             
+                    });
+            
+                    $('#confirm-delete').on('show.bs.modal', function(e) {
+                        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+
+                        $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
                     });
             
             
@@ -420,7 +436,7 @@
 			   
                 <div class="container">
                     <div class="row">
-                        
+                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();">Dodaj tip</button>
                         <c:if test="${fn:length(sessionScope.restaurantTypes) > 0}">
                           <div class="table-responsive">
                             <table class="table table-hover">
@@ -429,7 +445,7 @@
                                   <th>Identifikator</th>
                                   <th>Ime</th>
                                   <th>&nbsp;</th>
-                                  <th><button type="submit" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();">Dodaj tip</button></th>
+                                  <th>&nbsp;</th>
                                 </tr>
                               </thead>
                               <tbody id="restaurantTable">
@@ -439,10 +455,8 @@
                                         <td>${i.name}</td>
                                         <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
                                             tip</button></i></td>
-                                        <form action="../../api/restaurant-type/deleteRestaurantType"
-                                            method="post" class="prijavaForma" accept-charset="UTF-8">
-                                            <td><button type="submit" class="confirm-delete btn mini red-stripe" data-title="${i.name}" data-id="${i.id}">Obrisi tip</button></td>
-                                        </form>
+                                            
+                                        <td><a href="#" data-href="../api/restaurant-type/deleteRestaurantType?typeId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi tip</a></td>
                                     </tr>
                                 </c:forEach> 
                                 </tbody>
@@ -564,12 +578,9 @@
                                 <div class="form-group">
                                     <!-- Button -->                                        
                                     <div class="col-md-offset-3 col-md-9">
-                                        	<c:if test="${sessionScope.updateRestaurantType == null}">
-                                               <button id="btn-type" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Azurirajte tip</button>
-                                            </c:if>
-                                        	<c:if test="${sessionScope.updateRestaurantType != null}">
-                                               <button id="btn-updateType" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Azurirajte tip</button>
-                                            </c:if>                                        
+                                        	
+                                            <button id="btn-type" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Dodajte tip</button>
+                                            <button id="btn-updateType" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Izmenite tip</button>                                      
 
                                     </div>
                                 </div>              
@@ -587,7 +598,28 @@
         </div>
       
     </div>
-      
+    </div>
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Potvrdite brisanje
+            
+                <div class="modal-body">
+                    <p>Pokusavate da obrisete tip restorana. Ako tip ima povezanih restorana NECE biti obrisan. Mozete brisati samo tipove koji nemaju za sebe nista povezano.</p>
+                    <p>Da li zelite da nastavite?</p>
+                    <p class="debug-url"></p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger btn-ok">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
       
 
     <!-- jQuery -->

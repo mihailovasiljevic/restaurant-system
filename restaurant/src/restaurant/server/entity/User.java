@@ -207,6 +207,10 @@ public class User implements Serializable{
 	@JoinColumn(name = "USER_SYS_MEN_ID", referencedColumnName = "USER_ID")
 	private User systemMenager;
 	
+	@ManyToOne
+	@JoinColumn(name = "USER_REST_MEN_REST", referencedColumnName = "REST_ID")
+	private Restaurant restaurantMenagedBy;
+	
 	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userRestaurantMenager") //mappedBy says that owning side is street
 	private Set<TablesConfiguration> tablesConfigurations = new HashSet<TablesConfiguration>();
 	
@@ -442,12 +446,22 @@ public class User implements Serializable{
 		this.token = token;
 	}
 
+	public Restaurant getRestaurantMenagedBy() {
+		return restaurantMenagedBy;
+	}
+
+	public void setRestaurantMenagedBy(Restaurant restaurantMenagedBy) {
+		this.restaurantMenagedBy = restaurantMenagedBy;
+	}
+
+
 	public User(String name, String surname, String email, byte[] password, byte[] salt, Boolean isSessionActive,
-			String accountType, String sessionId, UserType userType, Address address, Image image, Boolean activated,
-			Set<User> myFriends, Set<Invitation> sentInvitations, Set<Invitation> receivedInvitations,
-			Set<Reservation> reservations, Set<Visit> visits, Set<Restaurant> restaurants,
-			Set<RestaurantType> restaurantTypes, Set<User> restaurantMenagers, User systemMenager,
-			Set<TablesConfiguration> tablesConfigurations, Set<Menu> menus, byte[] token) {
+			String accountType, String sessionId, byte[] token, UserType userType, Address address, Image image,
+			Boolean activated, Set<User> myFriends, Set<Invitation> sentInvitations,
+			Set<Invitation> receivedInvitations, Set<Reservation> reservations, Set<Visit> visits,
+			Set<Restaurant> restaurants, Set<RestaurantType> restaurantTypes, Set<User> restaurantMenagers,
+			User systemMenager, Restaurant restaurantMenagedBy, Set<TablesConfiguration> tablesConfigurations,
+			Set<Menu> menus) {
 		super();
 		this.name = name;
 		this.surname = surname;
@@ -457,6 +471,7 @@ public class User implements Serializable{
 		this.isSessionActive = isSessionActive;
 		this.accountType = accountType;
 		this.sessionId = sessionId;
+		this.token = token;
 		this.userType = userType;
 		this.address = address;
 		this.image = image;
@@ -470,9 +485,9 @@ public class User implements Serializable{
 		this.restaurantTypes = restaurantTypes;
 		this.restaurantMenagers = restaurantMenagers;
 		this.systemMenager = systemMenager;
+		this.restaurantMenagedBy = restaurantMenagedBy;
 		this.tablesConfigurations = tablesConfigurations;
 		this.menus = menus;
-		this.token = token;
 	}
 
 	public User() {

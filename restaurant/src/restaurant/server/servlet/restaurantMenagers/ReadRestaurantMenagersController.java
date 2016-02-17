@@ -55,7 +55,7 @@ public class ReadRestaurantMenagersController extends HttpServlet{
 
 
 				
-				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant-menager/restaurantMenagers.jsp"));
+				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurantMenagers.jsp"));
 			}
 	}
 

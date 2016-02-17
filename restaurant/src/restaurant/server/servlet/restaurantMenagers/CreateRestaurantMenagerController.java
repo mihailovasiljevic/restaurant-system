@@ -1,6 +1,9 @@
 package restaurant.server.servlet.restaurantMenagers;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -10,7 +13,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import restaurant.externals.HashPassword;
+import restaurant.externals.ResultCode;
 import restaurant.server.entity.Address;
 import restaurant.server.entity.Image;
 import restaurant.server.entity.Restaurant;
@@ -31,27 +37,15 @@ public class CreateRestaurantMenagerController extends HttpServlet {
 	private static final long serialVersionUID = -1085613434690860205L;
 
 	@EJB
-	private RestaurantTypeDaoLocal restaurantTypeDao;
-
-	@EJB
-	private AddressDaoLocal addressDao;
-
-	@EJB
-	private UserTypeDaoLocal userTypeDao;
-
-	@EJB
-	private StreetDaoLocal streetDao;
-
-	@EJB
 	private UserDaoLocal userDao;
-
 	@EJB
 	private ImageDaoLocal imageDao;
+	@EJB
+	private UserTypeDaoLocal userTypeDao;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
 		if (req.getSession().getAttribute("user") == null) {
 			System.out.println("Nema korisnika na sesiji");
 			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
@@ -64,80 +58,142 @@ public class CreateRestaurantMenagerController extends HttpServlet {
 				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
 				return;
 			}
-			try {
-				String name;
-				String surname = null;
-				String email = null;
-				String password = null;
-				int addressId;
-				int streetId;
-				String streetNo;
+			ObjectMapper resultMapper = new ObjectMapper();
+			String userEmail = "";
+			String userPassword = "";
+			String userName = "";
+			String userSurname = "";
+			ObjectMapper mapper = new ObjectMapper();
+			HashMap<String, String> data = mapper.readValue(req.getParameter("registrationData"), HashMap.class);
+			for (String key : data.keySet()) {
+				if (key.equals("userEmail"))
+					userEmail = data.get(key);
+				else if (key.equals("userPassword"))
+					userPassword = data.get(key);
+				else if (key.equals("userName"))
+					userName = data.get(key);
+				else if (key.equals("userSurname"))
+					userSurname = data.get(key);
+			}
 
-				name = req.getParameter("name");
-				surname = req.getParameter("surname");
-				email = req.getParameter("email");
-				password = req.getParameter("password");
-				streetNo = req.getParameter("addressNo");
+			if (userEmail.equals("") || userEmail == null || userPassword.equals("") || userPassword == null
+					|| userName.equals("") || userName == null || userSurname.equals("") || userSurname == null) {
 
-				if (name == null || name.equals("") || name.equals(" ") || surname == null || surname.equals("")
-						|| surname.equals(" ") || email == null || email.equals("") || email.equals(" ")
-						|| password == null || password.equals("") || password.equals(" ")) {
-					System.out.println("Obavezna polja su prazna!");
-					resp.sendRedirect(resp
-							.encodeRedirectURL("../../system-menager/restaurant-meanger/createRestaurantMenager.jsp"));
+				resp.setContentType("application/json; charset=utf-8");
+				PrintWriter out = resp.getWriter();
+				resultMapper.writeValue(out, ResultCode.REGISTER_USER_FIELD_EMPTY.toString());
+				return;
+			}
+
+			List<User> users = userDao.findAll();
+			/* Proveriti da li je korisnik vec registrovan i ima nalog */
+			for (User u : users) {
+				if (u.getEmail().equals(userEmail)) {
+					resp.setContentType("application/json; charset=utf-8");
+					PrintWriter out = resp.getWriter();
+					resultMapper.writeValue(out, ResultCode.REGISTER_USER_ALREADY_EXISTS.toString());
 					return;
 				}
-
-				streetId = Integer.parseInt(req.getParameter("streetId"));
-				addressId = Integer.parseInt(req.getParameter("addressId"));
-
-				if (addressId != -1) {
-					System.out.println("addressId: " + addressId);
-					Address address = addressDao.findById(addressId);
-					if (address == null) {
-						System.out.println("Adresa obrisana u medjuvremenu");
-						resp.sendRedirect(resp.encodeRedirectURL("./restaurantMenagers"));
-						return;
-					}
-
-					persistUser(name, surname, email, password, req, address);
-
-				} else {
-
-					if (streetId == -1) {
-						System.out.println("Nisu odabrani ni adresa ni ulica!");
-						resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
-						return;
-					}
-					if (streetNo == null || streetNo.equals("") || streetNo.equals(" ")) {
-						System.out.println("Polje streetNo je prazno a izabrana je ulcia a nije izabrana adresa!");
-						resp.sendRedirect(
-								resp.encodeRedirectURL("../../system-menager/restaurant/createRestaurant.jsp"));
-						return;
-					}
-					Address address = new Address();
-					Street street = streetDao.findById(streetId);
-					if (street == null) {
-						System.out.println("Obrisana ulica u medjuvremenu!");
-						resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
-						return;
-					}
-					address.setStreet(street);
-					address.setBrojUUlici(streetNo);
-					addressDao.persist(address);
-
-					persistUser(name, surname, email, password, req, address);
-
-				}
-
-				resp.sendRedirect(resp.encodeRedirectURL("./restaurantMenagers"));
-				return;
-
-			} catch (IOException e) {
-				System.out.println("Unos nije uspeo.");
-				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant/createRestaurant.jsp"));
-				// throw e;
 			}
+
+			String uploadImageRealName = (String) req.getSession().getAttribute("uploadImageRealName");
+			byte[] uploadImageHashedName = (byte[]) req.getSession().getAttribute("uploadImageHashedName");
+			String uploadImagePath = (String) req.getSession().getAttribute("uploadImagePath");
+			if (uploadImageRealName != null) {
+				Image image = new Image();
+				image.setName(uploadImageHashedName);
+				image.setRealName(uploadImageRealName);
+				image.setPath(uploadImagePath);
+
+				imageDao.persist(image);
+
+				User rm = new User();
+
+				rm.setName(userName);
+				rm.setSurname(userSurname);
+				rm.setEmail(userEmail);
+				byte[] salt = HashPassword.getNextSalt();
+				byte[] hashedId = HashPassword.hashPassword(HashPassword.strToChar(userPassword), salt);
+				rm.setSalt(salt);
+				rm.setPassword(hashedId);
+				rm.setActivated(true);
+				rm.setIsSessionActive(false);
+
+				List<UserType> userTypes = userTypeDao.findAll();
+
+				for (UserType userType : userTypes) {
+					if (userType.getName().equals("RESTAURANT_MENAGER")) {
+						rm.setUserType(userType);
+						User persisted = userDao.persist(rm);
+						if (persisted == null) {
+							resp.setContentType("application/json; charset=utf-8");
+							PrintWriter out = resp.getWriter();
+							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							return;
+						}
+						image.setUser(rm);
+						imageDao.merge(image);
+						rm.setImage(image);
+
+						byte[] tokenSalt = ByteBuffer.allocate(4).putInt(rm.getId()).array();
+						byte[] token = HashPassword.hashPassword(HashPassword.strToChar(rm.getEmail()), tokenSalt);
+						rm.setToken(token);
+						rm.setActivated(true);
+						rm.setSystemMenager(user);
+
+						userDao.merge(rm);
+						userTypeDao.merge(userType);
+						userType.add(rm);
+						userTypeDao.merge(userType);
+						break;
+
+					}
+				}
+			} else {
+				User rm = new User();
+
+				rm.setName(userName);
+				rm.setSurname(userSurname);
+				rm.setEmail(userEmail);
+				byte[] salt = HashPassword.getNextSalt();
+				byte[] hashedId = HashPassword.hashPassword(HashPassword.strToChar(userPassword), salt);
+				rm.setSalt(salt);
+				rm.setPassword(hashedId);
+
+				rm.setIsSessionActive(false);
+
+				List<UserType> userTypes = userTypeDao.findAll();
+
+				for (UserType userType : userTypes) {
+					if (userType.getName().equals("RESTAURANT_MENAGER")) {
+						rm.setUserType(userType);
+						User persisted = userDao.persist(rm);
+						if (persisted == null) {
+							resp.setContentType("application/json; charset=utf-8");
+							PrintWriter out = resp.getWriter();
+							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							return;
+						}
+
+						byte[] tokenSalt = ByteBuffer.allocate(4).putInt(rm.getId()).array();
+						byte[] token = HashPassword.hashPassword(HashPassword.strToChar(rm.getEmail()), tokenSalt);
+						rm.setToken(token);
+						rm.setActivated(true);
+						rm.setSystemMenager(user);
+
+						userDao.merge(rm);
+						userTypeDao.merge(userType);
+						userType.add(rm);
+						userTypeDao.merge(userType);
+						break;
+
+					}
+				}
+			}
+			resp.setContentType("application/json; charset=utf-8");
+			PrintWriter out = resp.getWriter();
+			resultMapper.writeValue(out, "USPEH");
+			return;
 		}
 	}
 
@@ -147,7 +203,8 @@ public class CreateRestaurantMenagerController extends HttpServlet {
 		doGet(req, resp);
 	}
 
-	private boolean persistUser(String name, String surname, String email, String password, HttpServletRequest req, Address address) {
+	private boolean persistUser(String name, String surname, String email, String password, HttpServletRequest req,
+			Address address) {
 		try {
 			User restaurantMenager2 = new User();
 			restaurantMenager2.setName(name);

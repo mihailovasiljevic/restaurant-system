@@ -58,7 +58,7 @@ public class FileUploadHandler extends HttpServlet{
 	                        salt = HashPassword.getNextSalt();
 	                        char[] charName = HashPassword.strToChar(name);
 	                        hashedName = HashPassword.hashPassword(charName, salt);
-	                        String path = getServletContext().getRealPath("")+"/images" + File.separator + hashedName;
+	                        String path = "localhost:8080/restaurant/images" + File.separator + hashedName;
 	                        File file = new File(getServletContext().getRealPath("")+"/images" + File.separator + hashedName);
 	                        try{
 	                        	item.write( file);

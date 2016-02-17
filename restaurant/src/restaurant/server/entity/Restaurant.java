@@ -117,6 +117,22 @@ public class Restaurant implements Serializable{
 		visit.setRestaurant(null);
 		visits.remove(visit);
 	}
+	
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurantMenagedBy") //mappedBy says that owning side is street
+	private Set<User> restaurantMenagers = new HashSet<User>();
+	
+	public void add(User user) {
+		if (user.getRestaurantMenagedBy() != null)
+			user.getRestaurantMenagedBy().getRestaurantMenagers().remove(user);
+		user.setRestaurantMenagedBy(this);
+		restaurantMenagers.add(user);
+	}
+
+	public void remove(User user) {
+		user.setRestaurantMenagedBy(null);
+		restaurantMenagers.remove(user);
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -202,10 +218,19 @@ public class Restaurant implements Serializable{
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+
+	public Set<User> getRestaurantMenagers() {
+		return restaurantMenagers;
+	}
+
+	public void setRestaurantMenagers(Set<User> restaurantMenagers) {
+		this.restaurantMenagers = restaurantMenagers;
+	}
 
 	public Restaurant(String name, Integer grade, RestaurantType restaurantType, Address address,
 			User userSystemMenager, Set<Menu> menus, Set<TablesConfiguration> tablesConfigurations,
-			Set<User> users, Set<Reservation> reservations, Set<Visit> visits) {
+			Set<Reservation> reservations, Set<Visit> visits, Set<User> restaurantMenagers) {
 		super();
 		this.name = name;
 		this.grade = grade;
@@ -216,6 +241,7 @@ public class Restaurant implements Serializable{
 		this.tablesConfigurations = tablesConfigurations;
 		this.reservations = reservations;
 		this.visits = visits;
+		this.restaurantMenagers = restaurantMenagers;
 	}
 
 	@Override

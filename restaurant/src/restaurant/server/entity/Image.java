@@ -22,7 +22,7 @@ public class Image implements Serializable{
 	@Column(name = "IMAGE_ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "IMAGE_NAME",nullable = false, length=256, unique = true)
+	@Column(name = "IMAGE_NAME",nullable = false, length=80)
 	private byte[] name;
 	
 	@Column(name = "IMAGE_REAL_NAME",nullable = false, length=256, unique = true)

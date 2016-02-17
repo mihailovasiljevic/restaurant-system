@@ -43,45 +43,7 @@ public class UpdateRestaurantTypeController extends HttpServlet {
 						.encodeRedirectURL("../../insufficient_privileges.jsp"));
 				return;
 			}
-			/**
-			 * Update servlet ima dvojaku ulogu. Prvo proverava da li je na
-			 * sesiji zakacen objekat za izmenu. Ako nije, kaci ga i salje se na
-			 * jsp stranicu koja sadrzi formu za izmenu. Ako jeste, vrsi se
-			 * izmena. Nakon obavljene izmene iz sesije se unistava objekat.
-			 */
-			if (req.getSession().getAttribute("updateRestaurantType") == null) {
-				int typeId = -1;
-				try {
-					ObjectMapper resultMapper = new ObjectMapper();
-					ObjectMapper mapper = new ObjectMapper();
-					HashMap<String, String> data = mapper.readValue(req.getParameter("restaurantTypeId"), HashMap.class);
-					for(String key : data.keySet()){
-						if(key.equals("typeId"))
-							typeId = Integer.parseInt(data.get(key));
-					}
-					RestaurantType rt = restaurantTypeDao.findById(typeId);
-					if (rt != null) {
-						req.getSession().setAttribute("updateRestaurantType",
-								rt);
-				        resp.setContentType("application/json; charset=utf-8");
-				        PrintWriter out = resp.getWriter();
-				        resultMapper.writeValue(out, rt.getName());
-						return;
-					} else {					
-				        resp.setContentType("application/json; charset=utf-8");
-				        PrintWriter out = resp.getWriter();
-				        resultMapper.writeValue(out, "GRESKA");
-						return;
-						}
-				} catch (Exception ex) {
-					ObjectMapper resultMapper = new ObjectMapper();;
-					
-			        resp.setContentType("application/json; charset=utf-8");
-			        PrintWriter out = resp.getWriter();
-			        resultMapper.writeValue(out, "GRESKA");
-					return;
-				}
-			} else {
+			if(req.getSession().getAttribute("updateRestaurantType") != null) {
 				try {
 					String name = null;
 					ObjectMapper resultMapper = new ObjectMapper();
@@ -126,8 +88,16 @@ public class UpdateRestaurantTypeController extends HttpServlet {
 			        resp.setContentType("application/json; charset=utf-8");
 			        PrintWriter out = resp.getWriter();
 			        resultMapper.writeValue(out, "Nije uspelo azuriranje");
+			        removeSessionObject(req);
 					return;
 				}
+			}else{
+				ObjectMapper resultMapper = new ObjectMapper();;
+		        resp.setContentType("application/json; charset=utf-8");
+		        PrintWriter out = resp.getWriter();
+		        resultMapper.writeValue(out, "Niste odabrali objekat za izmenu!");
+		        removeSessionObject(req);
+				return;
 			}
 
 		}
