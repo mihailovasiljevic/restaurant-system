@@ -42,6 +42,78 @@ public class InitBean implements Init {
 	EntityManager em;
 	
 	public void init() {
+		
+		/**
+		 * Create types of user.
+		 * ------------------------------------------------------
+		 */
+		
+		UserType guest = new UserType();
+		guest.setName("GUEST");
+		em.persist(guest);
+		
+		UserType systemMenager = new UserType();
+		systemMenager.setName("SYSTEM_MENAGER");
+		em.persist(systemMenager);
+		
+		UserType restaurantMenager = new UserType();
+		restaurantMenager.setName("RESTAURANT_MENAGER");
+		em.persist(restaurantMenager);
+		
+		/**
+		 * ------------------------------------------------------
+		 */
+		
+		/**
+		 * Create system menagers.
+		 * ------------------------------------------------------
+		 */
+		
+		//prepare password hashing
+        byte[] salt;
+        byte[] hashedPassword;
+        
+        User systemMenager1 = new User();
+        systemMenager1.setName("Marko");
+        systemMenager1.setSurname("Jovanovic");
+        systemMenager1.setEmail("marko_jovanovic@gmail.com");
+        systemMenager1.setActivated(true);
+        systemMenager1.setUserType(systemMenager);
+        
+        salt = new byte[16];
+        hashedPassword = new byte[256];
+        salt = HashPassword.getNextSalt();
+        systemMenager1.setSalt(salt);
+        char[] pass = {'m','a','r','k','o'};
+        hashedPassword = HashPassword.hashPassword(pass, systemMenager1.getSalt());
+        systemMenager1.setPassword(hashedPassword);
+
+        
+        
+        em.persist(systemMenager1);
+        
+        User systemMenager2 = new User();
+        systemMenager2.setName("Mihailo");
+        systemMenager2.setSurname("Vasiljevic");
+        systemMenager2.setEmail("mihailo931@gmail.com");
+        systemMenager2.setActivated(true);
+        systemMenager2.setUserType(systemMenager);
+        
+        salt = new byte[16];
+        hashedPassword = new byte[256];
+        salt = HashPassword.getNextSalt();
+        char[] pass2 = {'m','i','h','a','i','l','o'};
+        hashedPassword = HashPassword.hashPassword(pass2, salt);
+        
+        systemMenager2.setPassword(hashedPassword);
+        systemMenager2.setSalt(salt);
+        
+        em.persist(systemMenager2);
+        
+        systemMenager.add(systemMenager1);
+        systemMenager.add(systemMenager2);
+        em.merge(systemMenager);
+
 		/**
 		 * ------------------------------------------------------
 		 */ 

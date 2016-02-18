@@ -388,7 +388,8 @@
                                                  $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
                                                  $("#registrationModal").show();
                                                 return;
-                                            }else {
+                                            }
+                                              else {
                                                 $("#myModal").hide();
                                                 $("#updatebox").hide();
                                                 $("#registrationModal #message").text("Uspesno ste dodali menadzera restorana.");                                     		
@@ -412,6 +413,48 @@
                     }else if(this.status == 500){
                         alert("Dogodila se greska prilikom postavljanja slike. Molimo ponovite proces dodavanja.");
                         window.location.href="../api/restaurant-menager/restaurantMenagers"
+                    }else{
+                                    $.ajaxSetup({async:false});
+                                    $.ajax({
+                                          url: "../api/restaurant-menager/updateRestaurantMenager",
+                                          type: 'post',
+                                          contentType: "application/x-www-form-urlencoded",
+                                          data: {
+                                           registrationData:JSON.stringify({
+                                               userEmail:userEmailsu,
+                                               userPassword:userPasswordsu,
+                                               userName: userName,
+                                               userSurname: userSurname
+                                           }),    
+                                           cache: false,
+                                           dataType:'json'
+                                        },
+                                          success: function (data, status) {
+                                            if(data != "USPEH"){
+                                                $("#myModal").hide();
+                                                $("#updatebox").hide();
+                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
+                                                 $("#registrationModal").show();
+                                                return;
+                                            }
+                                              else {
+                                                $("#myModal").hide();
+                                                $("#updatebox").hide();
+                                                $("#registrationModal #message").text("Uspesno ste dodali menadzera restorana.");                                     		
+                                                $("#registrationModal").show();
+                                                window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
+                                                return;
+                                            }
+                                            $( "#email-error" ).text(data);
+                                            //alert("Data: "+ data);
+                                            console.log(data);
+                                            console.log(status);
+                                          },
+                                          error: function (xhr, desc, err) {
+                                            console.log(xhr);
+                                          },
+                                        });
+                                    $.ajaxSetup({async:true});
                     }
             };	        		
         }

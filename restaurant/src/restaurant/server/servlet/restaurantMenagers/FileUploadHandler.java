@@ -90,11 +90,19 @@ public class FileUploadHandler extends HttpServlet{
     		return;
         }
         
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        PrintWriter out = response.getWriter();
-        mapper.writeValue(out, ResultCode.REGISTER_USER_FILE_UPLOAD_SUCC.toString());
-		return;
+        if(request.getSession().getAttribute("updateRestaurantMenager") == null){
+	        response.setStatus(HttpServletResponse.SC_OK);
+	        PrintWriter out = response.getWriter();
+	        if(request.getSession().getAttribute("updateRestaurantMenager") == null)
+	        mapper.writeValue(out, ResultCode.REGISTER_USER_FILE_UPLOAD_SUCC.toString());
+			return;
+        }else{
+	        response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+	        PrintWriter out = response.getWriter();
+	        if(request.getSession().getAttribute("updateRestaurantMenager") == null)
+	        mapper.writeValue(out, ResultCode.REGISTER_USER_FILE_UPLOAD_SUCC.toString());
+			return;       	
+        }
      
     }
     

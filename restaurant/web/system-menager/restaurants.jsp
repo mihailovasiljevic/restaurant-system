@@ -504,7 +504,7 @@
 							Restoran </a>
 						</li>
 						<li id="restaurantMenager" >
-							<a href="../api/restaurant-menager/restauranMenagers" id="aRestaurantMenager">
+							<a href="../api/restaurant-menager/restaurantMenagers" id="aRestaurantMenager">
 							<i class="glyphicon glyphicon-briefcase"></i>
 							Menadzeri restorana </a>
 						</li>
