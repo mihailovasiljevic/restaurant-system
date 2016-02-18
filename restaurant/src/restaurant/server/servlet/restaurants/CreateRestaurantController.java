@@ -136,17 +136,17 @@ public class CreateRestaurantController extends HttpServlet{
 						restaurant.setName(restaurantName);
 						restaurant.setUserSystemMenager(user);
 						restaurant.setRestaurantType(type);
-						User[] menager = new User[menagers.size()];
+						
 						if(menagers.size() > 0){
 							for(int i = 0; i <menagers.size(); i++){
-								menager[i] = userDao.findById((Integer)menagers.get(i));
-								if(menager[i] == null){
+								User menager = userDao.findById((Integer)menagers.get(i));
+								if(menager == null){
 									resp.setContentType("application/json; charset=utf-8");
 									PrintWriter out = resp.getWriter();
 									resultMapper.writeValue(out, "GRESKA");
 									return;
 								}
-								restaurant.add(menager[i]);
+								restaurant.add(menager);
 								
 							}
 						}
@@ -158,9 +158,15 @@ public class CreateRestaurantController extends HttpServlet{
 							return;
 						}
 						
-						for(int i = 0; i < menager.length; i++){
-							menager[i].setRestaurantMenagedBy(persisted);
-							userDao.merge(menager[i]);
+						for(int i = 0; i < menagers.size(); i++){
+							User menager = userDao.findById((Integer)menagers.get(i));
+							if(menager == null){
+								resp.setContentType("application/json; charset=utf-8");
+								PrintWriter out = resp.getWriter();
+								resultMapper.writeValue(out, "GRESKA");
+								return;
+							}
+							userDao.merge(menager);
 						}
 						
 						type.add(persisted);
@@ -184,29 +190,28 @@ public class CreateRestaurantController extends HttpServlet{
 					return;
 				}
 				
-					Restaurant restaurant = new Restaurant();
-					restaurant.setAddress(persistedAdr);
-					restaurant.setGrade(-1);
-					restaurant.setName(restaurantName);
-					restaurant.setUserSystemMenager(user);
-					restaurant.setRestaurantType(type);
+					Restaurant rst = new Restaurant();
+					rst.setAddress(persistedAdr);
+					rst.setGrade(-1);
+					rst.setName(restaurantName);
+					rst.setUserSystemMenager(user);
+					rst.setRestaurantType(type);
 					
-					restaurant.setRestaurantType(type);
-					User[] menager = new User[menagers.size()];
+					rst.setRestaurantType(type);
 					if(menagers.size() > 0){
 						for(int i = 0; i <menagers.size(); i++){
-							menager[i] = userDao.findById((Integer)menagers.get(i));
-							if(menager[i] == null){
+							User menager = userDao.findById((Integer)menagers.get(i));
+							if(menager == null){
 								resp.setContentType("application/json; charset=utf-8");
 								PrintWriter out = resp.getWriter();
 								resultMapper.writeValue(out, "GRESKA");
 								return;
 							}
-							restaurant.add(menager[i]);
-							
+							rst.add(menager);
+							userDao.merge(menager);
 						}
 					}
-					Restaurant persisted = restaurantDao.persist(restaurant);
+					Restaurant persisted = restaurantDao.persist(rst);
 					if(persisted == null){
 						resp.setContentType("application/json; charset=utf-8");
 						PrintWriter out = resp.getWriter();
@@ -214,11 +219,17 @@ public class CreateRestaurantController extends HttpServlet{
 						return;
 					}
 					
-					for(int i = 0; i < menager.length; i++){
-						menager[i].setRestaurantMenagedBy(persisted);
-						userDao.merge(menager[i]);
+					for(int i = 0; i < menagers.size(); i++){
+						User menager = userDao.findById((Integer)menagers.get(i));
+						if(menager == null){
+							resp.setContentType("application/json; charset=utf-8");
+							PrintWriter out = resp.getWriter();
+							resultMapper.writeValue(out, "GRESKA");
+							return;
+						}
+						userDao.merge(menager);
 					}
-					persistedAdr.add(restaurant);
+					persistedAdr.add(rst);
 					addressDao.merge(persistedAdr);
 					
 					type.add(persisted);
@@ -233,7 +244,8 @@ public class CreateRestaurantController extends HttpServlet{
 				ObjectMapper resultMapper = new ObjectMapper();
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
-				resultMapper.writeValue(out, "GRESKA");
+				resultMapper.writeValue(out, ex.getMessage());
+				ex.printStackTrace();
 				return;
 			}
 		}
