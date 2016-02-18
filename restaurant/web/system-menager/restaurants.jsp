@@ -544,7 +544,7 @@
                                         <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
                                             restoran</button></i></td>
                                             
-                                        <td><a href="#" data-href="../api/restaurant-menager/deleteRestaurantMenager?restaurantId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi restoran</a></td>
+                                        <td><a href="#" data-href="../api/restaurant/deleteRestaurant?restaurantId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi restoran</a></td>
                                     </tr>
                                 </c:forEach> 
                                 </tbody>
