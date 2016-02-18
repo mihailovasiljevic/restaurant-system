@@ -271,6 +271,21 @@
 		<servlet-name>PrepareUpdateRestaurantMenagerController</servlet-name>
 		<url-pattern>/api/restaurant-menager/prepareUpdateRestaurantMenager</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<display-name>readTablesConfigurationsController</display-name>
+		<servlet-name>ReadTablesConfigurationsController</servlet-name>
+		<servlet-class>restaurant.server.servlet.tablesConfigurations.ReadTablesConfigurationsController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReadTablesConfigurationsController</servlet-name>
+		<url-pattern>/api/tables-configuration/tablesConfigurations</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<display-name>fileUpload</display-name>
