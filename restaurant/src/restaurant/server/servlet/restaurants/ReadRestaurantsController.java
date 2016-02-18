@@ -27,6 +27,8 @@ public class ReadRestaurantsController extends HttpServlet {
 	private RestaurantDaoLocal restaurantDao;
 	@EJB
 	private StreetDaoLocal streetDao;
+	@EJB
+	private UserDaoLocal userDao;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -55,6 +57,10 @@ public class ReadRestaurantsController extends HttpServlet {
 			
 			List<Street> streets = streetDao.findAll();
 			req.getSession().setAttribute("streets", streets);
+			
+			String query = "SELECT k FROM User k WHERE k.userType.name like 'RESTAURANT_MENAGER'";
+			List<User> restaurantMenagers = userDao.findBy(query);
+			req.getSession().setAttribute("restaurantMenagers", restaurantMenagers);
 			
 			resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurants.jsp"));
 		}

@@ -47,6 +47,13 @@
                         var restaurantType = $("#restaurantType :selected").val();
                         var street = $("#street :selected").val();
                         var streetNo = $("#streetNo").val();
+                        var menagers="";
+  
+
+                        $("#menagers option").filter(":selected").each(function(){
+                                menagers += $(this).val()+",";
+                        });
+                        
                         var allGood = false;
                             if( restaurantName == "" || restaurantName == undefined || restaurantName == null ) {
                                 $("#restaurantName-error").text("Polje za naziv restorana ne sme biti prazno!");
@@ -83,8 +90,9 @@
                                                restaurantName:restaurantName,
                                                restaurantType:restaurantType,
                                                street: street,
-                                               streetNo: streetNo
-                                           }),    
+                                               streetNo: streetNo,
+                                               menagers: menagers
+                                           }),  
                                            cache: false,
                                            dataType:'json'
                                         },
@@ -138,6 +146,18 @@
                                             $('#restaurantType').val(data.type);
                                             $('#street').val(data.street);
                                             $('#streetNo').val(data.streetNo);
+                                            
+                                            if(data.menagers.length > 0){
+                                                $("#menagers option").each(function(){
+                                                        for(var i = 0; i < data.menagers.length; i++){
+                                                            if(data.menagers[i] == $(this).val()){
+                                                                $(this).attr('selected', 'true');
+                                                                break;
+                                                            }
+                                                        }
+                                                });
+                                            }
+                                            
                                              $('#btn-updateType').show();
                                              $('#btn-type').hide();
                                              $("#typeName-error").text("");
@@ -172,6 +192,13 @@
                         var restaurantType = $('#restaurantType :selected').val();
                         var street = $('#street :selected').val();
                         var streetNo = $("#streetNo").val();
+                        var menagers="";
+  
+
+                        $("#menagers option").filter(":selected").each(function(){
+                                menagers += $(this).val()+",";
+                        }); 
+                        
                         var allGood = false;
                             if( restaurantName == "" || restaurantName == undefined || restaurantName == null ) {
                                 $("#restaurantName-error").text("Polje za naziv restorana ne sme biti prazno!");
@@ -208,7 +235,8 @@
                                                restaurantName:restaurantName,
                                                restaurantType:restaurantType,
                                                street: street,
-                                               streetNo: streetNo
+                                               streetNo: streetNo,
+                                               menagers: menagers
                                            }),    
                                            cache: false,
                                            dataType:'json'
@@ -529,6 +557,7 @@
                                   <th>Ocena</th>
                                   <th>Tip</th>
                                   <th>Adresa</th>
+                                  <th>Menadzeri</th>
                                   <th>&nbsp;</th>
                                   <th>&nbsp;</th>
                                 </tr>
@@ -541,6 +570,17 @@
                                         <td>${i.grade}</td>
                                         <td>${i.restaurantType.name}</td>
                                         <td>${i.address.street.name} ${i.address.brojUUlici}, ${i.address.street.city.name}, ${i.address.street.city.country.name}</td>
+                                        <c:if test="${fn:length(i.restaurantMenagers) > 0}">
+                                            <td>
+                                            <c:forEach var="i" items="${i.restaurantMenagers}">
+                                                ${i.name} ${i.surname},
+                                            </c:forEach>
+                                            </td>
+                                        </c:if>
+                                        <c:if test="${fn:length(i.restaurantMenagers) == 0}">
+                                            <td>Nema menadzera</td>
+                                        </c:if>
+                                        
                                         <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
                                             restoran</button></i></td>
                                             
@@ -694,7 +734,7 @@
                                     </div>                                   
                                 </div>
                                 <div class="form-group">
-                                    <label for="streetNo" class="col-md-3 control-label">Lozinka*</label>
+                                    <label for="streetNo" class="col-md-3 control-label">Broj u ulici*</label>
                                     <div class="col-md-9">
                                         <input type="text" class="form-control" name="streetNo" placeholder="Broj u ulici" id="streetNo" required>
                                     </div>
@@ -703,7 +743,22 @@
                                         <span id = "streetNo-error" class="label label-danger"></span>
                                     </div>                                    
                                 </div>
-                                      
+                                    
+                               <div class="form-group">
+                                    <label for="street" class="col-md-3 control-label">Ulica*</label>
+                                    <div class="col-md-9">
+                                         <select id = "menagers" multiple>
+                                             <option value="-1"></option>
+                                            <c:forEach var="i" items="${sessionScope.restaurantMenagers}">
+                                                <option value="${i.id}">${i.name} ${i.surname}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                     <div style="margin-top:10px" class="form-group">
+                                        <!-- ERROR PROVIDER -->
+                                        <span id = "menagers-error" class="label label-danger"></span>
+                                    </div>                                   
+                                </div>
                                 
                                 <div class="form-group">
                                     <!-- Button -->                                        

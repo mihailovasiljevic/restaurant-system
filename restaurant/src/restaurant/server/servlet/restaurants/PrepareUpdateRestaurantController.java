@@ -2,7 +2,7 @@ package restaurant.server.servlet.restaurants;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.*;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -54,8 +54,15 @@ public class PrepareUpdateRestaurantController extends HttpServlet{
 					if (rest != null) {
 						req.getSession().setAttribute("updateRestaurant",
 								rest);
+						List<Integer> menagers = new ArrayList<>();
+						if(rest.getRestaurantMenagers().size() > 0){
+							Iterator<User> it = rest.getRestaurantMenagers().iterator();
+							while(it.hasNext()){
+								menagers.add(it.next().getId());
+							}
+						}
 						RestaurantBean restBean = new RestaurantBean(rest.getName(), rest.getRestaurantType().getId(),
-								rest.getAddress().getStreet().getId(), rest.getAddress().getBrojUUlici());
+								rest.getAddress().getStreet().getId(), rest.getAddress().getBrojUUlici(), menagers);
 				        resp.setContentType("application/json; charset=utf-8");
 				        PrintWriter out = resp.getWriter();
 				        resultMapper.writeValue(out, restBean);
