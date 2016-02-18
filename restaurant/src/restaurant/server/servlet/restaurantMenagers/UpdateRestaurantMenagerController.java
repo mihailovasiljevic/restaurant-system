@@ -195,6 +195,7 @@ public class UpdateRestaurantMenagerController extends HttpServlet {
 					req.getSession().removeAttribute("uploadImageHashedName");
 					req.getSession().removeAttribute("uploadImagePath");
 				}
+				removeSessionObject(req);
 				return;
 			} catch (Exception ex) {
 				String uploadImageRealName = (String) req.getSession().getAttribute("uploadImageRealName");
@@ -224,5 +225,10 @@ public class UpdateRestaurantMenagerController extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(req, resp);
+	}
+	private void removeSessionObject(HttpServletRequest req) {
+		if (req.getSession().getAttribute("updateRestaurantMenager") != null) {
+			req.getSession().removeAttribute("updateRestaurantMenager");
+		}
 	}
 }

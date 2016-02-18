@@ -1,7 +1,10 @@
 package restaurant.server.servlet.restaurants;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
@@ -10,6 +13,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import restaurant.externals.ResultCode;
 import restaurant.server.entity.Address;
 import restaurant.server.entity.Restaurant;
 import restaurant.server.entity.RestaurantType;
@@ -39,178 +45,148 @@ public class UpdateRestaurantController extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-			if (req.getSession().getAttribute("user") == null) {
-				System.out.println("Nema korisnika na sesiji");
-				resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+		if (req.getSession().getAttribute("user") == null) {
+			System.out.println("Nema korisnika na sesiji");
+			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			return;
+		} else {
+			User user = (User) req.getSession().getAttribute("user");
+			System.out.println("User type: " + user.getUserType().getName());
+			if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
+				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
 				return;
-			} else {
-				User user = (User) req.getSession().getAttribute("user");
-				System.out.println("User type: " + user.getUserType().getName());
-				if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
-					System.out
-							.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-					resp.sendRedirect(resp
-							.encodeRedirectURL("../../insufficient_privileges.jsp"));
+			}
+			try {
+
+				ObjectMapper resultMapper = new ObjectMapper();
+				String restaurantName = "";
+				Integer typeId = -1;
+				Integer streetId = -1;
+				String streetNo = "";
+				ObjectMapper mapper = new ObjectMapper();
+				HashMap<String, String> data = mapper.readValue(req.getParameter("restaurantData"), HashMap.class);
+				System.out.println("");
+				for (String key : data.keySet()) {
+					if (key.equals("restaurantName"))
+						restaurantName = data.get(key);
+					else if (key.equals("restaurantType"))
+						typeId = Integer.parseInt(data.get(key));
+					else if (key.equals("street"))
+						streetId = Integer.parseInt(data.get(key));
+					else if (key.equals("streetNo"))
+						streetNo = data.get(key);
+				}
+
+				if (streetNo.equals("") || streetNo == null || streetNo.equals("") || restaurantName == null
+						|| restaurantName.equals("") || restaurantName == null || restaurantName.equals("") ) {
+
+					resp.setContentType("application/json; charset=utf-8");
+					PrintWriter out = resp.getWriter();
+					resultMapper.writeValue(out, ResultCode.REGISTER_USER_FIELD_EMPTY.toString());
 					return;
 				}
-				/**
-				 * Update servlet ima dvojaku ulogu. Prvo proverava da li je na
-				 * sesiji zakacen objekat za izmenu. Ako nije, kaci ga i salje se na
-				 * jsp stranicu koja sadrzi formu za izmenu. Ako jeste, vrsi se
-				 * izmena. Nakon obavljene izmene iz sesije se unistava objekat.
-				 */
-				if (req.getSession().getAttribute("updateRestaurant") == null) {
-					int restaurantId;
-					try {
-						restaurantId = Integer.parseInt(req.getParameter("restaurantId"));
-						Restaurant rest = restaurantDao.findById(restaurantId);
-						if (rest != null) {
-							req.getSession().setAttribute("updateRestaurant",
-									rest);
-							System.out
-									.println("Zakacen restoran za izmenu na sesiju.");
-							resp.sendRedirect(resp
-									.encodeRedirectURL("../../system-menager/restaurant/updateRestaurant.jsp"));
-						} else {
-							System.out
-									.println("Ne postoji tip, mozda ga je neko obrisao u medjuvremenu.");
-							resp.sendRedirect(resp
-									.encodeRedirectURL("./restaurants"));
-						}
-					} catch (Exception ex) {
-						System.out
-								.println("Neko je mozda obrisao u medjuvremenu objekat.");
-						resp.sendRedirect(resp
-								.encodeRedirectURL("./restaurants"));
-						return;
-					}
-				} else {
-					try{
-						String name;
-						int typeId;
-						int addressId;
-						int streetId;
-						String streetNo;
-						
-						name = req.getParameter("restaurantName");
-						streetNo = req.getParameter("addressNo");
-						
-						if(name == null || name.equals("") || name.equals(" ")){
-							System.out.println("Polje name je prazno!");
-							resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant/updateRestaurant.jsp"));
+				RestaurantType type = restaurantTypeDao.findById(typeId);
+				if(type == null){
+					resp.setContentType("application/json; charset=utf-8");
+					PrintWriter out = resp.getWriter();
+					resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+					return;
+				}
+				Street street = streetDao.findById(streetId);
+				if(street == null){
+					resp.setContentType("application/json; charset=utf-8");
+					PrintWriter out = resp.getWriter();
+					resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+					return;
+				}				
+				List<Address> addresses = addressDao.findAll();
+				/* Proveriti da li vec postoji trazena adresa */
+				for (Address a : addresses) {
+					if (a.getBrojUUlici().equals(streetNo) && a.getStreet().getId().equals(streetId)) {
+						Restaurant restaurant = (Restaurant)req.getSession().getAttribute("updateRestaurant");
+						if(restaurant != null){
+							restaurant.setAddress(a);
+							restaurant.setName(restaurantName);
+							restaurant.setUserSystemMenager(user);
+							restaurant.setRestaurantType(type);
+							Restaurant persisted = restaurantDao.merge(restaurant);
+							if(persisted == null){
+								resp.setContentType("application/json; charset=utf-8");
+								PrintWriter out = resp.getWriter();
+								resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+								return;
+							}
+							a.add(restaurant);
+							addressDao.merge(a);
+							
+							type.add(persisted);
+							restaurantTypeDao.merge(type);
+	
+							resp.setContentType("application/json; charset=utf-8");
+							PrintWriter out = resp.getWriter();
+							resultMapper.writeValue(out, "USPEH");
+							removeSessionObject(req);
+							return;
+						}else{
+							resp.setContentType("application/json; charset=utf-8");
+							PrintWriter out = resp.getWriter();
+							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
 							return;
 						}
-						
-						streetId = Integer.parseInt(req.getParameter("streetId"));
-						addressId = Integer.parseInt(req.getParameter("addressId"));
-						typeId = Integer.parseInt(req.getParameter("typeId"));
-						
-						if(addressId != -1){
-							System.out.println("addressId: "+addressId);
-							Address address = addressDao.findById(addressId);
-							if(address == null){
-								System.out.println("Adresa obrisana u medjuvremenu");
-								resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
-								return;
-							}
-							RestaurantType rt = restaurantTypeDao.findById(typeId);
-							if(rt == null){
-								System.out.println("Tip restorana obrisana u medjuvremenu");
-								resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
-								return;
-							}			
-							Restaurant restaurant = (Restaurant)req.getSession().getAttribute("updateRestaurant");
-							restaurant.setAddress(address);
-							restaurant.setRestaurantType(rt);
-							restaurant.setName(name);
-							if((User)req.getSession().getAttribute("user") != null)
-								restaurant.setUserSystemMenager((User)req.getSession().getAttribute("user"));
-							else{
-								System.out.println("Pukla sesija u medjuvremenu");
-								resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
-								return;	
-							}
-							Restaurant persisted = restaurantDao.merge(restaurant);
-							if(persisted == null){
-								System.out.println("Nije se sacuvao entity!");
-								resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant/createRestaurant.jsp"));
-								return;	
-							}
-							
-							address = addressDao.findById(addressId);
-							address.add(persisted);
-							rt = restaurantTypeDao.findById(typeId);
-							HashSet<Restaurant> lista = (HashSet<Restaurant>) rt.getRestaurants();
-							rt.add(persisted);
-							addressDao.merge(address);
-							restaurantTypeDao.merge(rt);
-							
-						}else{
-							
-							if(streetId == -1){
-								System.out.println("Nisu odabrani ni adresa ni ulica!");
-								resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
-								return;	
-							}
-							if(streetNo == null || streetNo.equals("") || streetNo.equals(" ")){
-								System.out.println("Polje streetNo je prazno a izabrana je ulcia a nije izabrana adresa!");
-								resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant/createRestaurant.jsp"));
-								return;
-							}
-							Address address = new Address();
-							Street street = streetDao.findById(streetId);
-							if(street == null){
-								System.out.println("Obrisana ulica u medjuvremenu!");
-								resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
-								return;	
-							}
-							address.setStreet(street);
-							address.setBrojUUlici(streetNo);
-							addressDao.persist(address);
-							
-							RestaurantType rt = restaurantTypeDao.findById(typeId);
-							if(rt == null){
-								System.out.println("Tip restorana obrisana u medjuvremenu");
-								resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
-								return;
-							}			
-							Restaurant restaurant = (Restaurant)req.getSession().getAttribute("updateRestaurant");
-							restaurant.setAddress(address);
-							restaurant.setRestaurantType(rt);
-							restaurant.setName(name);
-							if((User)req.getSession().getAttribute("user") != null)
-								restaurant.setUserSystemMenager((User)req.getSession().getAttribute("user"));
-							else{
-								System.out.println("Pukla sesija u medjuvremenu");
-								resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
-								return;	
-							}
-							Restaurant persisted = restaurantDao.merge(restaurant);
-							if(persisted == null){
-								System.out.println("Nije se sacuvao entity!");
-								resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant/createRestaurant.jsp"));
-								return;	
-							}
-							
-							rt = restaurantTypeDao.findById(typeId);
-							address.add(restaurant);
-							rt.add(restaurant);
-							addressDao.merge(address);
-							restaurantTypeDao.merge(rt);
-
+					}
+				}
+				
+				Address adr = new Address();
+				adr.setBrojUUlici(streetNo);
+				adr.setStreet(street);
+				Address persistedAdr = addressDao.persist(adr);
+				if(persistedAdr == null){
+					resp.setContentType("application/json; charset=utf-8");
+					PrintWriter out = resp.getWriter();
+					resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+					return;
+				}
+				
+					Restaurant restaurant = (Restaurant)req.getSession().getAttribute("updateRestaurant");
+					if(restaurant != null){
+						restaurant.setAddress(persistedAdr);
+						restaurant.setName(restaurantName);
+						restaurant.setUserSystemMenager(user);
+						restaurant.setRestaurantType(type);
+						Restaurant persisted = restaurantDao.merge(restaurant);
+						if(persisted == null){
+							resp.setContentType("application/json; charset=utf-8");
+							PrintWriter out = resp.getWriter();
+							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							return;
 						}
+						persistedAdr.add(restaurant);
+						addressDao.merge(persistedAdr);
+						
+						type.add(persisted);
+						restaurantTypeDao.merge(type);
+	
+						resp.setContentType("application/json; charset=utf-8");
+						PrintWriter out = resp.getWriter();
+						resultMapper.writeValue(out, "USPEH");
 						removeSessionObject(req);
-						resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
 						return;
-				}catch (IOException e) {
-					System.out.println("Izmena nije uspela.");
-					resp.sendRedirect(resp
-							.encodeRedirectURL("./restaurantTypes"));
-					removeSessionObject(req);
-					throw e;
-				}
-				}
+					}else{
+						resp.setContentType("application/json; charset=utf-8");
+						PrintWriter out = resp.getWriter();
+						resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+						return;
+					}
+			}catch(Exception ex){
+				
+				ObjectMapper resultMapper = new ObjectMapper();
+				resp.setContentType("application/json; charset=utf-8");
+				PrintWriter out = resp.getWriter();
+				resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+				return;
 			}
+		}
 	}
 
 	@Override

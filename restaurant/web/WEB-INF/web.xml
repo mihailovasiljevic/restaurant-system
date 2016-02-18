@@ -166,6 +166,21 @@
 		<servlet-name>UpdateRestaurantController</servlet-name>
 		<url-pattern>/api/restaurant/updateRestaurant</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<display-name>prepareUpdateRestaurantController</display-name>
+		<servlet-name>PrepareUpdateRestaurantController</servlet-name>
+		<servlet-class>restaurant.server.servlet.restaurants.PrepareUpdateRestaurantController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PrepareUpdateRestaurantController</servlet-name>
+		<url-pattern>/api/restaurant/prepareUpdateRestaurant</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<display-name>readRestaurantMenagers</display-name>

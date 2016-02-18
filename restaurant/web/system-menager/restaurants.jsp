@@ -43,89 +43,47 @@
                 $('#btn-updateType').hide();
                  $("#btn-updateType").click(
                     function(){
-                        var userEmailsu = $("#userEmailsu").val();
-                        var userName = $("#userName").val();
-                        var userSurname = $("#userSurname").val();
-                        var userPasswordsu = $("#userPasswordsu").val();
-                        var userPasswordsuRepeat = $("#userPasswordsuRepeat").val();
-                        var uploadFile = $("#uploadFile");
+                        var restaurantName = $("#restaurantName").val();
+                        var restaurantType = $("#restaurantType :selected").val();
+                        var street = $("#street :selected").val();
+                        var streetNo = $("#streetNo").val();
                         var allGood = false;
-                            if( userEmailsu == "" || userEmailsu == undefined || userEmailsu == null ) {
-                                $("#emailsu-error").text("Polje za email adresu ne sme biti prazno!");
+                            if( restaurantName == "" || restaurantName == undefined || restaurantName == null ) {
+                                $("#restaurantName-error").text("Polje za naziv restorana ne sme biti prazno!");
 
                                 allGood = false;
                             } else {
-                                if(!validateEmail(userEmailsu)){
-                                    $("#emailsu-error").text("Neispravna email adresa!");
-                                    allGood = false 
-                                }
-                                else{
-                                    $("#emailsu-error").text("");
+
+                                    $("#restaurantName-error").text("");
 
                                     allGood = true;
-                                }
                             }  
                         
-                            if( userName == "" || userName == undefined || userName == null ) {
-                                $("#name-error").text("Polje za ime ne sme biti prazno!");
+                            if( streetNo == "" || streetNo == undefined || streetNo == null ) {
+                                $("#streetNo-error").text("Polje za broj u ulici ne sme biti prazno!");
 
                                 allGood = false;
                             } else {
-                               $("#name-error").text("");
+                               $("#streetNo-error").text("");
                                 
                                 if(allGood != false)
                                     allGood = true;
                             } 
                         
-                            if( userSurname == "" || userSurname == undefined || userSurname == null ) {
-                                $("#surname-error").text("Polje za prezime ne sme biti prazno!");
-
-                                allGood = false;
-                            } else {
-                               $("#surname-error").text("");
-                                
-                                if(allGood != false)
-                                    allGood = true;
-                            } 
-                        
-                                                 
-
-                            if( (userPasswordsuRepeat == "" || userPasswordsuRepeat == undefined || userPasswordsuRepeat == null) && userPasswordsu != "") {
-                                $("#repeatPassword-error").text("Pokusavate da izmenite lozinku, tako da ovo polje ne sme biti prazno!");
-
-                                allGood = false;
-                            } else {
-                               $("#repeatPassword-error").text("");
-                                
-                                if(allGood != false)
-                                    allGood = true;
-                            }  
-                            if(userPasswordsu != userPasswordsuRepeat){
-                                 $("#repeatPassword-error").text("Lozinke se ne poklapaju!!");
-
-                                allGood = false;
-                            }else{
-                               $("#repeatPassword-error").text("");
-                                
-                                if(allGood != false)
-                                    allGood = true;
-                            }
                             var answer="";
                             if(allGood == true){
-                                if(document.getElementById("uploadFile").files[0] != null && imageFileName != document.getElementById("uploadFile").files[0].name.replace(/\s+/g, '') ){
-                                    performAjaxSubmitSlika(userEmailsu, userName, userSurname, userPasswordsu);
-                                }else{
+
                                     $.ajaxSetup({async:false});
                                     $.ajax({
-                                          url: "../api/restaurant-menager/updateRestaurantMenager",
+                                          url: "../api/restaurant/updateRestaurant",
                                           type: 'post',
                                           contentType: "application/x-www-form-urlencoded",
                                           data: {
-                                           registrationData:JSON.stringify({
-                                               userEmail:userEmailsu,
-                                               userPassword:userPasswordsu,
-                                               userName: userName,
-                                               userSurname: userSurname
+                                           restaurantData:JSON.stringify({
+                                               restaurantName:restaurantName,
+                                               restaurantType:restaurantType,
+                                               street: street,
+                                               streetNo: streetNo
                                            }),    
                                            cache: false,
                                            dataType:'json'
@@ -134,19 +92,18 @@
                                             if(data != "USPEH"){
                                                 $("#myModal").hide();
                                                 $("#updatebox").hide();
-                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
+                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da dodamo restoran.");
                                                  $("#registrationModal").show();
                                                 return;
                                             }else {
                                                 $("#myModal").hide();
                                                 $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali menadzera restorana.");                                     		
+                                                $("#registrationModal #message").text("Uspesno ste dodali restoran.");                                     		
                                                 $("#registrationModal").show();
-                                                window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
+                                                window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }
-                                            $( "#email-error" ).text(data);
-                                            //alert("Data: "+ data);
+
                                             console.log(data);
                                             console.log(status);
                                           },
@@ -155,38 +112,32 @@
                                           },
                                         });
                                     $.ajaxSetup({async:true});
-                                    }
+
 
                             }
                     });   
             
                     $( "#restaurantTable" ).on( "click", "i", function( event ) {
-                            var userId = $(this).children().last().val();
+                            var restaurantId = $(this).children().last().val();
                         
                                 $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "../api/restaurant-menager/prepareUpdateRestaurantMenager",
+                                      url: "../api/restaurant/prepareUpdateRestaurant",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
-                                       restaurantMenagerId:JSON.stringify({
-                                           userId:userId
+                                       restaurantId:JSON.stringify({
+                                           restaurantId:restaurantId
                                        }),    
                                        cache: false,
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
                                         if(data != "GRESKA"){
-                                             $('#userEmailsu').val(data.email);
-                                            $('#userName').val(data.name);
-                                            $('#userSurname').val(data.surname);
-                                            $('#userPasswordsu').val(data.password);
-                                            $('#userPasswordsuRepeat').val(data.password);
-                                            
-                                            imageFileName = data.imageRealName;
-                                            if(imageFileName != ""){
-                                                $("#repeatPassword-error").text("Ovaj korisnik ima sliku. Ako ne zelite da je promenite ostavite ovo polje prazno.");
-                                            }
+                                             $('#restaurantName').val(data.name);
+                                            $('#restaurantType').val(data.type);
+                                            $('#street').val(data.street);
+                                            $('#streetNo').val(data.streetNo);
                                              $('#btn-updateType').show();
                                              $('#btn-type').hide();
                                              $("#typeName-error").text("");
@@ -215,105 +166,49 @@
                     });
             
             
-           function validateEmail(email) {
-                var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return re.test(email);
-            }
                     $("#btn-type").click(
                     function(){
-                        var userEmailsu = $("#userEmailsu").val();
-                        var userName = $("#userName").val();
-                        var userSurname = $("#userSurname").val();
-                        var userPasswordsu = $("#userPasswordsu").val();
-                        var userPasswordsuRepeat = $("#userPasswordsuRepeat").val();
-                        var uploadFile = $("#uploadFile");
+                        var restaurantName = $("#restaurantName").val();
+                        var restaurantType = $('#restaurantType :selected').val();
+                        var street = $('#street :selected').val();
+                        var streetNo = $("#streetNo").val();
                         var allGood = false;
-                            if( userEmailsu == "" || userEmailsu == undefined || userEmailsu == null ) {
-                                $("#emailsu-error").text("Polje za email adresu ne sme biti prazno!");
+                            if( restaurantName == "" || restaurantName == undefined || restaurantName == null ) {
+                                $("#restaurantName-error").text("Polje za naziv restorana ne sme biti prazno!");
 
                                 allGood = false;
                             } else {
-                                if(!validateEmail(userEmailsu)){
-                                    $("#emailsu-error").text("Neispravna email adresa!");
-                                    allGood = false 
-                                }
-                                else{
-                                    $("#emailsu-error").text("");
+
+                                    $("#restaurantName-error").text("");
 
                                     allGood = true;
-                                }
                             }  
                         
-                            if( userName == "" || userName == undefined || userName == null ) {
-                                $("#name-error").text("Polje za ime ne sme biti prazno!");
+                            if( streetNo == "" || streetNo == undefined || streetNo == null ) {
+                                $("#streetNo-error").text("Polje za broj u ulici ne sme biti prazno!");
 
                                 allGood = false;
                             } else {
-                               $("#name-error").text("");
+                               $("#streetNo-error").text("");
                                 
                                 if(allGood != false)
                                     allGood = true;
                             } 
                         
-                            if( userSurname == "" || userSurname == undefined || userSurname == null ) {
-                                $("#surname-error").text("Polje za prezime ne sme biti prazno!");
-
-                                allGood = false;
-                            } else {
-                               $("#surname-error").text("");
-                                
-                                if(allGood != false)
-                                    allGood = true;
-                            } 
-                        
-                                                
-                            if( userPasswordsu == "" || userPasswordsu == undefined || userPasswordsu == null ) {
-                                $("#passwordsu-error").text("Polje za lozinku ne sme biti prazno!");
-
-                                allGood = false;
-                            } else {
-                               $("#passwordsu-error").text("");
-                                
-                                if(allGood != false)
-                                    allGood = true;
-                            } 
-
-                            if( userPasswordsuRepeat == "" || userPasswordsuRepeat == undefined || userPasswordsuRepeat == null ) {
-                                $("#repeatPassword-error").text("Polje za ponovljenu lozinku ne sme biti prazno!");
-
-                                allGood = false;
-                            } else {
-                               $("#repeatPassword-error").text("");
-                                
-                                if(allGood != false)
-                                    allGood = true;
-                            }  
-                            if(userPasswordsu != userPasswordsuRepeat || userPasswordsu == "" || userPasswordsu == undefined || userPasswordsu == null || userPasswordsuRepeat == "" || userPasswordsuRepeat == undefined || userPasswordsuRepeat == null ){
-                                 $("#repeatPassword-error").text("Lozinke se ne poklapaju!!");
-
-                                allGood = false;
-                            }else{
-                               $("#repeatPassword-error").text("");
-                                
-                                if(allGood != false)
-                                    allGood = true;
-                            }
                             var answer="";
                             if(allGood == true){
-                                if(document.getElementById("uploadFile").files[0] != null){
-                                    performAjaxSubmitSlika(userEmailsu, userName, userSurname, userPasswordsu);
-                                }else{
+
                                     $.ajaxSetup({async:false});
                                     $.ajax({
-                                          url: "../api/restaurant-menager/createRestaurantMenager",
+                                          url: "../api/restaurant/createRestaurant",
                                           type: 'post',
                                           contentType: "application/x-www-form-urlencoded",
                                           data: {
-                                           registrationData:JSON.stringify({
-                                               userEmail:userEmailsu,
-                                               userPassword:userPasswordsu,
-                                               userName: userName,
-                                               userSurname: userSurname
+                                           restaurantData:JSON.stringify({
+                                               restaurantName:restaurantName,
+                                               restaurantType:restaurantType,
+                                               street: street,
+                                               streetNo: streetNo
                                            }),    
                                            cache: false,
                                            dataType:'json'
@@ -322,19 +217,18 @@
                                             if(data != "USPEH"){
                                                 $("#myModal").hide();
                                                 $("#updatebox").hide();
-                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
+                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da dodamo restoran.");
                                                  $("#registrationModal").show();
                                                 return;
                                             }else {
                                                 $("#myModal").hide();
                                                 $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali menadzera restorana.");                                     		
+                                                $("#registrationModal #message").text("Uspesno ste dodali restoran.");                                     		
                                                 $("#registrationModal").show();
-                                                window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
+                                                window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }
-                                            $( "#email-error" ).text(data);
-                                            //alert("Data: "+ data);
+
                                             console.log(data);
                                             console.log(status);
                                           },
@@ -343,7 +237,7 @@
                                           },
                                         });
                                     $.ajaxSetup({async:true});
-                                    }
+
 
                             }
                     });
@@ -599,7 +493,7 @@
 				<!-- SIDEBAR MENU -->
 				<div class="profile-usermenu">
 					<ul class="nav">
-						<li id="restaurantType">
+						<li id="liRestaurantType">
 							<a href="../api/restaurant-type/restaurantTypes" id="aRestaurantType">
 							<i class="glyphicon glyphicon-link"></i>
 							Tipovi restorana </a>
@@ -648,9 +542,9 @@
                                         <td>${i.restaurantType.name}</td>
                                         <td>${i.address.street.name} ${i.address.brojUUlici}, ${i.address.street.city.name}, ${i.address.street.city.country.name}</td>
                                         <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
-                                            menadzera</button></i></td>
+                                            restoran</button></i></td>
                                             
-                                        <td><a href="#" data-href="../api/restaurant-menager/deleteRestaurantMenager?restaurantId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi menadzera</a></td>
+                                        <td><a href="#" data-href="../api/restaurant-menager/deleteRestaurantMenager?restaurantId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi restoran</a></td>
                                     </tr>
                                 </c:forEach> 
                                 </tbody>
@@ -761,7 +655,7 @@
                                 
                                   
                                 <div class="form-group">
-                                    <label for="userEmailsu" class="col-md-3 control-label">Naziv*</label>
+                                    <label for="restaurantName" class="col-md-3 control-label">Naziv*</label>
                                     <div class="col-md-9">
                                         <input type="text" class="form-control" name="restaurantName" placeholder="Naziv" id="restaurantName" required>
                                     </div>
@@ -775,7 +669,6 @@
                                     <label for="restaurantType" class="col-md-3 control-label">Tip restorana*</label>
                                     <div class="col-md-9">
                                         <select id = "restaurantType">
-                                            <option value = "-1"></option>
                                             <c:forEach var="i" items="${sessionScope.restaurantTypes}">
                                                 <option value="${i.id}">${i.name}</option>
                                             </c:forEach>
@@ -790,7 +683,6 @@
                                     <label for="street" class="col-md-3 control-label">Ulica*</label>
                                     <div class="col-md-9">
                                          <select id = "street">
-                                            <option value = "-1"></option>
                                             <c:forEach var="i" items="${sessionScope.streets}">
                                                 <option value="${i.id}">${i.name}</option>
                                             </c:forEach>

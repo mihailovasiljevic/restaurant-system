@@ -47,7 +47,7 @@ public class ReadRestaurantsController extends HttpServlet {
 				return;
 			}
 			
-			List<Restaurant> restaurants = restaurantDao.findAll();
+			List<restaurant.server.entity.Restaurant> restaurants = restaurantDao.findAll();
 			req.getSession().setAttribute("restaurants", restaurants);
 
 			List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
