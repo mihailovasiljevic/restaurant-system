@@ -454,7 +454,8 @@ function daLiJeRealanBroj(field){
 							<a href="../api/restaurant-type/restaurantTypes">
 							<i class="glyphicon glyphicon-link"></i>
 							Tipovi resotrana </a>
-						</li>	
+						</li>
+            <li >	
 							<a href="../api/menu/menus">
 							<i class="glyphicon glyphicon-book"></i>
 							Jelovnici </a>

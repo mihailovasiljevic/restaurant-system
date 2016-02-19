@@ -7,8 +7,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -41,198 +43,98 @@ public class InitBean implements Init {
 	@PersistenceContext(unitName = "restaurant")
 	EntityManager em;
 	
+	@EJB
+	private UserDaoLocal userDao;
+	
+	@EJB
+	private UserTypeDaoLocal typeDao;
+	
 	public void init() {
+		List<User> users = userDao.findAll();
+		List<UserType> types = typeDao.findAll();
 		
-		/**
-		 * Create types of user.
-		 * ------------------------------------------------------
-		 */
+		UserType type = null;
+		for(UserType t : types){
+			if(t.getName().equals("GUEST"))
+				type = t;
+		}
 		
-		UserType guest = new UserType();
-		guest.setName("GUEST");
-		em.persist(guest);
-		
-		UserType systemMenager = new UserType();
-		systemMenager.setName("SYSTEM_MENAGER");
-		em.persist(systemMenager);
-		
-		UserType restaurantMenager = new UserType();
-		restaurantMenager.setName("RESTAURANT_MENAGER");
-		em.persist(restaurantMenager);
-		
-		/**
-		 * ------------------------------------------------------
-		 */
-		
-		/**
-		 * Create system menagers.
-		 * ------------------------------------------------------
-		 */
-		
-		//prepare password hashing
-        byte[] salt;
-        byte[] hashedPassword;
-        
-        User systemMenager1 = new User();
-        systemMenager1.setName("Marko");
-        systemMenager1.setSurname("Jovanovic");
-        systemMenager1.setEmail("marko_jovanovic@gmail.com");
-        systemMenager1.setActivated(true);
-        systemMenager1.setUserType(systemMenager);
-        
-        salt = new byte[16];
-        hashedPassword = new byte[256];
-        salt = HashPassword.getNextSalt();
-        systemMenager1.setSalt(salt);
-        char[] pass = {'m','a','r','k','o'};
-        hashedPassword = HashPassword.hashPassword(pass, systemMenager1.getSalt());
-        systemMenager1.setPassword(hashedPassword);
+		for(User u : users){
+			if(u.getUserType().getName().equals("SYSTEM_MENAGER")){
+				
+				byte[] salt;
+				byte[] hashedPassword;
+				
 
-        
-        
-        em.persist(systemMenager1);
-        
-        User systemMenager2 = new User();
-        systemMenager2.setName("Mihailo");
-        systemMenager2.setSurname("Vasiljevic");
-        systemMenager2.setEmail("mihailo931@gmail.com");
-        systemMenager2.setActivated(true);
-        systemMenager2.setUserType(systemMenager);
-        
-        salt = new byte[16];
-        hashedPassword = new byte[256];
-        salt = HashPassword.getNextSalt();
-        char[] pass2 = {'m','i','h','a','i','l','o'};
-        hashedPassword = HashPassword.hashPassword(pass2, salt);
-        
-        systemMenager2.setPassword(hashedPassword);
-        systemMenager2.setSalt(salt);
-        
-        em.persist(systemMenager2);
-        
-        systemMenager.add(systemMenager1);
-        systemMenager.add(systemMenager2);
-        em.merge(systemMenager);
+		        User guest1 = new User();
+		        guest1.setName("Stefan");
+		        guest1.setSurname("Stefanovic");
+		        guest1.setEmail("stefan_stephen@gmail.com");
+		        guest1.setActivated(true);
+		        guest1.setUserType(type);
+		        
+		        salt = new byte[16];
+		        hashedPassword = new byte[256];
+		        salt = HashPassword.getNextSalt();
+		        char[] passGue1 = {'s','t','e','f','a', 'n'};
+		        hashedPassword = HashPassword.hashPassword(passGue1, salt);
+		        
+		        guest1.setPassword(hashedPassword);
+		        guest1.setSalt(salt);
+		        
+		        em.persist(guest1);
+		        
+		        User guest2 = new User();
+		        guest2.setName("Mirko");
+		        guest2.setSurname("Maric");
+		        guest2.setEmail("mihailo93@gmail.com");
+		        guest2.setActivated(true);
+		        guest2.setUserType(type);
+		        
+		        salt = new byte[16];
+		        hashedPassword = new byte[256];
+		        salt = HashPassword.getNextSalt();
+		        char[] passGue2 = {'m','i','r','k','o'};
+		        hashedPassword = HashPassword.hashPassword(passGue2, salt);
+		        
+		        guest2.setPassword(hashedPassword);
+		        guest2.setSalt(salt);
+		        
+		        em.persist(guest2);
+		        
+		        User guest3 = new User();
+		        guest3.setName("Sanja");
+		        guest3.setSurname("Popovic");
+		        guest3.setEmail("mihailo.vasiljevic93@gmail.com");
+		        guest3.setActivated(true);
+		        guest3.setUserType(type);
+		        
+		        salt = new byte[16];
+		        hashedPassword = new byte[256];
+		        salt = HashPassword.getNextSalt();
+		        char[] passGue3 = {'s','a','n','j','a'};
+		        hashedPassword = HashPassword.hashPassword(passGue3, salt);
+		        
+		        guest3.setPassword(hashedPassword);
+		        guest3.setSalt(salt);
+		        
+		        em.persist(guest3);
+		        
+		        type.add(guest1);
+		        type.add(guest2);
+		        type.add(guest3);
+		        em.merge(type);
+		        
+		        guest1.addFriend(guest2);
+		        guest2.addFriend(guest1);
+		        em.merge(guest1);
+		        em.merge(guest2);
+				
+				
+				
+			}
+		}
 
-		/**
-		 * ------------------------------------------------------
-		 */ 
-        
-		/**
-		 * Create country.
-		 * ------------------------------------------------------
-		 */
-        Country serbia = new Country();
-        serbia.setName("Serbia");
-        em.persist(serbia);
-        
-        Country england = new Country();
-        england.setName("Egnland");
-        em.persist(england);
-        
-		/**
-		 * ------------------------------------------------------
-		 */ 
-        
-		/**
-		 * Create city.
-		 * ------------------------------------------------------
-		 */
-        City noviSad = new City();
-        noviSad.setName("Novi Sad");
-        noviSad.setCountry(serbia);
-        em.persist(noviSad);
-        
-        City belgrade = new City();
-        belgrade.setName("Beograd");
-        belgrade.setCountry(serbia);
-        em.persist(belgrade);
-        
-        serbia.add(noviSad);
-        serbia.add(belgrade);
-        
-        em.merge(serbia);
-		/**
-		 * ------------------------------------------------------
-		 */ 
-        
-		/**
-		 * Create street.
-		 * ------------------------------------------------------
-		 */
-        Street nineJugs = new Street();
-        nineJugs.setName("Devet Jugovica");
-        nineJugs.setCity(noviSad);
-        em.persist(nineJugs);
-        
-        Street princeMarko = new Street();
-        princeMarko.setName("Kraljevica Marka");
-        princeMarko.setCity(noviSad);
-        em.persist(princeMarko);       
-        
-        Street kosovo = new Street();
-        kosovo.setName("Kosovska");
-        kosovo.setCity(noviSad);
-        em.persist(kosovo);   
-        
-        Street jjzmaj = new Street();
-        jjzmaj.setName("Jovana Jovanovica Zmaja");
-        jjzmaj.setCity(noviSad);
-        em.persist(jjzmaj);  
-        
-        Street green = new Street();
-        green.setName("Zelena");
-        green.setCity(noviSad);
-        em.persist(green);   
-        
-        Street bulOsl = new Street();
-        bulOsl.setName("Bulevar oslobodjenja");
-        bulOsl.setCity(noviSad);
-        em.persist(bulOsl); 
-        
-        Street jna = new Street();
-        jna.setName("Jugoslovenske narodne armije");
-        jna.setCity(belgrade);
-        em.persist(jna);  
-        
-        Street tito = new Street();
-        tito.setName("Marsala Tita");
-        tito.setCity(belgrade);
-        em.persist(tito);  
-        
-        Street urosPredic = new Street();
-        urosPredic.setName("Urosa Predica");
-        urosPredic.setCity(belgrade);
-        em.persist(urosPredic);  
-        
-        Street ppnj = new Street();
-        ppnj.setName("Petra I Petrovica Njegosa");
-        ppnj.setCity(belgrade);
-        em.persist(ppnj);  
-        
-        Street bulKingAlex = new Street();
-        bulKingAlex.setName("Bulevar kralja Aleksandra");
-        bulKingAlex.setCity(belgrade);
-        em.persist(bulKingAlex);  
-        
-
-        
-        
-        noviSad.add(nineJugs);
-        noviSad.add(princeMarko);
-        noviSad.add(kosovo);
-        noviSad.add(jjzmaj);
-        noviSad.add(bulOsl);
-        noviSad.add(green);
-        
-        em.merge(noviSad);
-        
-        belgrade.add(jna);
-        belgrade.add(tito);
-        belgrade.add(urosPredic);
-        belgrade.add(ppnj);
-        belgrade.add(bulKingAlex);
-        em.merge(belgrade);
 	}
 
 }

@@ -607,6 +607,7 @@ function parseDatumDo(field){
                             <i class="glyphicon glyphicon-link"></i>
                             Tipovi resotrana </a>
                         </li>   
+                        <li >
                             <a href="../api/menu/menus">
                             <i class="glyphicon glyphicon-book"></i>
                             Jelovnici </a>

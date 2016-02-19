@@ -26,8 +26,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import restaurant.externals.HashPassword;
 import restaurant.externals.ResultCode;
 import restaurant.server.entity.RestaurantType;
+import restaurant.server.entity.Street;
 import restaurant.server.entity.User;
 import restaurant.server.session.RestaurantTypeDaoLocal;
+import restaurant.server.session.StreetDaoLocal;
 import restaurant.server.session.UserDaoLocal;
 
 public class LoginController extends HttpServlet {
@@ -38,7 +40,9 @@ public class LoginController extends HttpServlet {
 
 	@EJB
 	private UserDaoLocal userDao;
-
+	
+	@EJB
+	private StreetDaoLocal streetDao;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -114,6 +118,11 @@ public class LoginController extends HttpServlet {
 					switch(user.getUserType().getName()){
 						case "GUEST": 
 							session.setAttribute("user", user);
+							
+							List<Street> streets = streetDao.findAll();
+							request.getSession().setAttribute("streets", streets);
+							
+							
 					        response.setContentType("application/json; charset=utf-8");
 					        PrintWriter out = response.getWriter();
 					        resultMapper.writeValue(out, ResultCode.LOGIN_USER_SUCCESS_GUEST.toString());
@@ -140,14 +149,17 @@ public class LoginController extends HttpServlet {
 			if (e.getCause().getClass().equals(NoResultException.class)) {
 				System.out.println("NEMA REZULTATA");
 				response.sendRedirect(response.encodeRedirectURL("./login_error.jsp"));
+				e.printStackTrace();
 				return;
 			} else {
 				System.out.println("BACEN EXCEPTION");
+				e.printStackTrace();
 				throw e;
 			}
 		} catch (IOException e) {
 			System.out.println("BACEN EXCEPTION");
 			log.error(e);
+			e.printStackTrace();
 			throw e;
 		}
 	}

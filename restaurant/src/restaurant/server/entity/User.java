@@ -82,7 +82,7 @@ public class User implements Serializable{
 	private Set<User> myFriends = new HashSet<User>();
 	
 	public void addFriend(User friend) {
-		if (friend != null)
+		if (friend.getMyFriends() != null)
 			friend.getMyFriends().remove(friend);
 		myFriends.add(friend);
 	}
