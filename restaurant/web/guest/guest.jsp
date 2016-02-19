@@ -163,18 +163,6 @@
                                 if(allGood != false)
                                     allGood = true;
                             }
-
-                           if( userNewPasswordRep == "" || userNewPasswordRep == userNewPasswordRep || userStreetNo == null ) {
-                                $("#userNewPasswordRep-error").text("Polje za ponovljenu lozinku ne sme ostati prazno.");
-
-                                allGood = false;
-                            } else {
-                                $("#userNewPasswordRep-error").text("");
-
-                                  if(allGood != false)
-                                    allGood = true;
-                            
-                            }
                      
                             if(userNewPassword != userNewPasswordRep){
                                 
@@ -196,7 +184,8 @@
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
                                        guestData:JSON.stringify({
-                                           userNewPassword:userNewPassword
+                                           userNewPassword:userNewPassword,
+                                           userOldPassword: useOldPassword
                                        }),    
                                        cache: false,
                                        dataType:'json'
@@ -369,7 +358,7 @@
                                     <label for="userStreet" class="col-md-3 control-label">Adresa</label>
                                     <div class="col-md-9">
                                         <select id="userStreet">
-                                            <option id="${sessionScope.user.address.street.id}">${sessionScope.user.address.street.value}</option>
+                                            <option value="${sessionScope.user.address.street.id}">${sessionScope.user.address.street.name}</option>
                                             <c:forEach var="i" items="${sessionScope.streets}">
                                                 <c:if test="${sessionScope.user.address.street.id != i.id}">
                                                     <option value="${i.id}">${i.name}</option>
