@@ -19,13 +19,10 @@
 
     <!-- Custom CSS -->
     <link href="css/stylish-portfolio.css" rel="stylesheet">
-    
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
-    
-    
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -39,80 +36,92 @@
     src="http://maps.google.com/maps/api/js?sensor=false">
     </script>
     <script>
-//niz funkcija za proveru onoga sta je uneseno
-function daLiJeCeoBroj(field){
-	return /^\d{0,10}(\.\d{0,4}){0,1}$/.test(field[0].value);
-}
-function daLiJeRealanBroj(field){
-	return /^\+?(0|[1-9]\d*)$/.test(field[0].value);
-}
+
         $(document).ready(function(){
                 
-            
+            //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
                 $('#btn-updateType').hide();
-                 $("#btn-type").click(
+                $("#btn-type").click(
                     function(){
-                        var dishName = $("#dishName").val();
-                        var dishDescrp = $("#dishDescrp").val();
-                        var dishPrice = $("#dishPrice").val();
-                        
-                            if( dishName == "" || dishName == undefined || dishName == null ) {
-                                $("#dishName-error").text("Polje za naziv jela ne sme biti prazno.");
+                        var typeName = $("#typeName").val();
+                        var allGood = false;
+                            if( typeName == "" || typeName == undefined || typeName == null ) {
+                                $("#typeName-error").text("Polje za naziv tipa ne sme biti prazno.");
 
                                 allGood = false;
                             } else {
-                                $("#dishName-error").text("");
+                                $("#typeName-error").text("");
 
                                 allGood = true;
                             }  
-                        
-                        
-                           if( dishPrice == "" || dishPrice == undefined || dishPrice == null ) {
-                                $("#dishPrice-error").text("Polje za cenu ne sme biti rpazno.");
-
-                                allGood = false;
-                            } else {
-                                $("#dishPrice-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;
-                            }
-                          
-                           if(!daLiJeCeoBroj($('#dishPrice'))){
-                               $("#dishPrice-error").text("Uneti broj nije pozitivan i realan.");
-                                allGood = false;                                
-                            }else{
-                                 $("#dishPrice-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;                               
-                            }                      
 
                             if(allGood == true){
                                 $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "../api/dish/createDish",
+                                      url: "../api/restaurant-type/createRestaurantType",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
-                                       dishData:JSON.stringify({
-                                           dishName:dishName,
-                                           dishDescrp:dishDescrp,
-                                           dishPrice:dishPrice,
+                                       restaurantTypeData:JSON.stringify({
+                                           typeName:typeName
                                        }),    
                                        cache: false,
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
                                         if(data == "USPEH"){
-                                             window.location.href = "/restaurant/api/dish/dishes";
+                                             window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
+                                             return;
+                                        }else{
+                                            $("#typeName-error").text(data);
+                                            return;
+                                        }
+                                        //alert("Data: "+ data);
+                                        console.log(data);
+                                        console.log(status);
+                                      },
+                                      error: function (xhr, desc, err) {
+                                        console.log(xhr);
+                                      },
+                                    });
+                                $.ajaxSetup({async:true});
+                            }
+                    });
+                 $("#btn-updateType").click(
+                    function(){
+                        var typeName = $("#typeName").val();
+                        var allGood = false;
+                            if( typeName == "" || typeName == undefined || typeName == null ) {
+                                $("#typeName-error").text("Polje za naziv tipa ne sme biti prazno.");
+
+                                allGood = false;
+                            } else {
+                                $("#typeName-error").text("");
+
+                                allGood = true;
+                            }  
+
+                            if(allGood == true){
+                                $.ajaxSetup({async:false});
+                                $.ajax({
+                                      url: "../api/restaurant-type/updateRestaurantType",
+                                      type: 'post',
+                                      contentType: "application/x-www-form-urlencoded",
+                                      data: {
+                                       restaurantTypeData:JSON.stringify({
+                                           typeName:typeName
+                                       }),    
+                                       cache: false,
+                                       dataType:'json'
+                                    },
+                                      success: function (data, status) {
+                                        if(data == "USPEH"){
+                                             window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                              $('#btn-updateType').hide();
                                              $('#btn-type').show();
                                              return;
                                         }else{
-                                            $("#dishName-error").text(data);
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                            $("#typeName-error").text(data);
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -126,104 +135,26 @@ function daLiJeRealanBroj(field){
                                 $.ajaxSetup({async:true});
                             }
                     });   
-            
-                $("#btn-updateType").click(
-                    function(){
-                        var dishName = $("#dishName").val();
-                        var dishDescrp = $("#dishDescrp").val();
-                        var dishPrice = $("#dishPrice").val();
-                        
-                            if( dishName == "" || dishName == undefined || dishName == null ) {
-                                $("#dishName-error").text("Polje za naziv jela ne sme biti prazno.");
-
-                                allGood = false;
-                            } else {
-                                $("#dishName-error").text("");
-
-                                allGood = true;
-                            }  
-                        
-                        
-                           if( dishPrice == "" || dishPrice == undefined || dishPrice == null ) {
-                                $("#dishPrice-error").text("Polje za cenu ne sme biti rpazno.");
-
-                                allGood = false;
-                            } else {
-                                $("#dishPrice-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;
-                            }
-                          
-                           if(!daLiJeCeoBroj($('#dishPrice'))){
-                               $("#dishPrice-error").text("Uneti broj nije pozitivan i realan.");
-                                allGood = false;                                
-                            }else{
-                                 $("#dishPrice-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;                               
-                            }                      
-
-                            if(allGood == true){
-                                $.ajaxSetup({async:false});
-                                $.ajax({
-                                      url: "../api/dish/updateDish",
-                                      type: 'post',
-                                      contentType: "application/x-www-form-urlencoded",
-                                      data: {
-                                       dishData:JSON.stringify({
-                                           dishName:dishName,
-                                           dishDescrp:dishDescrp,
-                                           dishPrice:dishPrice,
-                                       }),    
-                                       cache: false,
-                                       dataType:'json'
-                                    },
-                                      success: function (data, status) {
-                                        if(data == "USPEH"){
-                                             window.location.href = "/restaurant/api/dish/dishes";
-                                             $('#btn-updateType').hide();
-                                             $('#btn-type').show();
-                                             return;
-                                        }else{
-                                            $("#dishName-error").text(data);
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
-                                            return;
-                                        }
-                                        //alert("Data: "+ data);
-                                        console.log(data);
-                                        console.log(status);
-                                      },
-                                      error: function (xhr, desc, err) {
-                                        console.log(xhr);
-                                      },
-                                    });
-                                $.ajaxSetup({async:true});
-                            }
-                    });  
-            
-                        $( "#restaurantTable" ).on( "click", "i", function( event ) {
-                            var dishId = $(this).children().last().val();
+                    $( "#restaurantTable" ).on( "click", "i", function( event ) {
+                            var typeId = $(this).children().last().val();
                         
                                 $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "../api/dish/prepareUpdateDish",
+                                      url: "../api/restaurant-type/prepareUpdateRestaurantType",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
-                                       dishId:JSON.stringify({
-                                           dishId:dishId
+                                       restaurantTypeId:JSON.stringify({
+                                           typeId:typeId
                                        }),    
                                        cache: false,
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
                                         if(data != "GRESKA"){
-                                             $('#dishName').val(data.name);
-                                            $('#dishDescrp').val(data.description);
-                                            $('#dishPrice').val(data.price);
+                                            if($('#typeName').val() != "" && $('#typeName').val() != null && $('#typeName').val() != undefined)
+                                                $('#typeName').val("");
+                                             $('#typeName').val(data);
                                              $('#btn-updateType').show();
                                              $('#btn-type').hide();
                                              $("#typeName-error").text("");
@@ -245,12 +176,6 @@ function daLiJeRealanBroj(field){
                             
                     });
             
-                    $('#confirm-delete').on('show.bs.modal', function(e) {
-                        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-
-                        $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
-                    });
-
             
         });
         
@@ -369,7 +294,7 @@ function daLiJeRealanBroj(field){
 		<c:redirect url="../login.jsp" />
 	</c:if>
 
-	<c:if test="${sessionScope.user.userType.name ne 'RESTAURANT_MENAGER'}">
+	<c:if test="${sessionScope.user.userType.name ne 'SYSTEM_MENAGER'}">
 		<c:redirect url="../insufficient_privileges.jsp" />
 	</c:if>
     
@@ -403,7 +328,7 @@ function daLiJeRealanBroj(field){
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2>Menadzer restorana: ${sessionScope.user.name} ${sessionScope.user.surname}</h2>
+                    <h2>Menadzer sistema: ${sessionScope.user.name} ${sessionScope.user.surname}</h2>
                     <p class="lead"><div id="map_canvas" style="width:100%; height:500px">
                     
                                         <div class="row profile">
@@ -439,30 +364,20 @@ function daLiJeRealanBroj(field){
 				<!-- SIDEBAR MENU -->
 				<div class="profile-usermenu">
 					<ul class="nav">
-						<li id="liTablesConfigurations">
-							<a href="../api/tables-configuration/tablesConfigurations" id="aTablesConfigurations">
-							<i class="glyphicon glyphicon-align-center"></i>
-							Konfiguracije stolova </a>
+						<li class="active" id="restaurantType">
+							<a href="#" id="aRestaurantType">
+							<i class="glyphicon glyphicon-link"></i>
+							Tipovi restorana </a>
 						</li>
-						<li >
+						<li id="restaurant" id="aRestaurant">
 							<a href="../api/restaurant/restaurants">
 							<i class="glyphicon glyphicon-registration-mark"></i>
-							Restorani </a>
+							Restoran </a>
 						</li>
-						<li  >
-						<li >
-							<a href="../api/restaurant-type/restaurantTypes">
-							<i class="glyphicon glyphicon-link"></i>
-							Tipovi resotrana </a>
-						</li>	
-							<a href="../api/menu/menus">
-							<i class="glyphicon glyphicon-book"></i>
-							Jelovnici </a>
-						</li>
-                        <li class="active">
-							<a href="#">
-							<i class="glyphicon glyphicon-list"></i>
-							Jela</a>
+						<li id="restaurantMenager" id="aRestaurantMenager">
+							<a href="../api/restaurant-menager/restaurantMenagers">
+							<i class="glyphicon glyphicon-briefcase"></i>
+							Menadzeri restorana </a>
 						</li>
 					</ul>
 				</div>
@@ -474,33 +389,27 @@ function daLiJeRealanBroj(field){
 			   
                 <div class="container">
                     <div class="row">
-                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();">Dodaj jelo</button>
-                        <c:if test="${fn:length(sessionScope.dishes) > 0}">
+                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();">Dodaj tip</button>
+                        <c:if test="${fn:length(sessionScope.restaurantTypes) > 0}">
                           <div class="table-responsive">
                             <table class="table table-hover">
                               <thead>
                                 <tr>
                                   <th>Identifikator</th>
-                                  <th>Naziv</th>
-                                  <th>Opis</th>
-                                  <th>Cena</th>
-                                  <th>Pripada restoranu</th>
+                                  <th>Ime</th>
                                   <th>&nbsp;</th>
                                   <th>&nbsp;</th>
                                 </tr>
                               </thead>
                               <tbody id="restaurantTable">
-                                <c:forEach var="i" items="${sessionScope.dishes}">
+                                <c:forEach var="i" items="${sessionScope.restaurantTypes}">
                                     <tr>
                                         <td>${i.id}</td>
-                                        <td>${i.name}</td>                              
-                                        <td>${i.description}</td>
-                                        <td>${i.price}</td>
-                                        <td>${i.menu.restaurant.name}</td>
-                                        <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}">Izmeni
-                                            jelo</button></i></td>
+                                        <td>${i.name}</td>
+                                        <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
+                                            tip</button></i></td>
                                             
-                                        <td><a href="#" data-href="../api/dish/deleteDish?dishId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi jelo</a></td>
+                                        <td><a href="#" data-href="../api/restaurant-type/deleteRestaurantType?typeId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi tip</a></td>
                                     </tr>
                                 </c:forEach> 
                                 </tbody>
@@ -510,8 +419,8 @@ function daLiJeRealanBroj(field){
                                 <ul class="pagination pagination-lg pager" id="myPager"></ul>
                             </div>
                         </c:if>
-                        <c:if test="${fn:length(sessionScope.dishes) == 0}">
-                            <span class="label label-info">Nema jela. Dodajte jedno.</span>
+                        <c:if test="${fn:length(sessionScope.restaurantTypes) == 0}">
+                            <span class="label label-info">Nema tipova restorana. Dodajte jedan.</span>
                         </c:if>
                     </div>
                 </div>
@@ -596,7 +505,7 @@ function daLiJeRealanBroj(field){
         <div id="updatebox" style="display:none; margin-top:50px" class="mainbox col-md-10 col-md-offset-3 col-sm-8 col-sm-offset-2">
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <div class="panel-title">Azuriranje jela</div>
+                            <div class="panel-title">Azuriranje tipa</div>
                             <div style="float:right; font-size: 85%; position: relative; top:-20px"><button type="button" class="close" data-dismiss="modal" onclick="$('#updatebox').hide">&times;</button></div>
                         </div>  
                         <div class="panel-body" >
@@ -610,47 +519,21 @@ function daLiJeRealanBroj(field){
                                 
                                   
                                 <div class="form-group">
-                                    <label for="dishName" class="col-md-3 control-label">Naziv*</label>
+                                    <label for="userEmailsu" class="col-md-3 control-label">Naziv*</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control" name="dishName" placeholder="Naziv jela" id="dishName" required>
+                                        <input type="text" class="form-control" name="typeName" placeholder="Tekstualni opis tipa" id="typeName" required>
                                     </div>
                                     <div style="margin-top:10px" class="form-group">
                                         <!-- ERROR PROVIDER -->
-                                        <span id = "dishName-error" class="label label-danger"></span>
+                                        <span id = "typeName-error" class="label label-danger"></span>
                                     </div>
                                 </div>
-                                
-                                <div class="form-group">
-                                    <label for="dishDescrp" class="col-md-3 control-label">Opis jela</label>
-                                    <div class="col-md-9">
-                                        <textarea class="form-control" rows="5" name="dishDescrp" id="dishDescrp"></textarea>
-
-                                    </div>
-                                    <div style="margin-top:10px" class="form-group">
-                                        <!-- ERROR PROVIDER -->
-                                        <span id = "dishDescrp-error" class="label label-danger">Format: dd-mm-gggg</span>
-                                    </div>
-                                </div>
-                                
-                                  
-                                <div class="form-group">
-                                    <label for="dishPrice" class="col-md-3 control-label">Cena*</label>
-                                    <div class="col-md-9">
-                                        <input type="text" class="form-control" name="dishName" placeholder="Cena jela" id="dishPrice" required>
-                                    </div>
-                                    <div style="margin-top:10px" class="form-group">
-                                        <!-- ERROR PROVIDER -->
-                                        <span id = "dishPrice-error" class="label label-danger"></span>
-                                    </div>
-                                </div>                                
-                                
-                                
                                 <div class="form-group">
                                     <!-- Button -->                                        
                                     <div class="col-md-offset-3 col-md-9">
                                         	
-                                            <button id="btn-type" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Dodajte jelo</button>
-                                            <button id="btn-updateType" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Izmenite jelo</button>                                      
+                                            <button id="btn-type" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Dodajte tip</button>
+                                            <button id="btn-updateType" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Izmenite tip</button>                                      
 
                                     </div>
                                 </div>              
@@ -678,14 +561,14 @@ function daLiJeRealanBroj(field){
                     <h4 class="modal-title" id="myModalLabel">Potvrdite brisanje
             
                 <div class="modal-body">
-                    <p>Pokusavate da obrisete jelo.</p>
+                    <p>Pokusavate da obrisete tip restorana. Ako tip ima povezanih restorana NECE biti obrisan. Mozete brisati samo tipove koji nemaju za sebe nista povezano.</p>
                     <p>Da li zelite da nastavite?</p>
                     <p class="debug-url"></p>
                 </div>
                 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Odustani</button>
-                    <a class="btn btn-danger btn-ok">Obrisi</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger btn-ok">Delete</a>
                 </div>
             </div>
         </div>

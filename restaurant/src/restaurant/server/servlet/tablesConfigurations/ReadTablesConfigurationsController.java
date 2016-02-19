@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import restaurant.server.entity.Restaurant;
+import restaurant.server.entity.RestaurantTable;
 import restaurant.server.entity.RestaurantType;
 import restaurant.server.entity.Street;
 import restaurant.server.entity.TablesConfiguration;
 import restaurant.server.entity.User;
 import restaurant.server.session.RestaurantDaoLocal;
+import restaurant.server.session.RestaurantTableDaoLocal;
 import restaurant.server.session.TablesConfigurationDaoLocal;
 
 public class ReadTablesConfigurationsController extends HttpServlet{
@@ -25,6 +27,8 @@ public class ReadTablesConfigurationsController extends HttpServlet{
 	private TablesConfigurationDaoLocal tablesConfigurationDao;
 	@EJB
 	private RestaurantDaoLocal restaurantDao;
+	@EJB
+	private RestaurantTableDaoLocal tableDao;
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -48,6 +52,9 @@ public class ReadTablesConfigurationsController extends HttpServlet{
 			
 			List<Restaurant> restaurants = restaurantDao.findAll();
 			req.getSession().setAttribute("restaurants", restaurants);
+			
+			List<RestaurantTable> tables = tableDao.findAll();
+			req.getSession().setAttribute("tables", tables);
 
 			resp.sendRedirect(resp.encodeRedirectURL("../../restaurant-menager/restaurant-menager.jsp"));
 		}

@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -41,7 +42,7 @@ public class RestaurantTable implements Serializable{
 	private Integer col;
 	
 	@Column(name = "REST_TABLE_RES", nullable = false)
-	private Boolean reserved;
+	private Boolean reserved = false;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "REST_TABLE_RES_DATE")
@@ -54,7 +55,7 @@ public class RestaurantTable implements Serializable{
 	@JoinColumn(name = "TAB_CONF_ID", referencedColumnName = "TAB_CONF_ID")
 	private TablesConfiguration tablesConfiguration;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "restaurantTable") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurantTable") //mappedBy says that owning side is street
 	private Set<Reservation> reservations = new HashSet<Reservation>();
 	
 	public void add(Reservation reservation) {

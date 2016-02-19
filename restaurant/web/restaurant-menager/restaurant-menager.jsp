@@ -1,3 +1,6 @@
+<%@page import="restaurant.server.entity.RestaurantTable"%>
+<%@page import="java.util.List"%>
+<%@page import="restaurant.server.entity.TablesConfiguration"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>    
@@ -594,10 +597,15 @@ function parseDatumDo(field){
 							Konfiguracije stolova </a>
 						</li>
 						<li >
-							<a href="../api/table/tables">
-							<i class="glyphicon glyphicon-text-width"></i>
-							Stolovi </a>
+							<a href="../api/restaurant/restaurants">
+							<i class="glyphicon glyphicon-registration-mark></i>
+							Restorani </a>
 						</li>
+						<li >
+							<a href="../api/restaurant-type/restaurantTypes">
+							<i class="glyphicon glyphicon-link"></i>
+							Tipovi resotrana </a>
+						</li>	
 						<li>
 							<a href="../api/menu/menus">
 							<i class="glyphicon glyphicon-book"></i>
@@ -668,8 +676,7 @@ function parseDatumDo(field){
             </div>
 		</div>
 	</div>
-                    
-                    
+                
                     
                     
                     </div></p>

@@ -546,10 +546,15 @@ function parseDatumDo(field){
 							Konfiguracije stolova </a>
 						</li>
 						<li >
-							<a href="../api/table/tables">
-							<i class="glyphicon glyphicon-text-width"></i>
-							Stolovi </a>
+							<a href="../api/restaurant/restaurants">
+							<i class="glyphicon glyphicon-registration-mark"></i>
+							Restorani </a>
 						</li>
+						<li >
+							<a href="../api/restaurant-type/restaurantTypes">
+							<i class="glyphicon glyphicon-link"></i>
+							Tipovi resotrana </a>
+						</li>						
 						<li  class="active" >
 							<a href="#">
 							<i class="glyphicon glyphicon-book"></i>

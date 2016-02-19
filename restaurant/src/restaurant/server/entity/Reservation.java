@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -57,7 +58,7 @@ public class Reservation implements Serializable{
 	@JoinColumn(name = "REST_TABLE_ID", referencedColumnName = "REST_TABLE_ID")
 	private RestaurantTable restaurantTable;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "reservation") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "reservation") //mappedBy says that owning side is street
 	private Set<Invitation> invitations = new HashSet<Invitation>();
 	
 	public void add(Invitation invitation) {

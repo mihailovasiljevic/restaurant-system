@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import javax.ejb.EJB;
@@ -47,6 +48,8 @@ public class CreateTablesConfigurationController extends HttpServlet{
 	private TablesConfigurationDaoLocal tablesConfigurationDao;
 	@EJB
 	private RestaurantTableDaoLocal tableDao;
+
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -161,6 +164,7 @@ public class CreateTablesConfigurationController extends HttpServlet{
 								tablesConfigurationDao.merge(((TablesConfiguration)it.next()));
 							}
 					}
+					/*
 					TablesConfiguration lastConf = getLastElement(rst.getTablesConfigurations());
 					if(lastConf.getTables().size() > 0){
 						Iterator<RestaurantTable> tablesIt = lastConf.getTables().iterator();
@@ -171,7 +175,29 @@ public class CreateTablesConfigurationController extends HttpServlet{
 							}
 						}
 					}
+					*/
 				}
+				
+				for(int i = 0; i < persisted.getNumberOfRows(); i++){
+					for(int j = 0; j < persisted.getNumberOfCols(); j++){
+						int randomCol = (int)(Math.random() * (persisted.getNumberOfCols() + 1));
+						if(j != randomCol){
+							RestaurantTable table = new RestaurantTable();
+							table.setName("table"+i+j);
+							table.setReserved(false);
+							table.setCol(j);
+							table.setRow(i);
+							RestaurantTable persTable = tableDao.persist(table);
+							if(persTable == null){
+								resp.setContentType("application/json; charset=utf-8");
+								PrintWriter out = resp.getWriter();
+								resultMapper.writeValue(out, "Nije uspelo cuvanje stola.");
+								return;								
+							}
+						}
+					}
+				}
+				
 				
 				rst.add(persisted);
 				restaurantDao.merge(rst);
