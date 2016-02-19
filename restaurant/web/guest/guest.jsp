@@ -214,7 +214,60 @@
                             }
                     });  
         
+                $("#btn-search").click(
+                    function(){
+                        var searchFriendsBy = $("#searchFriendsBy :selected").val();
+                        var searchFriends = $("#searchFriends").val();
+                        var allGood = false;
+                          
+                            if( searchFriends == "" || searchFriends == undefined || searchFriends == null ) {
+                                $("#searchFriends-error").text("Unesite nesto u polje za pretragu");
 
+                                allGood = false;
+                            } else {
+                                $("#searchFriends-error").text("");
+
+                                allGood = true;
+                            }  
+                        
+                            if(allGood == true){
+                                $.ajaxSetup({async:false});
+                                $.ajax({
+                                      url: "../api/guest/searchFriends",
+                                      type: 'post',
+                                      contentType: "application/x-www-form-urlencoded",
+                                      data: {
+                                       searchData:JSON.stringify({
+                                           searchFriendsBy:searchFriendsBy,
+                                           searchFriends: searchFriends
+                                       }),    
+                                       cache: false,
+                                       dataType:'json'
+                                    },
+                                      success: function (data, status) {
+                                        if(data == "USPEH"){
+                                             window.location.href = "/restaurant/guest/guest.jsp";
+                                             $('#btn-updateType').hide();
+                                             $('#btn-type').show();
+                                             return;
+                                        }else{
+                                            window.location.href = "/restaurant/guest/guest.jsp";
+                                            $("#confName-error").text(data);
+                                            $("#updateBox").hide();
+                                            $("#myModal").hide();
+                                            return;
+                                        }
+                                        //alert("Data: "+ data);
+                                        console.log(data);
+                                        console.log(status);
+                                      },
+                                      error: function (xhr, desc, err) {
+                                        console.log(xhr);
+                                      },
+                                    });
+                                $.ajaxSetup({async:true});
+                            }
+                    }); 
             
         });
 
@@ -357,7 +410,7 @@
                                 <div class="form-group">
                                     <label for="userStreet" class="col-md-3 control-label">Adresa</label>
                                     <div class="col-md-9">
-                                        <select id="userStreet">
+                                        <select id="userStreet" class="form-control">
                                             <option value="${sessionScope.user.address.street.id}">${sessionScope.user.address.street.name}</option>
                                             <c:forEach var="i" items="${sessionScope.streets}">
                                                 <c:if test="${sessionScope.user.address.street.id != i.id}">
@@ -439,7 +492,84 @@
                                 </div>  
 
                         </form>
+                        <p><h2>Prijatelji</h2></p>
+                   	<form id="changePassword" class="form-horizontal" role="form">
+                                  
+                                <div class="form-group">
+                                    <label for="searchFriendsBy" class="col-md-3 control-label">Pretrazi prijatelje za dodavanje</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" id="searchFriendsBy">
+                                            <option value="0">Pretrazi po imenu</option>
+                                            <option value="1">Pretrazi po prezimenu</option>
+                                        </select>
+                                        
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="searchFriends" class="col-md-3 control-label">Unesite ime ili prezime: </label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" name="searchFriends" id="searchFriends">
+                                    </div>
+                                    <div style="margin-top:10px" class="form-group">
+                                        <!-- ERROR PROVIDER -->
+                                        <span id = "searchFriends-error" class="label label-danger"></span>
+                                    </div>
+                                </div>
+                                 <div class="form-group">
+                                    <!-- Button -->                                        
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button id="btn-search" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Pretrazi</button>                        
+                                    </div>
+                                </div>  
 
+                        </form>                        
+                        
+                <c:if test="${sessionScope.friends != null}">  
+                 <div class="container">
+                    <div class="row">
+                          <div class="table-responsive">
+                            <table class="table table-hover">
+                              <thead>
+                                <tr>
+                                  <th>Slika</th>
+                                  <th>Ime</th>
+                                  <th>Prezime</th>
+                                  <th>&nbsp;</th>
+                                  <th>&nbsp;</th>
+                                </tr>
+                              </thead>
+                              <tbody id="restaurantTable">
+                                <c:forEach var="i" items="${sessionScope.friends}">
+                                    <tr>
+                                         <c:if test="${i.image == null}">
+                                            <td><img src="../img/noPicture.png" class="img-responsive" alt="" width="32px" height="32px"></td>
+                                        </c:if>
+                                        <c:if test="${i.image != null}">
+                                            <td><img src="${i.image.path}" class="img-responsive" alt="{sessionScope.image.realName}" width="32px" height="32px"></td>
+                                        </c:if>                                       
+                                        <td>${i.name}</td>
+                                        <td>${i.surname}</td>
+                                        
+                                        <c:forEach var="j" items="${sessionScope.user.myFriends}">
+                                            <c:if test="${j.id != i.id}">
+                                                <td><a href="#" data-href="../api/restaurant-menager/deleteRestaurantMenager?userId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Dodaj</a></td>    
+                                            </c:if>
+                                            <c:if test="${j.id == i.id}">
+                                                <td><a href="#" data-href="../api/restaurant-menager/deleteRestaurantMenager?userId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Ukloni iz liste prijatelja</a></td>
+                                            </c:if>
+                                        </c:forEach>
+                                    </tr>
+                                </c:forEach> 
+                                </tbody>
+                              </table>
+                            </div>    
+                            <div class="col-md-12 text-center">
+                                <ul class="pagination pagination-lg pager" id="myPager"></ul>
+                            </div>
+                    </div>
+                </div>
+                    
+                    </c:if> 
 
                     </div>
                 </div>
@@ -500,17 +630,17 @@
             
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Potvrdite izmenu lozinke
+                    <h4 class="modal-title" id="myModalLabel">Potvrdite brisanje iz liste prijatelja/h4>
             
                 <div class="modal-body">
-                    <p>Pokusavate da izmenite lozinku.</p>
+                    <p>Pokusavate da uklonite prijatelja.</p>
                     <p>Da li zelite da nastavite?</p>
                     <p class="debug-url"></p>
                 </div>
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Odustani</button>
-                    <a class="btn btn-danger btn-ok">Izmeni</a>
+                    <a class="btn btn-danger btn-ok">Ukloni</a>
                 </div>
             </div>
         </div>

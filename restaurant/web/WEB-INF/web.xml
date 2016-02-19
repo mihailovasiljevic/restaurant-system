@@ -440,6 +440,21 @@
 	</servlet-mapping>	
 
 	<servlet>
+		<display-name>searchFriends</display-name>
+		<servlet-name>SearchFriendsController</servlet-name>
+		<servlet-class>restaurant.server.servlet.guests.SearchFriendsController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SearchFriendsController</servlet-name>
+		<url-pattern>/api/guest/searchFriends</url-pattern>
+	</servlet-mapping>	
+
+	<servlet>
 		<display-name>fileUpload</display-name>
 		<servlet-name>FileUploadHandler</servlet-name>
 		<servlet-class>restaurant.server.servlet.restaurantMenagers.FileUploadHandler</servlet-class>
