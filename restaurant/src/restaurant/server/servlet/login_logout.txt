@@ -1,0 +1,103 @@
+WebServlet(name = "Login", urlPatterns = {"/authorization/Login"})
+public class Login extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+
+        PrintWriter out = response.getWriter();
+        try {
+            System.out.println("Reached login");
+            if (!Authorization.isLoggedIn(request)) {
+                String login = request.getParameter("login");
+                String password = request.getParameter("password");
+                boolean remember = Boolean.parseBoolean(request.getParameter("remember"));
+
+                System.out.println("Reached login "+login+", "+password+","+remember);
+                if (!Authorization.validateLogin(login, password)) {
+                    Logger.getLogger(Login.class.getName()).log(Level.INFO,
+                            "Failed login (invalid password) from {0} for {1}",
+                            new String[]{request.getRemoteAddr(), login});
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid username or password!");
+                    return;
+                }
+                //So far so good... Get the user object from the database (unique login names)
+                DB_User user = DB_User.get(login);
+                if (!user.getActive()) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Your account is no longer active!");
+                    return;
+                }
+                String sessionID = Authorization.createNewSession(user, request.getRemoteAddr(), remember);
+                Cookie sessionCookie = new Cookie("my_application.session_id", sessionID);
+                sessionCookie.setDomain(request.getServerName());
+                sessionCookie.setPath(request.getContextPath());
+                if (remember) {
+                    sessionCookie.setMaxAge(ServerConfig.getLoginSessionTimeout());
+                }
+
+                response.addCookie(sessionCookie);
+            }
+            response.sendRedirect("/app/myAccount.jsp");
+        } catch (Throwable ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            ServletUtils.handleException(ex, response);
+        } finally {
+            out.flush();
+            out.close();
+        }
+    }
+
+    // +HttpSerlet default methods here. (doGet, doPost, getServletInfo)
+}
+Logout servlet example:
+
+@WebServlet(name = "Logout", urlPatterns = {"/authorization/Logout"})
+public class Logout extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        try {
+            String sessionID = ServletUtils.getCookieValue(request.getCookies(),"my_application.session_id");
+
+            if (sessionID != null) {
+                SQLManager sql = ServerConfig.getSql();
+                sql.deleteFromTable("login_session", "session_id = " + SQLString.toSql(sessionID));
+
+                Cookie sessionCookie = new Cookie("my_application.session_id", null);
+                sessionCookie.setDomain(ServletUtils.getCookieDomain(request));
+                sessionCookie.setPath("/you_app_name");
+                sessionCookie.setMaxAge(0);
+                response.addCookie(sessionCookie);
+            }
+            response.sendRedirect("/security/login.jsp");
+
+        } catch (Throwable ex) {
+            Logger.getLogger(Logout.class.getName()).log(Level.SEVERE, null, ex);
+            ServletUtils.handleException(ex, response);
+        } finally {
+            out.close();
+        }
+    }
+}

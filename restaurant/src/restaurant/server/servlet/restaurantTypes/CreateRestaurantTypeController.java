@@ -1,7 +1,9 @@
 package restaurant.server.servlet.restaurantTypes;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import restaurant.externals.ResultCode;
 import restaurant.externals.mapper.RestaurantTypeMapper;
 import restaurant.server.entity.RestaurantType;
 import restaurant.server.entity.User;
@@ -48,11 +51,16 @@ public class CreateRestaurantTypeController extends HttpServlet {
 				return;
 			}
 			try{
-				String name;
+				String name = null;
 				int userId;
-				name = req.getParameter("typeName");
-				Pattern whitespace = Pattern.compile("\\s*?");
-				// Proveriti samo da li je nesto uneo u polje!
+				ObjectMapper resultMapper = new ObjectMapper();
+				ObjectMapper mapper = new ObjectMapper();
+				HashMap<String, String> data = mapper.readValue(req.getParameter("restaurantTypeData"), HashMap.class);
+				for(String key : data.keySet()){
+					if(key.equals("typeName"))
+						name = data.get(key);
+				}
+				
 				if(name == null || name.equals("") || name.equals(" ")){
 					System.out.println("Polje je prazno!");
 					resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant-type/createRestaurantType.jsp"));
@@ -65,20 +73,17 @@ public class CreateRestaurantTypeController extends HttpServlet {
 				
 				restaurantTypeDao.persist(rt);
 				
-				System.out.println("Sacuvan tip!");
-				/*
-				resp.setContentType("application/json"); 
-				RestaurantTypeMapper rtm = new RestaurantTypeMapper();
-				ObjectMapper objMap = new ObjectMapper();
-				objMap.writeValue(resp.getOutputStream(), rtm.objectToJSON(rt));
-				*/
-				resp.sendRedirect(resp.encodeRedirectURL("./restaurantTypes"));
+		        resp.setContentType("application/json; charset=utf-8");
+		        PrintWriter out = resp.getWriter();
+		        resultMapper.writeValue(out, "USPEH");
+				return;
 				
 			}catch (IOException e) {
-				System.out.println("Unos nije uspeo.");
-				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant-type/createRestaurantType.jsp"));
-				log.error(e);
-				throw e;
+				ObjectMapper resultMapper = new ObjectMapper();
+		        resp.setContentType("application/json; charset=utf-8");
+		        PrintWriter out = resp.getWriter();
+		        resultMapper.writeValue(out, "Nismo uspeli da sacuvamo tip restorana.");
+				return;
 			}
 		}
 		

@@ -38,18 +38,13 @@ public class ReadRestaurantTypesController extends HttpServlet {
 						.encodeRedirectURL("../../insufficient_privileges.jsp"));
 				return;
 			}
-			List<RestaurantType> restaurantTypes = restaurantTypeDao.findRestaurantTypeByUserId(user.getId());
-			List<RestaurantType> sessionRestaurantTypes = (List<RestaurantType> )req.getSession().getAttribute("restaurantTypes");
-			if(sessionRestaurantTypes == null)
-				req.getSession().setAttribute("restaurantTypes", restaurantTypes);
-			else{
-				sessionRestaurantTypes = null;
-				req.getSession().removeAttribute("restaurantTypes");
-				req.getSession().setAttribute("restaurantTypes", restaurantTypes);
-			}
+			List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
+
+			req.getSession().setAttribute("restaurantTypes", restaurantTypes);
+
 			
 			System.out.println("Iscitani tipovi!");
-			resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurant-type/restaurantTypes.jsp"));
+			resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/system-menager.jsp"));
 		}
 	}
 

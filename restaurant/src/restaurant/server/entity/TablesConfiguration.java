@@ -11,10 +11,13 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -22,6 +25,9 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "TABLES_CONFIGURATION")
+@NamedQueries({
+	@NamedQuery(name = "findTablesConfigurationsByUserId", query = "SELECT k FROM TablesConfiguration k WHERE k.userRestaurantMenager.id like :userId"),
+})
 public class TablesConfiguration implements Serializable{
 	
 	private static final long serialVersionUID = -9073143508246375400L;
@@ -34,11 +40,11 @@ public class TablesConfiguration implements Serializable{
 	@Column(name = "TAB_CONF_NAME", nullable = false, length=64)
 	private String name;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TAB_CONF_DATE_FROM", nullable = false)
 	private Date dateFrom;
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TAB_CONF_DATE_TO")
 	private Date dateTo;
 
@@ -59,7 +65,7 @@ public class TablesConfiguration implements Serializable{
 	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
 	private Restaurant restaurant;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "tablesConfiguration") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "tablesConfiguration") //mappedBy says that owning side is street
 	private Set<RestaurantTable> tables = new HashSet<RestaurantTable>();
 	
 	public void add(RestaurantTable table) {

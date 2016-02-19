@@ -2,6 +2,8 @@ package restaurant.server.session;
 
 import restaurant.server.entity.User;
 
+import java.util.List;
+
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
@@ -17,6 +19,15 @@ public class UserDaoBean extends GenericDaoBean<User, Integer>
         q.setParameter("userEmail", email);
 
         User result = (User)q.getSingleResult();
+        return result;
+    }
+    
+    public List<User> findRestaurantMenagerBySystemMenagerId(Integer userId){
+        Query q = em.createNamedQuery("findRestaurantMenagerBySystemMenagerId");
+        q.setParameter("userId", userId);
+        
+        @SuppressWarnings("unchecked")
+		List<User> result = q.getResultList();
         return result;
     }
 }

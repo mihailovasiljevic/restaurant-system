@@ -1,5 +1,6 @@
 package restaurant.server.servlet.restaurants;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.ejb.EJB;
@@ -9,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import restaurant.server.entity.Restaurant;
-import restaurant.server.entity.User;
-import restaurant.server.session.RestaurantDaoLocal;
+import restaurant.server.entity.*;
+import restaurant.server.session.*;
 
 public class DeleteRestaurantController extends HttpServlet{
 
@@ -19,6 +20,7 @@ public class DeleteRestaurantController extends HttpServlet{
 	private RestaurantDaoLocal restaurantDao;
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
@@ -35,15 +37,20 @@ public class DeleteRestaurantController extends HttpServlet{
 			}
 			try {
 				int id = Integer.parseInt(req.getParameter("restaurantId"));
-				Restaurant rt = restaurantDao.findById(id);
-				System.out.println("");
-				if (rt != null) { // da nije neko u medjuvremno obrisao
-					if (rt.getReservations().size() == 0 && rt.getVisits().size() == 0 && rt.getTablesConfigurations().size() == 0 && rt.getMenus().size() == 0) {
-						restaurantDao.remove(rt);
+				Restaurant rest = restaurantDao.findById(id);
+				if (rest != null) { // da nije neko u medjuvremno obrisao
+					if (rest.getRestaurantMenagers().size() == 0 || rest.getTablesConfigurations().size() == 0 ||
+							rest.getVisits().size() == 0) {
+						
+						
+						restaurantDao.remove(rest);
 						System.out.println("Brisanje: " + id + " uspelo.");
+						
+						
+						
 						resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
 					}else{
-						System.out.println("Brisanje: " + id + " nije moguce jer ima rezervaciej i posete vezane za sebe!");
+						System.out.println("Brisanje: " + id + " nije moguce jer ima restorane vezane za sebe!");
 						resp.sendRedirect(resp.encodeRedirectURL("./restaurants"));
 					}
 				} else {

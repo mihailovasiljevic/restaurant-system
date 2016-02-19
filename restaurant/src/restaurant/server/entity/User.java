@@ -14,7 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "USER")
 @NamedQueries({
 	@NamedQuery(name = "findUserByEmail", query = "SELECT k FROM User k WHERE k.email like :userEmail"),
-	@NamedQuery(name = "findMenagerByUserId", query = "SELECT k FROM User k WHERE k.systemMenager.id like :userId")
+	@NamedQuery(name = "findRestaurantMenagerBySystemMenagerId", query = "SELECT k FROM User k WHERE k.systemMenager.id like :userId")
 }) 
 
 
@@ -42,6 +42,19 @@ public class User implements Serializable{
 
     @Column(name = "USER_SALT", nullable = false, length = 260)
     private byte[] salt;
+   
+    @Column(name = "USER_SESSION_ACTIVE", nullable = false)
+    private Boolean isSessionActive = false;
+    
+    
+    @Column(name = "USER_ACCOUNT_TYPE", nullable = false)
+    private String accountType = "LOCAL";
+    
+    @Column(name = "USER_SESSION_ID", nullable = false)
+    private String sessionId = "";
+    
+    @Column(name = "USER_ACTIVATION_TOKEN")
+    private byte[] token;
 
 	@ManyToOne
 	@JoinColumn(name = "USER_TYPE_ID", referencedColumnName = "USER_TYPE_ID", nullable = false)
@@ -78,7 +91,7 @@ public class User implements Serializable{
 		myFriends.remove(friend);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userGuestInvitationSender") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userGuestInvitationSender") //mappedBy says that owning side is street
 	private Set<Invitation> sentInvitations = new HashSet<Invitation>();
 	
 	public void add(Invitation invitation) {
@@ -93,7 +106,7 @@ public class User implements Serializable{
 		sentInvitations.remove(invitation);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userGuestInvitationReceived") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userGuestInvitationReceived") //mappedBy says that owning side is street
 	private Set<Invitation> receivedInvitations = new HashSet<Invitation>();
 	
 	public void addInv(Invitation invitation) {
@@ -108,7 +121,7 @@ public class User implements Serializable{
 		receivedInvitations.remove(invitation);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userGuestReservationMaker") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userGuestReservationMaker") //mappedBy says that owning side is street
 	private Set<Reservation> reservations = new HashSet<Reservation>();
 	
 	public void add(Reservation reservation) {
@@ -123,7 +136,7 @@ public class User implements Serializable{
 		reservations.remove(reservation);
 	}
 
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "user") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "user") //mappedBy says that owning side is street
 	private Set<Visit> visits = new HashSet<Visit>();
 	
 	public void add(Visit visit) {
@@ -142,7 +155,7 @@ public class User implements Serializable{
 	
 	/* SYSTEM MENAGER FIELDS*/
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userSystemMenager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userSystemMenager") //mappedBy says that owning side is street
 	private Set<Restaurant> restaurants = new HashSet<Restaurant>();
 	
 	public void add(Restaurant restaurant) {
@@ -157,7 +170,7 @@ public class User implements Serializable{
 		restaurants.remove(restaurant);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userSystemMenager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userSystemMenager") //mappedBy says that owning side is street
 	private Set<RestaurantType> restaurantTypes = new HashSet<RestaurantType>();
 	
 	public void add(RestaurantType restaurantType) {
@@ -172,7 +185,7 @@ public class User implements Serializable{
 		restaurantTypes.remove(restaurantType);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "systemMenager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "systemMenager") //mappedBy says that owning side is street
 	private Set<User> restaurantMenagers = new HashSet<User>();
 	
 	public void add(User restaurantMenager) {
@@ -194,7 +207,11 @@ public class User implements Serializable{
 	@JoinColumn(name = "USER_SYS_MEN_ID", referencedColumnName = "USER_ID")
 	private User systemMenager;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userRestaurantMenager") //mappedBy says that owning side is street
+	@ManyToOne
+	@JoinColumn(name = "USER_REST_MEN_REST", referencedColumnName = "REST_ID")
+	private Restaurant restaurantMenagedBy;
+	
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userRestaurantMenager") //mappedBy says that owning side is street
 	private Set<TablesConfiguration> tablesConfigurations = new HashSet<TablesConfiguration>();
 	
 	public void add(TablesConfiguration tablesConfiguration) {
@@ -209,7 +226,7 @@ public class User implements Serializable{
 		tablesConfigurations.remove(tablesConfiguration);
 	}
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "userRestaurantMenager") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userRestaurantMenager") //mappedBy says that owning side is street
 	private Set<Menu> menus = new HashSet<Menu>();
 	
 	public void add(Menu menu) {
@@ -394,22 +411,67 @@ public class User implements Serializable{
 	public void setVisits(Set<Visit> visits) {
 		this.visits = visits;
 	}
+	
 
-	public User(String name, String surname, String email, byte[] password,
-			byte[] salt, UserType userType, Address address,
-			Image image, Boolean activated,
-			Restaurant restaurant, Set<User> myFriends,
-			Set<Invitation> sentInvitations,
-			Set<Invitation> receivedInvitations, Set<Reservation> reservations,
-			Set<Restaurant> restaurants, Set<RestaurantType> restaurantTypes,
-			Set<User> restaurantMenagers, User systemMenager,
-			Set<TablesConfiguration> tablesConfigurations, Set<Menu> menus, Set<Visit> visits) {
+	public Boolean getIsSessionActive() {
+		return isSessionActive;
+	}
+
+	public void setIsSessionActive(Boolean isSessionActive) {
+		this.isSessionActive = isSessionActive;
+	}
+
+	public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
+	
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+
+	public byte[] getToken() {
+		return token;
+	}
+
+	public void setToken(byte[] token) {
+		this.token = token;
+	}
+
+	public Restaurant getRestaurantMenagedBy() {
+		return restaurantMenagedBy;
+	}
+
+	public void setRestaurantMenagedBy(Restaurant restaurantMenagedBy) {
+		this.restaurantMenagedBy = restaurantMenagedBy;
+	}
+
+
+	public User(String name, String surname, String email, byte[] password, byte[] salt, Boolean isSessionActive,
+			String accountType, String sessionId, byte[] token, UserType userType, Address address, Image image,
+			Boolean activated, Set<User> myFriends, Set<Invitation> sentInvitations,
+			Set<Invitation> receivedInvitations, Set<Reservation> reservations, Set<Visit> visits,
+			Set<Restaurant> restaurants, Set<RestaurantType> restaurantTypes, Set<User> restaurantMenagers,
+			User systemMenager, Restaurant restaurantMenagedBy, Set<TablesConfiguration> tablesConfigurations,
+			Set<Menu> menus) {
 		super();
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
 		this.password = password;
 		this.salt = salt;
+		this.isSessionActive = isSessionActive;
+		this.accountType = accountType;
+		this.sessionId = sessionId;
+		this.token = token;
 		this.userType = userType;
 		this.address = address;
 		this.image = image;
@@ -418,13 +480,14 @@ public class User implements Serializable{
 		this.sentInvitations = sentInvitations;
 		this.receivedInvitations = receivedInvitations;
 		this.reservations = reservations;
+		this.visits = visits;
 		this.restaurants = restaurants;
 		this.restaurantTypes = restaurantTypes;
 		this.restaurantMenagers = restaurantMenagers;
 		this.systemMenager = systemMenager;
+		this.restaurantMenagedBy = restaurantMenagedBy;
 		this.tablesConfigurations = tablesConfigurations;
 		this.menus = menus;
-		this.visits = visits;
 	}
 
 	public User() {
