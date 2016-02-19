@@ -176,53 +176,6 @@
                             
                     });
             
-                    $( "#restaurantTable" ).on( "click", "i", function( event ) {
-                            var typeId = $(this).children().last().val();
-                        
-                                $.ajaxSetup({async:false});
-                                $.ajax({
-                                      url: "../api/restaurant-type/prepareUpdateRestaurantType",
-                                      type: 'post',
-                                      contentType: "application/x-www-form-urlencoded",
-                                      data: {
-                                       restaurantTypeId:JSON.stringify({
-                                           typeId:typeId
-                                       }),    
-                                       cache: false,
-                                       dataType:'json'
-                                    },
-                                      success: function (data, status) {
-                                        if(data != "GRESKA"){
-                                            if($('#typeName').val() != "" && $('#typeName').val() != null && $('#typeName').val() != undefined)
-                                                $('#typeName').val("");
-                                             $('#typeName').val(data);
-                                             $('#btn-updateType').show();
-                                             $('#btn-type').hide();
-                                             $("#typeName-error").text("");
-                                             return;
-                                        }else{
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
-                                            return;
-                                        }
-                                        //alert("Data: "+ data);
-                                        console.log(data);
-                                        console.log(status);
-                                      },
-                                      error: function (xhr, desc, err) {
-                                        console.log(xhr);
-                                      },
-                                    });
-                                $.ajaxSetup({async:true});
-                            
-                    });
-            
-                    $('#confirm-delete').on('show.bs.modal', function(e) {
-                        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
-
-                        $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
-                    });
-            
             
         });
         

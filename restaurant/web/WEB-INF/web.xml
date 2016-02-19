@@ -332,6 +332,84 @@
 		<url-pattern>/api/menu/createMenu</url-pattern>
 	</servlet-mapping>
 	
+	
+	<servlet>
+		<display-name>readDishes</display-name>
+		<servlet-name>ReadDishesController</servlet-name>
+		<servlet-class>restaurant.server.servlet.dishes.ReadDishesController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReadDishesController</servlet-name>
+		<url-pattern>/api/dish/dishes</url-pattern>
+	</servlet-mapping>
+
+
+	<servlet>
+		<display-name>createDishController</display-name>
+		<servlet-name>CreateDishController</servlet-name>
+		<servlet-class>restaurant.server.servlet.dishes.CreateDishController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateDishController</servlet-name>
+		<url-pattern>/api/dish/createDish</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>deleteDishController</display-name>
+		<servlet-name>DeleteDishController</servlet-name>
+		<servlet-class>restaurant.server.servlet.dishes.DeleteDishController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteDishController</servlet-name>
+		<url-pattern>/api/dish/deleteDish</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>updateDishController</display-name>
+		<servlet-name>UpdateDishController</servlet-name>
+		<servlet-class>restaurant.server.servlet.dishes.UpdateDishController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UpdateDishController</servlet-name>
+		<url-pattern>/api/dish/updateDish</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<display-name>prepareUpdateDishController</display-name>
+		<servlet-name>PrepareUpdateDishController</servlet-name>
+		<servlet-class>restaurant.server.servlet.dishes.PrepareUpdateDishController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PrepareUpdateDishController</servlet-name>
+		<url-pattern>/api/dish/prepareUpdateDish</url-pattern>
+	</servlet-mapping>	
+	
+
 
 	<servlet>
 		<display-name>fileUpload</display-name>

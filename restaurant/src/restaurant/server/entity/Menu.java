@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -59,7 +60,7 @@ public class Menu implements Serializable{
 	@Column(name = "MENU_CURR") //nullable dok se ne promeni  insert dao bean
 	private Boolean current = false;
 	
-	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "menu") //mappedBy says that owning side is street
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "menu") //mappedBy says that owning side is street
 	private Set<Dish> dishes = new HashSet<Dish>();
 	
 	public void add(Dish dish) {
