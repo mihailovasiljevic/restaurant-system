@@ -590,33 +590,33 @@ function parseDatumDo(field){
 				<!-- END SIDEBAR BUTTONS -->
 				<!-- SIDEBAR MENU -->
 				<div class="profile-usermenu">
-					<ul class="nav">
-						<li class="active" id="liTablesConfigurations">
-							<a href="#" id="aTablesConfigurations">
-							<i class="glyphicon glyphicon-align-center"></i>
-							Konfiguracije stolova </a>
-						</li>
-						<li >
-							<a href="../api/restaurant/restaurants">
-							<i class="glyphicon glyphicon-registration-mark></i>
-							Restorani </a>
-						</li>
-						<li >
-							<a href="../api/restaurant-type/restaurantTypes">
-							<i class="glyphicon glyphicon-link"></i>
-							Tipovi resotrana </a>
-						</li>	
-						<li>
-							<a href="../api/menu/menus">
-							<i class="glyphicon glyphicon-book"></i>
-							Jelovnici </a>
-						</li>
-                        <li>
-							<a href="../api/dish/dishes">
-							<i class="glyphicon glyphicon-list"></i>
-							Jela</a>
-						</li>
-					</ul>
+                    <ul class="nav">
+                        <li id="liTablesConfigurations" class="active">
+                            <a href="#" id="aTablesConfigurations">
+                            <i class="glyphicon glyphicon-align-center"></i>
+                            Konfiguracije stolova </a>
+                        </li>
+                        <li >
+                            <a href="../api/restaurant/restaurants">
+                            <i class="glyphicon glyphicon-registration-mark"></i>
+                            Restorani </a>
+                        </li>
+                        <li  >
+                        <li >
+                            <a href="../api/restaurant-type/restaurantTypes">
+                            <i class="glyphicon glyphicon-link"></i>
+                            Tipovi resotrana </a>
+                        </li>   
+                            <a href="../api/menu/menus">
+                            <i class="glyphicon glyphicon-book"></i>
+                            Jelovnici </a>
+                        </li>
+                        <li >
+                            <a href="../api/dish/dishes">
+                            <i class="glyphicon glyphicon-list"></i>
+                            Jela</a>
+                        </li>
+                    </ul>
 				</div>
 				<!-- END MENU -->
 			</div>

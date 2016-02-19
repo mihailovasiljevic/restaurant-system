@@ -31,7 +31,7 @@ public class ReadRestaurantTypesController extends HttpServlet {
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
-			if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
+			if ((user.getUserType().getName()).equals("GUEST")) {
 				System.out
 						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
 				resp.sendRedirect(resp
@@ -44,7 +44,12 @@ public class ReadRestaurantTypesController extends HttpServlet {
 
 			
 			System.out.println("Iscitani tipovi!");
-			resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/system-menager.jsp"));
+			if((user.getUserType().getName()).equals("SYSTEM_MENAGER")){
+				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/system-menager.jsp"));
+			}
+			else{
+				resp.sendRedirect(resp.encodeRedirectURL("../../restaurant-menager/restaurantTypes.jsp"));
+			}
 		}
 	}
 

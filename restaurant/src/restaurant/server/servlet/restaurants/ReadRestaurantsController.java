@@ -41,7 +41,7 @@ public class ReadRestaurantsController extends HttpServlet {
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
-			if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
+			if ((user.getUserType().getName()).equals("GUEST")) {
 				System.out
 						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
 				resp.sendRedirect(resp
@@ -61,8 +61,11 @@ public class ReadRestaurantsController extends HttpServlet {
 			String query = "SELECT k FROM User k WHERE k.userType.name like 'RESTAURANT_MENAGER'";
 			List<User> restaurantMenagers = userDao.findBy(query);
 			req.getSession().setAttribute("restaurantMenagers", restaurantMenagers);
+			if ((user.getUserType().getName()).equals("SYSTEM_MENAGER"))
+				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurants.jsp"));
+			else
+				resp.sendRedirect(resp.encodeRedirectURL("../../restaurant-menager/restaurants.jsp"));
 			
-			resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurants.jsp"));
 		}
 	}
 
