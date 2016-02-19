@@ -91,7 +91,7 @@
                                              window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                             return;
                                         }else if(data == "USPEH__RESTORAN_MENADZER"){
-                                             window.location.href = "/restaurant/restaurant-menager/restaurant-menager.jsp";
+                                             window.location.href = "/restaurant/api/tables-configuration/tablesConfigurations";
                                             return;
                                         }
                                         $( "#email-error" ).text(data);
@@ -383,10 +383,10 @@
 			       <c:redirect url="./guest/guest.jsp" />
 			    </c:when>
 					<c:when test="${sessionScope.user.userType.name eq 'SYSTEM_MENAGER'}">
-			       <c:redirect url="./system-menager/system-menager.jsp" />
+			       <c:redirect url="./api/restaurant-type/restaurantTypes" />
 			    </c:when>
 					<c:otherwise>
-						<c:redirect url="./restaurant-menager/restaurant-menager.jsp" />
+						<c:redirect url="./api/tables-configuration/tablesConfigurations" />
       		</c:otherwise>
 			</c:choose>
 		</c:if>

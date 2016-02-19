@@ -46,7 +46,7 @@ public class Menu implements Serializable{
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "MENU_DATE_TO")
-	private Date dateTo;
+	private Date dateTo = null;
 	
 	@ManyToOne
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
@@ -56,8 +56,8 @@ public class Menu implements Serializable{
 	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
 	private Restaurant restaurant;
 	
-	@Column(name = "MENU_CURR", nullable = true) //nullable dok se ne promeni  insert dao bean
-	private Boolean current;
+	@Column(name = "MENU_CURR") //nullable dok se ne promeni  insert dao bean
+	private Boolean current = false;
 	
 	@OneToMany(cascade = { ALL }, fetch = LAZY, mappedBy = "menu") //mappedBy says that owning side is street
 	private Set<Dish> dishes = new HashSet<Dish>();

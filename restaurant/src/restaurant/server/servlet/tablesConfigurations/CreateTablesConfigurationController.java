@@ -5,11 +5,13 @@ import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -22,11 +24,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import restaurant.externals.ResultCode;
 import restaurant.server.entity.Address;
 import restaurant.server.entity.Restaurant;
+import restaurant.server.entity.RestaurantTable;
 import restaurant.server.entity.RestaurantType;
 import restaurant.server.entity.Street;
 import restaurant.server.entity.TablesConfiguration;
 import restaurant.server.entity.User;
 import restaurant.server.session.RestaurantDaoLocal;
+import restaurant.server.session.RestaurantTableDaoLocal;
 import restaurant.server.session.TablesConfigurationDaoLocal;
 import restaurant.server.session.UserDaoLocal;
 
@@ -41,6 +45,8 @@ public class CreateTablesConfigurationController extends HttpServlet{
 	private UserDaoLocal userDao;
 	@EJB
 	private TablesConfigurationDaoLocal tablesConfigurationDao;
+	@EJB
+	private RestaurantTableDaoLocal tableDao;
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -93,7 +99,7 @@ public class CreateTablesConfigurationController extends HttpServlet{
 							ex.printStackTrace();
 							return;
 						}
-					else if (key.equals("dateFrom")){
+					else if (key.equals("confDateFrom")){
 						String dateFromString = data.get(key);
 						SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 						dateFromString += " 12:00:00";
@@ -123,67 +129,56 @@ public class CreateTablesConfigurationController extends HttpServlet{
 					resultMapper.writeValue(out, "Neko je obrisao restoran u medjvuremenu.");
 					return;
 				}
+
 				TablesConfiguration conf = new TablesConfiguration();
 				conf.setCurrent(true);
-				HashSet<TablesConfiguration> configurations = (HashSet<TablesConfiguration>) rst.getTablesConfigurations();
-				Iterator<TablesConfiguration> it = configurations.iterator();
+				conf.setDateFrom(dateFrom);
+				conf.setDateTo(null);
+				conf.setRestaurant(rst);
+				conf.setName(confName);
+				conf.setUserRestaurantMenager(user);
+				conf.setNumberOfCols(col);
+				conf.setNumberOfRows(row);
+				TablesConfiguration persisted = tablesConfigurationDao.persist(conf);
+				if(persisted == null){
+					resp.setContentType("application/json; charset=utf-8");
+					PrintWriter out = resp.getWriter();
+					resultMapper.writeValue(out, "Nije uspelo cuvanje konfiguracije.");
+					return;
+				}
+
+				user.add(persisted);
+				userDao.merge(user);
 				//postavi sve configuracije do sada na 
-				if(configurations.size() > 0){
+				if(rst.getTablesConfigurations().size() > 0){
+					Iterator<TablesConfiguration> it = rst.getTablesConfigurations().iterator();
 					while(it.hasNext()){
-						it.next().setDateTo(new Date());
-						tablesConfigurationDao.merge(it.next());
+						System.out.println(it.hasNext());
+						if(it.next() != null)
+							if(((TablesConfiguration)it.next()).getDateTo() == null){
+								((TablesConfiguration)it.next()).setDateTo(new Date());
+								((TablesConfiguration)it.next()).setCurrent(!it.next().getCurrent());
+								tablesConfigurationDao.merge(((TablesConfiguration)it.next()));
+							}
+					}
+					TablesConfiguration lastConf = getLastElement(rst.getTablesConfigurations());
+					if(lastConf.getTables().size() > 0){
+						Iterator<RestaurantTable> tablesIt = lastConf.getTables().iterator();
+						while(tablesIt.hasNext()){
+							if(tablesIt.next() != null){
+								tablesIt.next().setTablesConfiguration(persisted);
+								tableDao.merge(tablesIt.next());
+							}
+						}
 					}
 				}
 				
-					Restaurant rst = new Restaurant();
-					rst.setAddress(persistedAdr);
-					rst.setGrade(-1);
-					rst.setName(restaurantName);
-					rst.setUserSystemMenager(user);
-					rst.setRestaurantType(type);
-					
-					rst.setRestaurantType(type);
-					if(menagers.size() > 0){
-						for(int i = 0; i <menagers.size(); i++){
-							User menager = userDao.findById((Integer)menagers.get(i));
-							if(menager == null){
-								resp.setContentType("application/json; charset=utf-8");
-								PrintWriter out = resp.getWriter();
-								resultMapper.writeValue(out, "GRESKA");
-								return;
-							}
-							rst.add(menager);
-							userDao.merge(menager);
-						}
-					}
-					Restaurant persisted = restaurantDao.persist(rst);
-					if(persisted == null){
-						resp.setContentType("application/json; charset=utf-8");
-						PrintWriter out = resp.getWriter();
-						resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
-						return;
-					}
-					
-					for(int i = 0; i < menagers.size(); i++){
-						User menager = userDao.findById((Integer)menagers.get(i));
-						if(menager == null){
-							resp.setContentType("application/json; charset=utf-8");
-							PrintWriter out = resp.getWriter();
-							resultMapper.writeValue(out, "GRESKA");
-							return;
-						}
-						userDao.merge(menager);
-					}
-					persistedAdr.add(rst);
-					addressDao.merge(persistedAdr);
-					
-					type.add(persisted);
-					restaurantTypeDao.merge(type);
-
-					resp.setContentType("application/json; charset=utf-8");
-					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, "USPEH");
-					return;
+				rst.add(persisted);
+				restaurantDao.merge(rst);
+				resp.setContentType("application/json; charset=utf-8");
+				PrintWriter out = resp.getWriter();
+				resultMapper.writeValue(out, "USPEH");
+				return;				
 			}catch(Exception ex){
 				
 				ObjectMapper resultMapper = new ObjectMapper();
@@ -197,11 +192,19 @@ public class CreateTablesConfigurationController extends HttpServlet{
 
 	}
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(req, resp);
 	}
 	
+	private TablesConfiguration getLastElement(Set<TablesConfiguration> set) {
+	    Iterator<TablesConfiguration> itr = set.iterator();
+	    TablesConfiguration lastElement = itr.next();
+	    while(itr.hasNext()) {
+	        lastElement=itr.next();
+	    }
+	    return lastElement;
+	}
 	
 
 }
