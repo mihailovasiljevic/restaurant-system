@@ -69,7 +69,7 @@ public class SearchFriendsController extends HttpServlet{
 				}else{
 					searchBy = "surname";
 				}
-				String query="SELECT k FROM User k WHERE k.userType.name like 'GUEST' and k."+searchBy+" like '%"+searchFriends+"%'";
+				String query="SELECT k FROM User k WHERE k.userType.name like 'GUEST' and k."+searchBy+" like '%"+searchFriends+"%' and k.id <> "+user.getId()+"";
 				List<User> friends = userDao.findBy(query);
 				if(friends != null){
 					req.getSession().setAttribute("friends", friends);
@@ -90,6 +90,7 @@ public class SearchFriendsController extends HttpServlet{
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
 				resultMapper.writeValue(out, "GRESKA");
+				ex.printStackTrace();
 				return;
 			}
 		}

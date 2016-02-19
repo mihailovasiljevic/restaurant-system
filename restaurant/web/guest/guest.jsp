@@ -1,3 +1,5 @@
+<%@page import="java.util.HashSet"%>
+<%@page import="restaurant.server.entity.User"%>
 <%@page import="restaurant.server.entity.RestaurantTable"%>
 <%@page import="java.util.List"%>
 <%@page import="restaurant.server.entity.TablesConfiguration"%>
@@ -268,6 +270,12 @@
                                 $.ajaxSetup({async:true});
                             }
                     }); 
+            
+                   $('#confirm-delete').on('show.bs.modal', function(e) {
+                        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+
+                        $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
+                    });
             
         });
 
@@ -550,14 +558,20 @@
                                         <td>${i.name}</td>
                                         <td>${i.surname}</td>
                                         
-                                        <c:forEach var="j" items="${sessionScope.user.myFriends}">
-                                            <c:if test="${j.id != i.id}">
-                                                <td><a href="#" data-href="../api/restaurant-menager/deleteRestaurantMenager?userId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Dodaj</a></td>    
-                                            </c:if>
-                                            <c:if test="${j.id == i.id}">
-                                                <td><a href="#" data-href="../api/restaurant-menager/deleteRestaurantMenager?userId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Ukloni iz liste prijatelja</a></td>
-                                            </c:if>
-                                        </c:forEach>
+                                        <c:if test="${fn:length(sessionScope.user.myFriends) > 0}">
+                                            <c:forEach var="j" items="${sessionScope.user.myFriends}">
+                                                <c:if test="${j.id != i.id}">
+                                                    <td><a href="../api/guest/addFriend?userId=${i.id}&page=guest">Dodaj</a></td>    
+                                                </c:if>
+                                                <c:if test="${j.id == i.id}">
+                                                    <td><a href="#" data-href="../api/guest/deleteFriend?userId=${i.id}&page=guest" data-toggle="modal" data-target="#confirm-delete">Ukloni iz liste prijatelja</a></td>
+                                                </c:if>
+                                            </c:forEach>
+                                        </c:if>
+                                        <c:if test="${fn:length(sessionScope.user.myFriends) > 0}">
+                                            <td><a href="../api/guest/addFriend?userId=${i.id}&page=guest">Dodaj</a></td> 
+                                        </c:if>
+                                                    
                                     </tr>
                                 </c:forEach> 
                                 </tbody>
@@ -578,7 +592,6 @@
 		</div>
 	</div>
                 
-                    
                     
                     </div></p>
                 </div>
@@ -630,7 +643,7 @@
             
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">Potvrdite brisanje iz liste prijatelja/h4>
+                    <h4 class="modal-title" id="myModalLabel">Potvrdite brisanje iz liste prijatelja</h4>
             
                 <div class="modal-body">
                     <p>Pokusavate da uklonite prijatelja.</p>

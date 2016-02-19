@@ -74,7 +74,7 @@ public class User implements Serializable{
 	@Column(name = "USER_ACT", nullable = false)
 	private Boolean activated;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="FRIEND",
 				joinColumns=@JoinColumn(name = "USER_OWNER_ID", referencedColumnName = "USER_ID"),
 				inverseJoinColumns=@JoinColumn(name = "USER_FRIEND_ID", referencedColumnName = "USER_ID")
