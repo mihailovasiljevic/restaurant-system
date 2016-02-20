@@ -2,6 +2,7 @@ package restaurant.server.servlet.guests;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import restaurant.server.entity.User;
+import restaurant.server.session.GenericDaoLocal;
 import restaurant.server.session.ImageDaoLocal;
 import restaurant.server.session.UserDaoLocal;
 
@@ -41,6 +43,7 @@ public class DeleteFriendController extends HttpServlet{
 				if (usr != null) { // da nije neko u medjuvremno obrisao
 						user.removeFriend(usr);
 						userDao.merge(user);
+						userDao.merge(usr);
 						if(req.getSession().getAttribute("friends") != null)
 							req.getSession().removeAttribute("friends");
 						if(req.getParameter("page").equals("guest"))

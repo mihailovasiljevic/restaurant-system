@@ -1,6 +1,7 @@
 package restaurant.server.servlet.guests;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -38,7 +39,21 @@ public class AddFriendController extends HttpServlet{
 				if (usr != null) { // da nije neko u medjuvremno obrisao
 						user.addFriend(usr);
 						userDao.merge(user);
-
+						
+						if(usr.getMyFriends() != null){
+							Iterator<User> it = usr.getMyFriends().iterator();
+							while(it.hasNext()){
+								System.out.println(it.next().getId());
+							}
+						}
+						
+						if(user.getMyFriends() != null){
+							Iterator<User> it = user.getMyFriends().iterator();
+							while(it.hasNext()){
+								System.out.println(it.next().getId());
+							}
+						}						
+						
 						if(req.getSession().getAttribute("friends") != null)
 							req.getSession().removeAttribute("friends");
 						if(req.getParameter("page").equals("guest"))

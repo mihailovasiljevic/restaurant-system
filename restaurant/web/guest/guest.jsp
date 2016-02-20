@@ -375,7 +375,7 @@
                         </li>
                         <li  >
                         <li >
-                            <a href="../api/guest/friends">
+                            <a href="./friends.jsp">
                             <i class="glyphicon glyphicon-link"></i>
                             Prijatelji </a>
                         </li>   
@@ -559,16 +559,14 @@
                                         <td>${i.surname}</td>
                                         
                                         <c:if test="${fn:length(sessionScope.user.myFriends) > 0}">
-                                            <c:forEach var="j" items="${sessionScope.user.myFriends}">
-                                                <c:if test="${j.id != i.id}">
-                                                    <td><a href="../api/guest/addFriend?userId=${i.id}&page=guest">Dodaj</a></td>    
-                                                </c:if>
-                                                <c:if test="${j.id == i.id}">
-                                                    <td><a href="#" data-href="../api/guest/deleteFriend?userId=${i.id}&page=guest" data-toggle="modal" data-target="#confirm-delete">Ukloni iz liste prijatelja</a></td>
-                                                </c:if>
-                                            </c:forEach>
+
+                                           <td><a href="../api/guest/addFriend?userId=${i.id}&page=guest">Dodaj</a></td>    
+     									   <td><a href="#" data-href="../api/guest/deleteFriend?userId=${i.id}&page=guest" data-toggle="modal" data-target="#confirm-delete">Ukloni iz liste prijatelja</a></td>
+     									  
+ 
+                                            
                                         </c:if>
-                                        <c:if test="${fn:length(sessionScope.user.myFriends) > 0}">
+                                        <c:if test="${fn:length(sessionScope.user.myFriends) == 0}">
                                             <td><a href="../api/guest/addFriend?userId=${i.id}&page=guest">Dodaj</a></td> 
                                         </c:if>
                                                     
@@ -591,6 +589,8 @@
             </div>
 		</div>
 	</div>
+                    
+
                 
                     
                     </div></p>

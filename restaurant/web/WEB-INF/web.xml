@@ -663,6 +663,23 @@
 		<servlet-name>RestaurantMenagerServlet</servlet-name>
 		<url-pattern>/restaurant-menager</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<display-name>cleenUp</display-name>
+		<servlet-name>CleenUpServlet</servlet-name>
+		<servlet-class>restaurant.server.servlet.CleenUpServlet</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CleenUpServlet</servlet-name>
+		<url-pattern>/cleenUp</url-pattern>
+	</servlet-mapping>	
+	
+	
 
 	<welcome-file-list>
 		<welcome-file>/index.jsp</welcome-file>

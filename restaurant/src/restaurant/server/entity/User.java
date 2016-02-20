@@ -81,14 +81,28 @@ public class User implements Serializable{
 	           )
 	private Set<User> myFriends = new HashSet<User>();
 	
-	public void addFriend(User friend) {
-		if (friend.getMyFriends() != null)
+	public void addFriend(User friend) { //stefan //marko //marko.add(stefan)
+		if(friend.getMyFriends() != null)
 			friend.getMyFriends().remove(friend);
 		myFriends.add(friend);
+		if(!friend.getMyFriends().contains(this))
+			friend.addFriend(this);
 	}
 
 	public void removeFriend(User friend) {
-		myFriends.remove(friend);
+		for(User u : myFriends){
+			if(u.getId().equals(friend.getId())){
+				myFriends.remove(u);
+				break;
+			}
+		}
+		
+		for(User u : friend.getMyFriends()){
+			if(u.getId().equals(this.getId())){
+				friend.getMyFriends().remove(u);
+				break;
+			}
+		}
 	}
 	
 	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userGuestInvitationSender") //mappedBy says that owning side is street
