@@ -40,6 +40,10 @@ public class Visit implements Serializable{
 	@ManyToOne
 	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
 	private Restaurant restaurant;
+	
+	@ManyToOne
+	@JoinColumn(name = "RES_ID", referencedColumnName = "RES_ID")
+	private Reservation reservation;
 
 	public Integer getId() {
 		return id;
@@ -72,17 +76,29 @@ public class Visit implements Serializable{
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
 	}
+	
+	
+
+	public Reservation getReservation() {
+		return reservation;
+	}
+
+	public void setReservation(Reservation reservation) {
+		this.reservation = reservation;
+	}
 
 	public Visit() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Visit(Integer grade, User user, Restaurant restaurant) {
+	public Visit(Integer grade, User user, Restaurant restaurant, Reservation reservation) {
 		super();
 		this.grade = grade;
 		this.user = user;
 		this.restaurant = restaurant;
+		this.reservation = reservation;
 	}
+
 	
 }

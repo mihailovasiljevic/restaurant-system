@@ -88,7 +88,7 @@ public class ReservationPartOneController extends HttpServlet{
 						reservationForHowLong = Integer.parseInt(data.get(key));					
 				}
 				Date date;
-				SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy");
+				SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 		    	String dateInString = reservationDate + " "+ reservationTime+":00";
 				try {
 					date = sdf.parse(dateInString);
@@ -142,15 +142,18 @@ public class ReservationPartOneController extends HttpServlet{
 							if(minuteForReservation > 30)
 								hourForReservation++;
 							
-							if(r.getReservedDate() != null){
-								cal.setTime(r.getReservedDate());
-								int hourReserved = cal.get(Calendar.HOUR_OF_DAY);
-								int minuteReserved = cal.get(Calendar.MINUTE);
-								if(minuteReserved > 30)
-									hourReserved++;			
-								boolean notOverlap = ((hourReserved<=(hourForReservation + reservationForHowLong)) && ((hourReserved+r.getReservedFor())>=hourForReservation));
-								if(!notOverlap){
-							        tablesFromRestaurant.remove(r);
+							for(Reservation res : r.getReservations()){
+								if(res.getDate().compareTo(date) == 0){
+									cal.setTime(res.getDate());
+									int hourReserved = cal.get(Calendar.HOUR_OF_DAY);
+									int minuteReserved = cal.get(Calendar.MINUTE);
+									if (minuteReserved > 30)
+										hourReserved++;
+									boolean notOverlap = ((hourReserved <= (hourForReservation + reservationForHowLong))
+											&& ((hourReserved + res.getForHowLong()) >= hourForReservation));
+									if (!notOverlap) {
+										tablesFromRestaurant.remove(r);
+									}
 								}
 							}
 						}
@@ -158,6 +161,8 @@ public class ReservationPartOneController extends HttpServlet{
 					ReservationBean reservationBean = new ReservationBean();
 					reservationBean.setDate(date);
 					reservationBean.setForHowLong(reservationForHowLong);
+					reservationBean.setConf(confs.get(confs.size()-1));
+					reservationBean.setListOfTables(tablesFromRestaurant);
 					req.getSession().setAttribute("reservationInProgress", reservationBean);
 					req.getSession().setAttribute("tables", tablesFromRestaurant);
 					req.getSession().setAttribute("tablesConfiguration", confs.get(confs.size()-1));
@@ -169,7 +174,11 @@ public class ReservationPartOneController extends HttpServlet{
 					ReservationBean reservationBean = new ReservationBean();
 					reservationBean.setDate(date);
 					reservationBean.setForHowLong(reservationForHowLong);
+					reservationBean.setConf(confs.get(confs.size()-1));
+					reservationBean.setListOfTables(tablesFromRestaurant);
 					req.getSession().setAttribute("reservationInProgress", reservationBean);
+					req.getSession().setAttribute("tables", tablesFromRestaurant);
+					req.getSession().setAttribute("tablesConfiguration", confs.get(confs.size()-1));
 			        resp.setContentType("application/json; charset=utf-8");
 			        PrintWriter out = resp.getWriter();
 			        resultMapper.writeValue(out, "USPEH");

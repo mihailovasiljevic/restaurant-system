@@ -185,14 +185,14 @@
                             <i class="glyphicon glyphicon-align-center"></i>
                             Moj nalog </a>
                         </li>
-                        <li >
+                        <li   class="active">
                             <a href="#">
                             <i class="glyphicon glyphicon-registration-mark"></i>
                             Restorani </a>
                         </li>
                         <li  >
-                        <li  class="active">
-                            <a href="./friends.html">
+                        <li>
+                            <a href="./friends.jsp">
                             <i class="glyphicon glyphicon-link"></i>
                             Prijatelji </a>
                         </li>   

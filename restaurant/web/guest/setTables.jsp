@@ -45,119 +45,6 @@
     </script>
     <script>
 //niz funkcija za proveru onoga sta je uneseno
-        function parseDatumOd(field){
-            if (/^(\d{2})-(\d{2})-(\d{4})$/.test(field[0].value) == true){
-                var dan = field[0].value.substr(0,2);
-                var mesec = field[0].value.substr(3,2);
-                var godina = field[0].value.substr(6,4);
-                var brDana=-1;
-                if(godina<2015 || godina>2018){
-                    if($("#reservationDate-error").css("visibility") == "hidden"){
-                        $("#reservationDate-error").css("visibility","visible");
-                        $("#reservationDate-error").text("Godina je broj izmedju 2015 i 2018");
-                    }else{
-                        $("#reservationDate-error").text("Godina je broj izmedju 2015 i 2018");
-                    }
-                    return false;
-                }
-                else if(mesec >12 || mesec<1){
-                    if($("#reservationDate-error").css("visibility") == "hidden"){
-                        $("#reservationDate-error").css("visibility","visible");
-                        $("#reservationDate-error").text("Mesec mora biti broj izmedju 1 i 12");
-                    }else{
-                        $("#reservationDate-error").text("Mesec mora biti broj izmedju 1 i 12");
-                    }
-                    return false;
-                }
-                else{
-                     switch (mesec)
-                        {
-                            case 1: brDana = 31; break;
-                            case 3: brDana = 31; break;
-                            case 5: brDana = 31; break;
-                            case 7: brDana = 31; break;
-                            case 8: brDana = 31; break;
-                            case 10: brDana = 31; break;
-                            case 12: brDana = 31; break;
-
-                            case 4: brDana = 30; break;
-                            case 6: brDana = 30; break;
-                            case 9: brDana = 30; break;
-                            case 11: brDana = 30; break;
-
-                            case 2:
-                                var prestupna = false;
-                                if ((godina % 4 == 0 && godina % 100 != 0 || godina % 400 == 0)==true)
-                                    var prestupna = true;
-                                if(prestupna)
-                                    brDana = 29;
-                                else
-                                    var brDana = 28; break;
-                        }
-                        if ((mesec == 2 && (godina % 4 == 0 && godina % 100 != 0 || godina % 400 == 0) && dan > 29) == true)
-                        {
-                            if($("#reservationDate-error").css("visibility") == "hidden"){
-                                $("#reservationDate-error").css("visibility","visible");
-                                $("#reservationDate-error").text("U prestupnoj godini februar ima najviše 29 dana!");
-                            }else{
-                                $("#reservationDate-error").text("U prestupnoj godini februar ima najviše 29 dana!");
-                            }
-                            return true;
-                        }
-                        else if ((mesec == 2 && !(godina % 4 == 0 && godina % 100 != 0 || godina % 400 == 0) && dan > 28) == true)
-                        {
-                            if($("#reservationDate-error").css("visibility") == "hidden"){
-                                $("#reservationDate-error").css("visibility","visible");
-                                $("#reservationDate-error").text("U godini koja nije prestupna februar ima najviše 28 dana!");
-                            }else{
-                                $("#reservationDate-error").text("U godini koja nije prestupna februar ima najviše 28 dana!");
-                            }
-                            return true;
-                        }
-                        else if (((mesec == 1 || mesec == 3 || mesec == 5 || mesec == 7 || mesec == 8 || mesec == 10) && dan > 31) == true)
-                        {
-                            if($("#reservationDate-error").css("visibility") == "hidden"){
-                                $("#reservationDate-error").css("visibility","visible");
-                                $("#reservationDate-error").text("Mesec '" + mesec + "' može imati najviše 31 dan!");
-                            }else{
-                                $("#reservationDate-error").text("Mesec '" + mesec + "' može imati najviše 31 dan!");
-                            }
-                            return true;
-                        }
-                        else if (((mesec == 4 || mesec == 6 || mesec == 9 || mesec == 11) && dan > 30)==true)
-                        {
-                            if($("#reservationDate-error").css("visibility") == "hidden"){
-                                $("#reservationDate-error").css("visibility","visible");
-                                $("#reservationDate-error").text("Mesec '" + mesec + "' može imati najviše 30 dana!");
-                            }else{
-                                $("#reservationDate-error").text("Mesec '" + mesec + "' može imati najviše 30 dana!");
-                            }
-                            return true;
-                        }
-                        else if (dan < 1)
-                        {
-                            if($("#reservationDate-error").css("visibility") == "hidden"){
-                                $("#reservationDate-error").css("visibility","visible");
-                                $("#reservationDate-error").text("Svaki mesec mora imati najmanje 1 dan!");
-                            }else{
-                                $("#reservationDate-error").text("Svaki mesec mora imati najmanje 1 dan!");
-                            }
-                            return true;
-                        }
-                        if($("#reservationDate-error").css("visibility") == "visible")
-                            $("#reservationDate-error").css("visibility","hidden");
-
-                        return false;
-                }
-            }else{
-                if($("#reservationDate-error").css("visibility") == "hidden"){
-                    $("#reservationDate-error").css("visibility","visible");
-                    $("#reservationDate-error").text("Format dd-mm-gggg");
-                }else{
-                    $("#reservationDate-error").text("Format dd-mm-gggg");
-                }
-            }
-        }
         function daLiJeCeoBroj(field){
             return /^\+?(0|[1-9]\d*)$/.test(field[0].value);
         }
@@ -169,130 +56,42 @@
         }       
         $(document).ready(function(){
                 
-                   $("#btn-next").click(
+                   $("#btn-choose").click(
                     function(){
-                        var reservationDate = $("#reservationDate").val();
-                        var reservationTime = $("#reservationTime").val();
-                        var reservationForHowLong = $("#reservationForHowLong").val();
-                        var allGood = false;
-                        
-                        if(reservationDate == undefined || reservationDate == null || reservationDate== ""){
-                                $("#reservationDate-error").text("Polje za datum je prazno!");
-
-                                allGood = false;                                
+                        var checkedValues = "";
+                        $("input:checkbox:checked").each(function(){
+                                checkedValues += $(this).val()+",";
+                        });
+           
+                     var allGood = true;
+                        if(checkedValues == ""){
+                            $('#nothingChoosed').text("Morate selektovati bar jedan sto da biste mogli da nastavite dalje!");
+                            allGood = false;
                         }else{
-                                 $("#reservationDate-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;                               
+                           $('#nothingChoosed').text(""); 
+                            allGOod = true;
                         }
-                               
-                        if(reservationTime == undefined || reservationTime == null || reservationTime== ""){
-                                $("#reservationTime-error").text("Polje za vreme je prazno!");
-
-                                allGood = false;                                
-                        }else{
-                                 $("#reservationTime-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;                               
-                        }
-                        
-                        if(reservationForHowLong == undefined || reservationForHowLong == null || reservationForHowLong== ""){
-                                $("#reservationForHowLong-error").text("Polje za duzinu trajanja rezervacije je prazno!");
-
-                                allGood = false;                                
-                        }else{
-                                 $("#reservationForHowLong-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;                               
-                        }                          
-                        
-                        if(!daLiJeCeoBroj($('#reservationForHowLong'))){
-                                $("#reservationForHowLong-error").text("Niste uneli ceo broj");
-
-                                allGood = false;                                
-                        }else{
-                            if(reservationForHowLong > 3){
-                                $("#reservationForHowLong-error").text("Duzina ne moze da prelazi 3 sata.");
-
-                                allGood = false;  
-                            }else{
-                                 $("#reservationForHowLong-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;    
-                            }
-                        }
-                        
-                        if(parseDatumOd($('#reservationDate')) != false){
-                            allGood = false;                             
-                        }else{
-                                 $("#reservationDate-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;                               
-                        }
-                        
-                        if(!vreme($('#reservationTime'))){
-                                $("#reservationTime-error").text("Vreme mora biti u formatu HH:MM(12:40 npr.)");
-
-                                allGood = false;                                
-                        }else{
-
-                                var sat = reservationTime.substr(0,2);
-
-                                var minut = reservationTime.substr(3,2);
-                            
-                               if (sat.substring(sat.length-1) == ":")
-                                {
-                                    sat = sat.substring(0, sat.length-1);
-                                }
-                            if(sat <= 9 && sat >= 1){
-                                   $("#reservationTime-error").text("Restoran pocinje da radi od 9 sati ujutru.");
-
-                                allGood = false;                               
-                            }else if(sat > 21){
-                                $("#reservationTime-error").text("Posle 21h ne primamo rezervacije. Hvala na razumevanju.");
-
-                                allGood = false;                              
-                            }
-                            else{
-                            
-                            $("#reservationTime-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;   
-                            }
-                            
-                        } 
-                        
-
                         
                         if(allGood == true){
                                 $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "../api/guest/checkReservation",
+                                      url: "../api/guest/chechTables",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
-                                       reservationData:JSON.stringify({
-                                           reservationDate:reservationDate,
-                                           reservationTime: reservationTime,
-                                           reservationForHowLong: reservationForHowLong
+                                       tablesData:JSON.stringify({
+                                           checkedValues:checkedValues,
                                        }),    
                                        cache: false,
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
                                         if(data == "USPEH"){
-                                             window.location.href = "/restaurant/guest/setTables.jsp";
-                                             $('#btn-updateType').hide();
-                                             $('#btn-type').show();
+                                             window.location.href = "/restaurant/guest/inviteFriends.jsp";
                                              return;
                                         }else{
                                             alert(data);
+                                            window.location.href = "/restaurant/guest/setTables.jsp";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -399,14 +198,14 @@
                             <i class="glyphicon glyphicon-align-center"></i>
                             Moj nalog </a>
                         </li>
-                        <li >
+                        <li   class="active">
                             <a href="#">
                             <i class="glyphicon glyphicon-registration-mark"></i>
                             Restorani </a>
                         </li>
                         <li  >
-                        <li  class="active">
-                            <a href="./friends.html">
+                        <li>
+                            <a href="./friends.jsp">
                             <i class="glyphicon glyphicon-link"></i>
                             Prijatelji </a>
                         </li>   
@@ -428,7 +227,7 @@
                      	<p><h2>Odaberite sto/ stolove</h2></p>
                      	
                      	<table border = 1>
-                     		
+                     		<form id="chooseTableForm" class="form-horizontal" role="form">
                      		<%
                      		    List<RestaurantTable> tables = (List<RestaurantTable>)session.getAttribute("tables");
                      		    TablesConfiguration conf = (TablesConfiguration)session.getAttribute("tablesConfiguration");
@@ -437,9 +236,9 @@
                      				for(int i = 0; i < conf.getNumberOfRows(); i++){%>
                      					<tr>
                      				<%  for(int j = 0; j < conf.getNumberOfCols(); j++){%>
-                     						<td><%
+                     						<%
                      							boolean isTable = false;
-                     							for(int k = 0; k < tables.size(); i++){
+                     							for(int k = 0; k < tables.size(); k++){
                      								if(tables.get(k).getRow() == i && tables.get(k).getCol() == j){
                      									isTable = true;
                      									%>
@@ -458,7 +257,7 @@
                      							<%}
                      						%>
                      					
-                     					<%}	
+                     					<%}	%><tr><%
                      				}
 
                      				
@@ -470,9 +269,20 @@
                      
                     </div>
                 </div>
- 
+                                <div class="form-group">
+                                    <!-- Button -->                                        
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <h2 id="nothingChoosed"></h2>                       
+                                    </div>
+                                </div>                        
+                                  <div class="form-group">
+                                    <!-- Button -->                                        
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button id="btn-choose" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Odaberi</button>                        
+                                    </div>
+                                </div>  
                     
-                
+                </form>
                 </div>
             </div>
             <!-- /.row -->

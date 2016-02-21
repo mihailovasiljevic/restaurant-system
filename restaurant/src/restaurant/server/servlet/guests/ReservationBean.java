@@ -2,14 +2,17 @@ package restaurant.server.servlet.guests;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import restaurant.server.entity.RestaurantTable;
+import restaurant.server.entity.TablesConfiguration;
 import restaurant.server.entity.User;
 
 public class ReservationBean {
 	private Date date;
 	private int forHowLong;
-	private ArrayList<RestaurantTable> listOfTables = new ArrayList<>();
+	private TablesConfiguration conf;
+	private List<RestaurantTable> listOfTables = new ArrayList<>();
 	private ArrayList<User> invitedFriends;
 
 	
@@ -25,11 +28,11 @@ public class ReservationBean {
 	public void setForHowLong(int forHowLong) {
 		this.forHowLong = forHowLong;
 	}
-	public ArrayList<RestaurantTable> getListOfTables() {
+	public List<RestaurantTable> getListOfTables() {
 		return listOfTables;
 	}
-	public void setListOfTables(ArrayList<RestaurantTable> listOfTables) {
-		this.listOfTables = listOfTables;
+	public void setListOfTables(List<RestaurantTable> tablesFromRestaurant) {
+		this.listOfTables = tablesFromRestaurant;
 	}
 	public ArrayList<User> getInvitedFriends() {
 		return invitedFriends;
@@ -37,7 +40,14 @@ public class ReservationBean {
 	public void setInvitedFriends(ArrayList<User> invitedFriends) {
 		this.invitedFriends = invitedFriends;
 	}
-	public ReservationBean(Date date, int forHowLong, ArrayList<RestaurantTable> listOfTables,
+	
+	public TablesConfiguration getConf() {
+		return conf;
+	}
+	public void setConf(TablesConfiguration conf) {
+		this.conf = conf;
+	}
+	public ReservationBean(Date date, int forHowLong, List<RestaurantTable> listOfTables,
 			ArrayList<User> invitedFriends) {
 		this.date = date;
 		this.forHowLong = forHowLong;

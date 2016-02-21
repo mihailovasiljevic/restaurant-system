@@ -72,6 +72,22 @@ public class Reservation implements Serializable{
 		invitation.setReservation(null);
 		invitations.remove(invitation);
 	}
+	
+	
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "reservation") //mappedBy says that owning side is street
+	private Set<Visit> visits = new HashSet<Visit>();
+	
+	public void add(Visit visit) {
+		if (visit.getReservation() != null)
+			visit.getReservation().getVisits().remove(visit);
+		visit.setReservation(this);
+		visits.add(visit);
+	}
+
+	public void remove(Visit visit) {
+		visit.setReservation(null);
+		visits.remove(visit);
+	}
 
 	public Integer getId() {
 		return id;
@@ -146,24 +162,35 @@ public class Reservation implements Serializable{
 		this.invitations = invitations;
 	}
 
+	
+
+	public Set<Visit> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(Set<Visit> visits) {
+		this.visits = visits;
+	}
 
 	public Reservation() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+
 	public Reservation(String name, Date date, Integer forHowLong, Integer grade, Restaurant restaurant,
-			User userGuestReservationMaker, RestaurantTable restaurantTable, Set<Invitation> invitations) {
+			User userGuestReservationMaker, RestaurantTable restaurantTable, Set<Invitation> invitations,
+			Set<Visit> visits) {
 		super();
 		this.name = name;
 		this.date = date;
-
 		this.forHowLong = forHowLong;
 		this.grade = grade;
 		this.restaurant = restaurant;
 		this.userGuestReservationMaker = userGuestReservationMaker;
 		this.restaurantTable = restaurantTable;
 		this.invitations = invitations;
+		this.visits = visits;
 	}
 
 	@Override

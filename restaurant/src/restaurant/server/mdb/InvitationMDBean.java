@@ -82,10 +82,13 @@ public class InvitationMDBean implements MessageListener{
 			msg.setSubject("Potvrda rezervacije - pozivnica");
 			StringBuilder sb = new StringBuilder();
 			sb.append("");
-			sb.append("Ovo je automatski generisana poruka.\n Molim vas kliknite na link kako biste potvrdili rezervaciju:\n");
-			sb.append("http://localhost:8080/restaurant/activate?userId="+invitation.next().getUserGuestInvitationReceived().getId()+"&invitationAccepted=true");
-			sb.append("\n Ukoliko ne zelite da potvrdite rezervaciju kliknite na sledeci link:.\n");
-			sb.append("http://localhost:8080/restaurant/activate?userId="+invitation.next().getUserGuestInvitationReceived().getId()+"&invitationAccepted=false");
+			sb.append("Ovo je automatski generisana poruka.\n");
+			sb.append("Vas prijatelj: "+invitation.next().getUserGuestInvitationSender().getName()+" "+invitation.next().getUserGuestInvitationSender().getSurname()+" vas je pozvao da prisustvejete rezervaciji:\n");
+			sb.append("Restoran: " + invitation.next().getReservation().getRestaurant().getName());
+			sb.append("\nDatum i vreme: "+ invitation.next().getReservation().getDate());
+			sb.append("\nDuzina trajanja rezervacije: " + invitation.next().getReservation().getForHowLong()+"\n");
+			sb.append("Posetitet stranicu ispod kako biste potvrdili vas dolazak.\n");
+			sb.append("http://localhost:8080/restaurant/invitation?userId="+invitation.next().getUserGuestInvitationReceived().getId()+"&reservation="+invitation.next().getReservation().getId());
 			msg.setText(sb.toString());
 			msg.setRecipients(RecipientType.TO, InternetAddress.parse(invitation.next().getUserGuestInvitationReceived().getEmail()));
 			msg.setSentDate(new Date());

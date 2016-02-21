@@ -543,6 +543,21 @@
 		<servlet-name>ReservationPartOneController</servlet-name>
 		<url-pattern>/api/guest/checkReservation</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<display-name>reservationPartTwo</display-name>
+		<servlet-name>ReservationPartTwoController</servlet-name>
+		<servlet-class>restaurant.server.servlet.guests.ReservationPartTwoController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ReservationPartTwoController</servlet-name>
+		<url-pattern>/api/guest/chechTables</url-pattern>
+	</servlet-mapping>	
 
 	<servlet>
 		<display-name>fileUpload</display-name>
