@@ -126,9 +126,9 @@ public class ReservationPartTwoController extends HttpServlet{
 					}
 				boolean reservationCanPass = true;
 				ArrayList<RestaurantTable> tablesForReservation = new ArrayList<>();
-				for(RestaurantTable r : tables){
+				for(Integer id : tablesIds){
 					boolean passOne = false;
-					for(Integer id : tablesIds){
+					for(RestaurantTable r : tables){
 						if(r.getId().equals(id)){
 							passOne = true;
 							tablesForReservation.add(r);

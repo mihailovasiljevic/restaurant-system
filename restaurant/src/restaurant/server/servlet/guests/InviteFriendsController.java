@@ -129,20 +129,21 @@ public class InviteFriendsController extends HttpServlet {
 				}
 				boolean reservationCanPass = true;
 				ArrayList<RestaurantTable> tablesForReservation = new ArrayList<>();
-				for (RestaurantTable r : tables) {
+				for(RestaurantTable id : rb.getListOfTables()){
 					boolean passOne = false;
-					for (RestaurantTable id : rb.getListOfTables()) {
-						if (r.getId().equals(id.getId())) {
+					for(RestaurantTable r : tables){
+						if(r.getId().equals(id.getId())){
 							passOne = true;
 							tablesForReservation.add(r);
 							break;
 						}
 					}
-					if (passOne == false) {
+					if(passOne == false){
 						reservationCanPass = false;
 						break;
 					}
 				}
+	
 
 				if (reservationCanPass == false) {
 					resp.setContentType("application/json; charset=utf-8");
@@ -169,6 +170,7 @@ public class InviteFriendsController extends HttpServlet {
 					reservation.setName("reservation0");
 				else
 					reservation.setName("reservation"+reservation.getId()+1);
+				reservation.setGrade(-1);
 				reservation.setUserGuestReservationMaker(user);
 				Reservation perseistedReservation = reservatioDao.persist(reservation);
 				
@@ -188,7 +190,7 @@ public class InviteFriendsController extends HttpServlet {
 					inv.setReservation(perseistedReservation);
 					inv.setUserGuestInvitationSender(user);
 					inv.setUserGuestInvitationReceived(u);
-					
+					inv.setInvitationAccepted(false);
 					Invitation persistedInv = invitationDao.persist(inv);
 					if(persistedInv == null){
 						resp.setContentType("application/json; charset=utf-8");
@@ -207,13 +209,26 @@ public class InviteFriendsController extends HttpServlet {
 				for(RestaurantTable r : rb.getListOfTables()){
 					r.add(perseistedReservation);
 					tableDao.merge(r);
-					//dodaj stolove
+					perseistedReservation.add(r);
+					reservatioDao.merge(perseistedReservation);
 				}
 				
+					try{
+						invitationMDB.invitate(user);
+					}
+					catch(Exception ex){
+						resp.setContentType("application/json; charset=utf-8");
+						PrintWriter out = resp.getWriter();
+						resultMapper.writeValue(out, "Nismo uspeli da posaljemo poruke vasim prijateljima.");
+						return;
+					}
+				if(req.getSession().getAttribute("reservationInProgress")!= null)
+					req.getSession().removeAttribute("reservationInProgress");
+				if(req.getSession().getAttribute("tables")!= null)
+					req.getSession().removeAttribute("tables");				
+				if(req.getSession().getAttribute("tablesConfiguration")!= null)
+					req.getSession().removeAttribute("tablesConfiguration");				
 				
-				
-				rb.setListOfTables(tablesForReservation);
-				req.getSession().setAttribute("reservationInProgress", rb);
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
 				resultMapper.writeValue(out, "USPEH");
