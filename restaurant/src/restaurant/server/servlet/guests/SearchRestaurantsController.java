@@ -51,17 +51,27 @@ public class SearchRestaurantsController extends HttpServlet{
 				for (String key : data.keySet()) {
 					if (key.equals("searchByType"))
 						searchByType = Integer.parseInt(data.get(key));
-					else if(key.equals("searchFriends"))
+					else if(key.equals("searchByName"))
 						searchByName = data.get(key);
 				}
 				String query = "";
-				if(searchByType != -1){
-					 query="SELECT k FROM Restaurant k WHERE k.restaurant.restaurantType.id like"+searchByType+" and k.restaurant.name like '%"+searchByName+"%'";
+				List<Restaurant> restaurants = null;
+				if(searchByType != -1 && !searchByName.equals(" ")){
+					 query="SELECT k FROM Restaurant k WHERE k.restaurantType.id = "+searchByType+" and k.restaurant.name like '%"+searchByName+"%'";
+					 restaurants = restaurantDao.findBy(query);
 				}
-				else{
+				else if(searchByType == -1 && !searchByName.equals(" ")){
 					 query="SELECT k FROM Restaurant k WHERE k.restaurant.name like '%"+searchByName+"%'";
+					 restaurants = restaurantDao.findBy(query);
 				}
-				List<Restaurant> restaurants = restaurantDao.findBy(query);
+				else if(searchByType != -1 && searchByName.equals(" ")){
+					 query="SELECT k FROM Restaurant k WHERE k.restaurantType.id = "+searchByType;
+					 restaurants = restaurantDao.findBy(query);
+				}			
+				else if(searchByType == -1 && searchByName.equals(" ")){
+					restaurants = restaurantDao.findAll();
+				}		
+				
 				if(restaurants != null){
 					req.getSession().setAttribute("restaurants", restaurants);
 					resp.setContentType("application/json; charset=utf-8");

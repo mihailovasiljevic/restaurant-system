@@ -52,7 +52,9 @@
                     function(){
                         var searchByType = $("#searchByType :selected").val();
                         var searchByName = $("#searchByName").val();
-  
+                        if(searchByName == undefined || searchByName == null || searchByName== ""){
+                            searchByName = " ";
+                        }
                                 $.ajaxSetup({async:false});
                                 $.ajax({
                                       url: "../api/guest/searchRestaurants",
@@ -68,13 +70,13 @@
                                     },
                                       success: function (data, status) {
                                         if(data == "USPEH"){
-                                             window.location.href = "/restaurant/guest/restaurans.jsp";
+                                             window.location.href = "/restaurant/guest/restaurants.jsp";
                                              $('#btn-updateType').hide();
                                              $('#btn-type').show();
                                              return;
                                         }else{
                                             alert(data);
-                                            window.location.href = "/restaurant/guest/restaurans.jsp";
+                                            window.location.href = "/restaurant/guest/restaurants.jsp";
                                             $("#confName-error").text(data);
                                             $("#updateBox").hide();
                                             $("#myModal").hide();
@@ -253,7 +255,7 @@
                                         <c:if test="${i.grade != -1}">
                                         	<td>${i.grade}</td>
                                         </c:if>                                       
-                                        <td><a href="../api/guest/prepareReserve?userId=${i.id}">Rezervisi</a></td>
+                                        <td><a href="../api/guest/prepareReservation?restaurantId=${i.id}">Rezervisi</a></td>
              
                                     </tr>
                                 </c:forEach> 
