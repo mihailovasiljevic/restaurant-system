@@ -423,49 +423,50 @@
                     <div class="row">
                         
                         <p><h2>Restoran: <b>${sessionScope.restaurantForReservation.name}</b></h2></p>
-                         <div class="form-group">
-                            <label for="reservationDate" class="col-md-3 control-label">Datum rezervacije: </label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="reservationDateAndTime" placeholder="Datum rezervacije" id="reservationDate" required>
+   						<p><h3>Datum i vreme rezervacije: <b>${sessionScope.reservationInProgress.date}</b></h3></p>
+                        <p><h3>Duzina trajanja rezervacije: <b>${sessionScope.reservationInProgress.forHowLong}</b></h3></p>
+                     	<p><h2>Odaberite sto/ stolove</h2></p>
+                     	
+                     	<table border = 1>
+                     		
+                     		<%
+                     		    List<RestaurantTable> tables = (List<RestaurantTable>)session.getAttribute("tables");
+                     		    TablesConfiguration conf = (TablesConfiguration)session.getAttribute("tablesConfiguration");
+                     			if(tables != null && conf != null){
+                     				
+                     				for(int i = 0; i < conf.getNumberOfRows(); i++){%>
+                     					<tr>
+                     				<%  for(int j = 0; j < conf.getNumberOfCols(); j++){%>
+                     						<td><%
+                     							boolean isTable = false;
+                     							for(int k = 0; k < tables.size(); i++){
+                     								if(tables.get(k).getRow() == i && tables.get(k).getCol() == j){
+                     									isTable = true;
+                     									%>
+                     									<td>
+	                     									<div class="checkbox">
+															  <label><input type="checkbox" value="<%= tables.get(k).getId() %>"><%= tables.get(k).getName() %></label>
+															</div>
+														</td>
+                     								<%
+                     								
+                     									break;
+                     								}
+                     							}
+                     							if(isTable == false){%>
+                     								<td>Nema stola ili rezervisan.</td>
+                     							<%}
+                     						%>
+                     					
+                     					<%}	
+                     				}
 
-                            </div>
-                            <div style="margin-top:10px" class="form-group">
-                                <!-- ERROR PROVIDER -->
-                                <span id = "reservationDate-error" class="label label-danger">Format: dd-mm-gggg</span>
-                            </div>
-                          </div>
-                          <div class="form-group">
-                            <label for="reservationTime" class="col-md-3 control-label">Vreme rezervacije</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="reservationTime" placeholder="U koliko sati..." id="reservationTime" required>
-
-                            </div>
-                            <div style="margin-top:10px" class="form-group">
-                                <!-- ERROR PROVIDER -->
-                                <span id = "reservationTime-error" class="label label-danger">Format: HH:MM</span>
-                            </div>
-                          </div>
-                     
-                         <div class="form-group">
-                            <label for="reservationForHowLong" class="col-md-3 control-label">Duzina trajanja rezervacije</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" name="reservationForHowLong" placeholder="Na koliko sati(ceo broj sati)..." id="reservationForHowLong" required>
-
-                            </div>
-                            <div style="margin-top:10px" class="form-group">
-                                <!-- ERROR PROVIDER -->
-                                <span id = "reservationForHowLong-error" class="label label-danger"></span>
-                            </div>
-                          </div>
-                     
-                          <div class="form-group">
-                                    <!-- Button -->                                        
-                                    <div class="col-md-offset-3 col-md-9">                                        	
-                                        <button id="btn-next" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Dalje >></button>
-                                    </div>
-                        </div> 
-                     
-                     
+                     				
+                     			}
+                     		%>
+                     		
+                     	
+                     	</table>
                      
                     </div>
                 </div>

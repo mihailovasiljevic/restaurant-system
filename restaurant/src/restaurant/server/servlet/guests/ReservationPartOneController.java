@@ -21,9 +21,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import restaurant.server.entity.Reservation;
 import restaurant.server.entity.Restaurant;
+import restaurant.server.entity.RestaurantTable;
+import restaurant.server.entity.TablesConfiguration;
 import restaurant.server.entity.User;
 import restaurant.server.servlet.restaurants.RestaurantBean;
 import restaurant.server.session.ReservationDaoLocal;
+import restaurant.server.session.RestaurantTableDaoLocal;
 import restaurant.server.session.TablesConfigurationDaoLocal;
 
 public class ReservationPartOneController extends HttpServlet{
@@ -37,7 +40,8 @@ public class ReservationPartOneController extends HttpServlet{
 	private TablesConfigurationDaoLocal tablesConfigurationDao;
 	@EJB
 	private ReservationDaoLocal reservatioDao;
- 
+	@EJB
+	private RestaurantTableDaoLocal tableDao;
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -96,6 +100,13 @@ public class ReservationPartOneController extends HttpServlet{
 				String query="SELECT k FROM Reservation k WHERE k.restaurant.id like '"+restaurant.getId()+"'";
 				List<Reservation> reservations = reservatioDao.findBy(query);
 				
+				String confQuery = "SELECT k FROM TablesConfiguration k WHERE k.restaurant.id like '"+restaurant.getId()+"'";
+				List<TablesConfiguration> confs = tablesConfigurationDao.findBy(confQuery);
+				
+				String tableQuery = "SELECT k FROM RestaurantTable k WHERE k.tablesConfiguration.id like '"+confs.get(confs.size()-1).getId()+"'";
+				List<RestaurantTable> tablesFromRestaurant = tableDao.findBy(tableQuery);
+				
+				
 				if(reservations != null){
 					if(reservations.size() > 0){
 						for(Reservation r: reservations){
@@ -122,10 +133,34 @@ public class ReservationPartOneController extends HttpServlet{
 							}
 						}
 					}
+					if(tablesFromRestaurant.size() > 0){
+						for(RestaurantTable r : tablesFromRestaurant){
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(date);
+							int hourForReservation = cal.get(Calendar.HOUR_OF_DAY);
+							int minuteForReservation = cal.get(Calendar.MINUTE);
+							if(minuteForReservation > 30)
+								hourForReservation++;
+							
+							if(r.getReservedDate() != null){
+								cal.setTime(r.getReservedDate());
+								int hourReserved = cal.get(Calendar.HOUR_OF_DAY);
+								int minuteReserved = cal.get(Calendar.MINUTE);
+								if(minuteReserved > 30)
+									hourReserved++;			
+								boolean notOverlap = ((hourReserved<=(hourForReservation + reservationForHowLong)) && ((hourReserved+r.getReservedFor())>=hourForReservation));
+								if(!notOverlap){
+							        tablesFromRestaurant.remove(r);
+								}
+							}
+						}
+					}
 					ReservationBean reservationBean = new ReservationBean();
 					reservationBean.setDate(date);
 					reservationBean.setForHowLong(reservationForHowLong);
 					req.getSession().setAttribute("reservationInProgress", reservationBean);
+					req.getSession().setAttribute("tables", tablesFromRestaurant);
+					req.getSession().setAttribute("tablesConfiguration", confs.get(confs.size()-1));
 			        resp.setContentType("application/json; charset=utf-8");
 			        PrintWriter out = resp.getWriter();
 			        resultMapper.writeValue(out, "USPEH");

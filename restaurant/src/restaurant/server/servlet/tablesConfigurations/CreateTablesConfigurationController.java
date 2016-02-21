@@ -187,6 +187,7 @@ public class CreateTablesConfigurationController extends HttpServlet{
 							table.setReserved(false);
 							table.setCol(j);
 							table.setRow(i);
+							table.setTablesConfiguration(persisted);
 							RestaurantTable persTable = tableDao.persist(table);
 							if(persTable == null){
 								resp.setContentType("application/json; charset=utf-8");
