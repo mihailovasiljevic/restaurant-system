@@ -98,10 +98,8 @@
                                         },
                                           success: function (data, status) {
                                             if(data != "USPEH"){
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da dodamo restoran.");
-                                                 $("#registrationModal").show();
+                                                alert(data);
+                                                 window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }else {
                                                 $("#myModal").hide();
@@ -163,8 +161,9 @@
                                              $("#typeName-error").text("");
                                              return;
                                         }else{
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                                alert(data);
+                                                 window.location.href = "/restaurant/api/restaurant/restaurants";
+                                                return;
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -243,10 +242,8 @@
                                         },
                                           success: function (data, status) {
                                             if(data != "USPEH"){
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da dodamo restoran.");
-                                                 $("#registrationModal").show();
+                                                alert(data);
+                                                 window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }else {
                                                 $("#myModal").hide();
@@ -573,12 +570,9 @@
                                         <c:if test="${fn:length(i.restaurantMenagers) > 0}">
                                             <td>
                                             <c:forEach var="i" items="${i.restaurantMenagers}">
-                                                ${i.name} ${i.surname},
+                                                ${i.name} ${i.surname}<br />
                                             </c:forEach>
                                             </td>
-                                        </c:if>
-                                        <c:if test="${fn:length(i.restaurantMenagers) == 0}">
-                                            <td>Nema menadzera</td>
                                         </c:if>
                                         
                                         <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni

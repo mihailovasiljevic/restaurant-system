@@ -33,7 +33,7 @@ public class PrepareUpdateRestaurantController extends HttpServlet{
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
-			if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
+			if ((user.getUserType().getName()).equals("GUEST")) {
 				System.out
 						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
 				resp.sendRedirect(resp
@@ -63,6 +63,7 @@ public class PrepareUpdateRestaurantController extends HttpServlet{
 						}
 						RestaurantBean restBean = new RestaurantBean(rest.getName(), rest.getRestaurantType().getId(),
 								rest.getAddress().getStreet().getId(), rest.getAddress().getBrojUUlici(), menagers);
+						
 				        resp.setContentType("application/json; charset=utf-8");
 				        PrintWriter out = resp.getWriter();
 				        resultMapper.writeValue(out, restBean);

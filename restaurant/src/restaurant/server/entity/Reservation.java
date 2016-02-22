@@ -16,6 +16,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -54,9 +56,27 @@ public class Reservation implements Serializable{
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
 	private User userGuestReservationMaker;
 	
-	@ManyToOne
-	@JoinColumn(name = "REST_TABLE_ID", referencedColumnName = "REST_TABLE_ID")
-	private RestaurantTable restaurantTable;
+	@ManyToMany(cascade = { ALL }, fetch = FetchType.EAGER) //mappedBy says that owning side is street
+	@JoinTable(
+		      name="RESERVED_TABLE",
+		      joinColumns=@JoinColumn(name="RES_ID", referencedColumnName="RES_ID"),
+		      inverseJoinColumns=@JoinColumn(name="REST_TABLE_ID", referencedColumnName="REST_TABLE_ID"))
+	private Set<RestaurantTable> tables = new HashSet<RestaurantTable>();
+	
+	public void add(RestaurantTable table) {
+		if (table.getReservations() != null)
+			table.getReservations().remove(table);
+		tables.add(table);
+	}
+	public void remove(RestaurantTable table) {
+		for(RestaurantTable r : tables){
+			if(r.getId().equals(table.getId())){
+				tables.remove(r);
+				break;
+			}
+		}
+	}
+
 	
 	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "reservation") //mappedBy says that owning side is street
 	private Set<Invitation> invitations = new HashSet<Invitation>();
@@ -71,6 +91,22 @@ public class Reservation implements Serializable{
 	public void remove(Invitation invitation) {
 		invitation.setReservation(null);
 		invitations.remove(invitation);
+	}
+	
+	
+	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "reservation") //mappedBy says that owning side is street
+	private Set<Visit> visits = new HashSet<Visit>();
+	
+	public void add(Visit visit) {
+		if (visit.getReservation() != null)
+			visit.getReservation().getVisits().remove(visit);
+		visit.setReservation(this);
+		visits.add(visit);
+	}
+
+	public void remove(Visit visit) {
+		visit.setReservation(null);
+		visits.remove(visit);
 	}
 
 	public Integer getId() {
@@ -130,13 +166,6 @@ public class Reservation implements Serializable{
 		this.userGuestReservationMaker = userGuestReservationMaker;
 	}
 
-	public RestaurantTable getRestaurantTable() {
-		return restaurantTable;
-	}
-
-	public void setRestaurantTable(RestaurantTable restaurantTable) {
-		this.restaurantTable = restaurantTable;
-	}
 
 	public Set<Invitation> getInvitations() {
 		return invitations;
@@ -146,24 +175,40 @@ public class Reservation implements Serializable{
 		this.invitations = invitations;
 	}
 
+	
+
+	public Set<RestaurantTable> getTables() {
+		return tables;
+	}
+	public void setTables(Set<RestaurantTable> tables) {
+		this.tables = tables;
+	}
+	public Set<Visit> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(Set<Visit> visits) {
+		this.visits = visits;
+	}
 
 	public Reservation() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
+
 	public Reservation(String name, Date date, Integer forHowLong, Integer grade, Restaurant restaurant,
-			User userGuestReservationMaker, RestaurantTable restaurantTable, Set<Invitation> invitations) {
+			User userGuestReservationMaker, Set<Invitation> invitations,
+			Set<Visit> visits) {
 		super();
 		this.name = name;
 		this.date = date;
-
 		this.forHowLong = forHowLong;
 		this.grade = grade;
 		this.restaurant = restaurant;
 		this.userGuestReservationMaker = userGuestReservationMaker;
-		this.restaurantTable = restaurantTable;
 		this.invitations = invitations;
+		this.visits = visits;
 	}
 
 	@Override

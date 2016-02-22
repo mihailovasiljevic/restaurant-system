@@ -19,10 +19,13 @@
 
     <!-- Custom CSS -->
     <link href="css/stylish-portfolio.css" rel="stylesheet">
+    
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    
+    
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -36,10 +39,16 @@
     src="http://maps.google.com/maps/api/js?sensor=false">
     </script>
     <script>
-
+//niz funkcija za proveru onoga sta je uneseno
+function daLiJeCeoBroj(field){
+    return /^\d{0,10}(\.\d{0,4}){0,1}$/.test(field[0].value);
+}
+function daLiJeRealanBroj(field){
+    return /^\+?(0|[1-9]\d*)$/.test(field[0].value);
+}
         $(document).ready(function(){
-                var imageFileName="";
-            //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
+                
+            
                 $('#btn-updateType').hide();
                  $("#btn-updateType").click(
                     function(){
@@ -106,7 +115,7 @@
                                             }else {
                                                 $("#myModal").hide();
                                                 $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali restoran.");                                     		
+                                                $("#registrationModal #message").text("Uspesno ste dodali restoran.");                                        
                                                 $("#registrationModal").show();
                                                 window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
@@ -185,155 +194,6 @@
                         $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
                     });
             
-            
-                    $("#btn-type").click(
-                    function(){
-                        var restaurantName = $("#restaurantName").val();
-                        var restaurantType = $('#restaurantType :selected').val();
-                        var street = $('#street :selected').val();
-                        var streetNo = $("#streetNo").val();
-                        var menagers="";
-  
-
-                        $("#menagers option").filter(":selected").each(function(){
-                                menagers += $(this).val()+",";
-                        }); 
-                        
-                        var allGood = false;
-                            if( restaurantName == "" || restaurantName == undefined || restaurantName == null ) {
-                                $("#restaurantName-error").text("Polje za naziv restorana ne sme biti prazno!");
-
-                                allGood = false;
-                            } else {
-
-                                    $("#restaurantName-error").text("");
-
-                                    allGood = true;
-                            }  
-                        
-                            if( streetNo == "" || streetNo == undefined || streetNo == null ) {
-                                $("#streetNo-error").text("Polje za broj u ulici ne sme biti prazno!");
-
-                                allGood = false;
-                            } else {
-                               $("#streetNo-error").text("");
-                                
-                                if(allGood != false)
-                                    allGood = true;
-                            } 
-                        
-                            var answer="";
-                            if(allGood == true){
-
-                                    $.ajaxSetup({async:false});
-                                    $.ajax({
-                                          url: "../api/restaurant/createRestaurant",
-                                          type: 'post',
-                                          contentType: "application/x-www-form-urlencoded",
-                                          data: {
-                                           restaurantData:JSON.stringify({
-                                               restaurantName:restaurantName,
-                                               restaurantType:restaurantType,
-                                               street: street,
-                                               streetNo: streetNo,
-                                               menagers: menagers
-                                           }),    
-                                           cache: false,
-                                           dataType:'json'
-                                        },
-                                          success: function (data, status) {
-                                            if(data != "USPEH"){
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da dodamo restoran.");
-                                                 $("#registrationModal").show();
-                                                return;
-                                            }else {
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali restoran.");                                     		
-                                                $("#registrationModal").show();
-                                                window.location.href = "/restaurant/api/restaurant/restaurants";
-                                                return;
-                                            }
-
-                                            console.log(data);
-                                            console.log(status);
-                                          },
-                                          error: function (xhr, desc, err) {
-                                            console.log(xhr);
-                                          },
-                                        });
-                                    $.ajaxSetup({async:true});
-
-
-                            }
-                    });
-            
-            
-            
-            
-            });
-        
- 
-        
-        $(document).on('click', '#close-preview', function(){ 
-            $('.image-preview').popover('hide');
-            // Hover befor close the preview
-            $('.image-preview').hover(
-                function () {
-                   $('.image-preview').popover('show');
-                }, 
-                 function () {
-                   $('.image-preview').popover('hide');
-                }
-            );    
-        });
-
-        $(function() {
-            // Create the close button
-            var closebtn = $('<button/>', {
-                type:"button",
-                text: 'x',
-                id: 'close-preview',
-                style: 'font-size: initial;',
-            });
-            closebtn.attr("class","close pull-right");
-            // Set the popover default content
-            $('.image-preview').popover({
-                trigger:'manual',
-                html:true,
-                title: "<strong>Preview</strong>"+$(closebtn)[0].outerHTML,
-                content: "There's no image",
-                placement:'bottom'
-            });
-            // Clear event
-            $('.image-preview-clear').click(function(){
-                $('.image-preview').attr("data-content","").popover('hide');
-                $('.image-preview-filename').val("");
-                $('.image-preview-clear').hide();
-                $('.image-preview-input input:file').val("");
-                $(".image-preview-input-title").text("Browse"); 
-            }); 
-            // Create the preview image
-            $(".image-preview-input input:file").change(function (){     
-                var img = $('<img/>', {
-                    id: 'dynamic',
-                    width:250,
-                    height:200
-                });      
-                var file = this.files[0];
-                var reader = new FileReader();
-                // Set preview image into the popover data-content
-                reader.onload = function (e) {
-                    $(".image-preview-input-title").text("Change");
-                    $(".image-preview-clear").show();
-                    $(".image-preview-filename").val(file.name);            
-                    img.attr('src', e.target.result);
-                    $(".image-preview").attr("data-content",$(img)[0].outerHTML).popover("show");
-                }        
-                reader.readAsDataURL(file);
-            });  
         });
         
         var pageMe = function(opts){
@@ -447,13 +307,13 @@
 </head>
 
 <body>
-	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
-	</c:if>
+    <c:if test="${sessionScope.user == null}">
+        <c:redirect url="../login.jsp" />
+    </c:if>
 
-	<c:if test="${sessionScope.user.userType.name ne 'SYSTEM_MENAGER'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
-	</c:if>
+    <c:if test="${sessionScope.user.userType.name ne 'RESTAURANT_MENAGER'}">
+        <c:redirect url="../insufficient_privileges.jsp" />
+    </c:if>
     
     <!-- Navigation -->
     <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
@@ -485,68 +345,78 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2>Menadzer sistema: ${sessionScope.user.name} ${sessionScope.user.surname}</h2>
+                    <h2>Menadzer restorana: ${sessionScope.user.name} ${sessionScope.user.surname}</h2>
                     <p class="lead"><div id="map_canvas" style="width:100%; height:500px">
                     
                                         <div class="row profile">
-		<div class="col-md-3">
-			<div class="profile-sidebar">
-				<!-- SIDEBAR USERPIC -->
-				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+        <div class="col-md-3">
+            <div class="profile-sidebar">
+                <!-- SIDEBAR USERPIC -->
+                <div class="profile-userpic">
+                        <c:if test="${sessionScope.image == null}">
                             <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
                         <c:if test="${sessionScope.image != null}">
-                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
+                            <img src="${sessionScope.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
                         </c:if>
 
-				</div>
-				<!-- END SIDEBAR USERPIC -->
-				<!-- SIDEBAR USER TITLE -->
-				<div class="profile-usertitle">
-					<div class="profile-usertitle-name">
-						${sessionScope.user.name} ${sessionScope.user.surname}
-					</div>
-					<div class="profile-usertitle-job">
-						${sessionScope.user.userType.name}
-					</div>
-				</div>
-				<!-- END SIDEBAR USER TITLE -->
-				<!-- SIDEBAR BUTTONS -->
-				<!--<div class="profile-userbuttons">-->
-				<!--	<button type="button" class="btn btn-success btn-sm">Follow</button>-->
-				<!--	<button type="button" class="btn btn-danger btn-sm">Message</button>-->
-				<!--</div>-->
-				<!-- END SIDEBAR BUTTONS -->
-				<!-- SIDEBAR MENU -->
-				<div class="profile-usermenu">
-					<ul class="nav">
-						<li id="liRestaurantType">
-							<a href="../api/restaurant-type/restaurantTypes" id="aRestaurantType">
-							<i class="glyphicon glyphicon-link"></i>
-							Tipovi restorana </a>
-						</li>
-						<li id="restaurant"  class="active">
-							<a href="#" id="aRestaurant">
-							<i class="glyphicon glyphicon-registration-mark"></i>
-							Restoran </a>
-						</li>
-						<li id="restaurantMenager" >
-							<a href="../api/restaurant-menager/restaurantMenagers" id="aRestaurantMenager">
-							<i class="glyphicon glyphicon-briefcase"></i>
-							Menadzeri restorana </a>
-						</li>
-					</ul>
-				</div>
-				<!-- END MENU -->
-			</div>
-		</div>
-		<div class="col-md-9">
+                </div>
+                <!-- END SIDEBAR USERPIC -->
+                <!-- SIDEBAR USER TITLE -->
+                <div class="profile-usertitle">
+                    <div class="profile-usertitle-name">
+                        ${sessionScope.user.name} ${sessionScope.user.surname}
+                    </div>
+                    <div class="profile-usertitle-job">
+                        ${sessionScope.user.userType.name}
+                    </div>
+                </div>
+                <!-- END SIDEBAR USER TITLE -->
+                <!-- SIDEBAR BUTTONS -->
+                <!--<div class="profile-userbuttons">-->
+                <!--    <button type="button" class="btn btn-success btn-sm">Follow</button>-->
+                <!--    <button type="button" class="btn btn-danger btn-sm">Message</button>-->
+                <!--</div>-->
+                <!-- END SIDEBAR BUTTONS -->
+                <!-- SIDEBAR MENU -->
+                <div class="profile-usermenu">
+                    <ul class="nav">
+                        <li id="liTablesConfigurations">
+                            <a href="../api/tables-configuration/tablesConfigurations" id="aTablesConfigurations">
+                            <i class="glyphicon glyphicon-align-center"></i>
+                            Konfiguracije stolova </a>
+                        </li>
+                        <li class="active">
+                            <a href="#">
+                            <i class="glyphicon glyphicon-registration-mark"></i>
+                            Restorani </a>
+                        </li>
+                        <li  >
+                        <li >
+                            <a href="../api/restaurant-type/restaurantTypes">
+                            <i class="glyphicon glyphicon-link"></i>
+                            Tipovi resotrana </a>
+                        </li>   
+                        <li >
+                            <a href="../api/menu/menus">
+                            <i class="glyphicon glyphicon-book"></i>
+                            Jelovnici </a>
+                        </li>
+                        <li >
+                            <a href="../api/dish/dishes">
+                            <i class="glyphicon glyphicon-list"></i>
+                            Jela</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- END MENU -->
+            </div>
+        </div>
+        <div class="col-md-9">
             <div class="profile-content" id="content">
-			   
-                <div class="container">
+               
+             <div class="container">
                     <div class="row">
-                        <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();">Dodaj restoran</button>
                         <c:if test="${fn:length(sessionScope.restaurants) > 0}">
                           <div class="table-responsive">
                             <table class="table table-hover">
@@ -583,8 +453,6 @@
                                         
                                         <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
                                             restoran</button></i></td>
-                                            
-                                        <td><a href="#" data-href="../api/restaurant/deleteRestaurant?restaurantId=${i.id}" data-toggle="modal" data-target="#confirm-delete">Obrisi restoran</a></td>
                                     </tr>
                                 </c:forEach> 
                                 </tbody>
@@ -601,8 +469,8 @@
                 </div>
                 
             </div>
-		</div>
-	</div>
+    </div>
+  </div>
                     
                     
                     
@@ -763,7 +631,7 @@
                                 <div class="form-group">
                                     <!-- Button -->                                        
                                     <div class="col-md-offset-3 col-md-9">
-                                        	
+                                          
                                             <button id="btn-type" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Dodajte restoran</button>
                                             <button id="btn-updateType" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Izmenite restoran</button>                                      
 
@@ -780,7 +648,7 @@
                
                 
 
-        </div>	    	    
+        </div>            
             
             
         </div>
@@ -809,7 +677,6 @@
         </div>
     </div>
       
-
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
 

@@ -19,10 +19,13 @@
 
     <!-- Custom CSS -->
     <link href="css/stylish-portfolio.css" rel="stylesheet">
+    
 
     <!-- Custom Fonts -->
     <link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    
+    
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -36,11 +39,17 @@
     src="http://maps.google.com/maps/api/js?sensor=false">
     </script>
     <script>
-
+//niz funkcija za proveru onoga sta je uneseno
+function daLiJeCeoBroj(field){
+    return /^\d{0,10}(\.\d{0,4}){0,1}$/.test(field[0].value);
+}
+function daLiJeRealanBroj(field){
+    return /^\+?(0|[1-9]\d*)$/.test(field[0].value);
+}
         $(document).ready(function(){
                 
-            //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
-                $('#btn-updateType').hide();
+            
+                  $('#btn-updateType').hide();
                 $("#btn-type").click(
                     function(){
                         var typeName = $("#typeName").val();
@@ -177,6 +186,13 @@
                     });
             
             
+                    $('#confirm-delete').on('show.bs.modal', function(e) {
+                        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+
+                        $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
+                    });
+
+            
         });
         
         var pageMe = function(opts){
@@ -290,13 +306,13 @@
 </head>
 
 <body>
-	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
-	</c:if>
+    <c:if test="${sessionScope.user == null}">
+        <c:redirect url="../login.jsp" />
+    </c:if>
 
-	<c:if test="${sessionScope.user.userType.name ne 'SYSTEM_MENAGER'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
-	</c:if>
+    <c:if test="${sessionScope.user.userType.name ne 'RESTAURANT_MENAGER'}">
+        <c:redirect url="../insufficient_privileges.jsp" />
+    </c:if>
     
     <!-- Navigation -->
     <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
@@ -328,66 +344,77 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2>Menadzer sistema: ${sessionScope.user.name} ${sessionScope.user.surname}</h2>
+                    <h2>Menadzer restorana: ${sessionScope.user.name} ${sessionScope.user.surname}</h2>
                     <p class="lead"><div id="map_canvas" style="width:100%; height:500px">
                     
                                         <div class="row profile">
-		<div class="col-md-3">
-			<div class="profile-sidebar">
-				<!-- SIDEBAR USERPIC -->
-				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+        <div class="col-md-3">
+            <div class="profile-sidebar">
+                <!-- SIDEBAR USERPIC -->
+                <div class="profile-userpic">
+                        <c:if test="${sessionScope.image == null}">
                             <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
                         <c:if test="${sessionScope.image != null}">
                             <img src="${sessionScope.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
                         </c:if>
 
-				</div>
-				<!-- END SIDEBAR USERPIC -->
-				<!-- SIDEBAR USER TITLE -->
-				<div class="profile-usertitle">
-					<div class="profile-usertitle-name">
-						${sessionScope.user.name} ${sessionScope.user.surname}
-					</div>
-					<div class="profile-usertitle-job">
-						${sessionScope.user.userType.name}
-					</div>
-				</div>
-				<!-- END SIDEBAR USER TITLE -->
-				<!-- SIDEBAR BUTTONS -->
-				<!--<div class="profile-userbuttons">-->
-				<!--	<button type="button" class="btn btn-success btn-sm">Follow</button>-->
-				<!--	<button type="button" class="btn btn-danger btn-sm">Message</button>-->
-				<!--</div>-->
-				<!-- END SIDEBAR BUTTONS -->
-				<!-- SIDEBAR MENU -->
-				<div class="profile-usermenu">
-					<ul class="nav">
-						<li class="active" id="restaurantType">
-							<a href="#" id="aRestaurantType">
-							<i class="glyphicon glyphicon-link"></i>
-							Tipovi restorana </a>
-						</li>
-						<li id="restaurant" id="aRestaurant">
-							<a href="../api/restaurant/restaurants">
-							<i class="glyphicon glyphicon-registration-mark"></i>
-							Restoran </a>
-						</li>
-						<li id="restaurantMenager" id="aRestaurantMenager">
-							<a href="../api/restaurant-menager/restaurantMenagers">
-							<i class="glyphicon glyphicon-briefcase"></i>
-							Menadzeri restorana </a>
-						</li>
-					</ul>
-				</div>
-				<!-- END MENU -->
-			</div>
-		</div>
-		<div class="col-md-9">
+                </div>
+                <!-- END SIDEBAR USERPIC -->
+                <!-- SIDEBAR USER TITLE -->
+                <div class="profile-usertitle">
+                    <div class="profile-usertitle-name">
+                        ${sessionScope.user.name} ${sessionScope.user.surname}
+                    </div>
+                    <div class="profile-usertitle-job">
+                        ${sessionScope.user.userType.name}
+                    </div>
+                </div>
+                <!-- END SIDEBAR USER TITLE -->
+                <!-- SIDEBAR BUTTONS -->
+                <!--<div class="profile-userbuttons">-->
+                <!--    <button type="button" class="btn btn-success btn-sm">Follow</button>-->
+                <!--    <button type="button" class="btn btn-danger btn-sm">Message</button>-->
+                <!--</div>-->
+                <!-- END SIDEBAR BUTTONS -->
+                <!-- SIDEBAR MENU -->
+                <div class="profile-usermenu">
+                    <ul class="nav">
+                        <li id="liTablesConfigurations">
+                            <a href="../api/tables-configuration/tablesConfigurations" id="aTablesConfigurations">
+                            <i class="glyphicon glyphicon-align-center"></i>
+                            Konfiguracije stolova </a>
+                        </li>
+                        <li >
+                            <a href="../api/restaurant/restaurants">
+                            <i class="glyphicon glyphicon-registration-mark"></i>
+                            Restorani </a>
+                        </li>
+                        <li  >
+                        <li class="active">
+                            <a href="#">
+                            <i class="glyphicon glyphicon-link"></i>
+                            Tipovi resotrana </a>
+                        </li>   
+                        <li >
+                            <a href="../api/menu/menus">
+                            <i class="glyphicon glyphicon-book"></i>
+                            Jelovnici </a>
+                        </li>
+                        <li >
+                            <a href="../api/dish/dishes">
+                            <i class="glyphicon glyphicon-list"></i>
+                            Jela</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- END MENU -->
+            </div>
+        </div>
+        <div class="col-md-9">
             <div class="profile-content" id="content">
-			   
-                <div class="container">
+               
+                 <div class="container">
                     <div class="row">
                         <button type="submit" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();">Dodaj tip</button>
                         <c:if test="${fn:length(sessionScope.restaurantTypes) > 0}">
@@ -426,8 +453,8 @@
                 </div>
                 
             </div>
-		</div>
-	</div>
+        </div>
+    </div>
                     
                     
                     
@@ -531,7 +558,7 @@
                                 <div class="form-group">
                                     <!-- Button -->                                        
                                     <div class="col-md-offset-3 col-md-9">
-                                        	
+                                            
                                             <button id="btn-type" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Dodajte tip</button>
                                             <button id="btn-updateType" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Izmenite tip</button>                                      
 
@@ -545,7 +572,7 @@
                
                 
 
-        </div>	    	    
+        </div>              
             
             
         </div>
@@ -573,7 +600,6 @@
             </div>
         </div>
     </div>
-      
 
     <!-- jQuery -->
     <script src="js/jquery.js"></script>

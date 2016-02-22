@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -55,19 +57,21 @@ public class RestaurantTable implements Serializable{
 	@JoinColumn(name = "TAB_CONF_ID", referencedColumnName = "TAB_CONF_ID")
 	private TablesConfiguration tablesConfiguration;
 	
-	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "restaurantTable") //mappedBy says that owning side is street
+	@ManyToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy="tables") //mappedBy says that owning side is street
 	private Set<Reservation> reservations = new HashSet<Reservation>();
 	
-	public void add(Reservation reservation) {
-		if (reservation.getRestaurantTable() != null)
-			reservation.getRestaurantTable().getReservations().remove(reservation);
-		reservation.setRestaurantTable(this);
-		reservations.add(reservation);
+	public void add(Reservation res) {
+		if (res.getTables() != null)
+			res.getTables().remove(res);
+		reservations.add(res);
 	}
-
-	public void remove(Reservation reservation) {
-		reservation.setRestaurantTable(null);
-		reservations.remove(reservation);
+	public void remove(Reservation res) {
+		for(Reservation r : reservations){
+			if(r.getId().equals(res.getId())){
+				reservations.remove(r);
+				break;
+			}
+		}
 	}
 
 	public Integer getId() {

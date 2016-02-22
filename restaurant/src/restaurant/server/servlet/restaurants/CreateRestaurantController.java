@@ -104,6 +104,8 @@ public class CreateRestaurantController extends HttpServlet{
 						menagers.remove(i);
 					}
 				}
+				ArrayList<User> restaurantMenagers = new ArrayList<>();
+				
 				if (streetNo.equals("") || streetNo == null || streetNo.equals("") || restaurantName == null
 						|| restaurantName.equals("") || restaurantName == null || restaurantName.equals("") ) {
 
@@ -126,6 +128,10 @@ public class CreateRestaurantController extends HttpServlet{
 					resultMapper.writeValue(out, "GRESKA");
 					return;
 				}				
+				for(int i = 0; i < menagers.size(); i++){
+					if(userDao.findById(menagers.get(i))!=null);
+						restaurantMenagers.add(userDao.findById(menagers.get(i)));
+				}
 				List<Address> addresses = addressDao.findAll();
 				/* Proveriti da li vec postoji trazena adresa */
 				for (Address a : addresses) {
@@ -137,19 +143,6 @@ public class CreateRestaurantController extends HttpServlet{
 						restaurant.setUserSystemMenager(user);
 						restaurant.setRestaurantType(type);
 						
-						if(menagers.size() > 0){
-							for(int i = 0; i <menagers.size(); i++){
-								User menager = userDao.findById((Integer)menagers.get(i));
-								if(menager == null){
-									resp.setContentType("application/json; charset=utf-8");
-									PrintWriter out = resp.getWriter();
-									resultMapper.writeValue(out, "GRESKA");
-									return;
-								}
-								restaurant.add(menager);
-								
-							}
-						}
 						Restaurant persisted = restaurantDao.persist(restaurant);
 						if(persisted == null){
 							resp.setContentType("application/json; charset=utf-8");
@@ -158,15 +151,17 @@ public class CreateRestaurantController extends HttpServlet{
 							return;
 						}
 						
-						for(int i = 0; i < menagers.size(); i++){
-							User menager = userDao.findById((Integer)menagers.get(i));
-							if(menager == null){
-								resp.setContentType("application/json; charset=utf-8");
-								PrintWriter out = resp.getWriter();
-								resultMapper.writeValue(out, "GRESKA");
-								return;
+						if(restaurantMenagers.size() > 0){
+							for(User u : restaurantMenagers){
+								persisted.add(u);
 							}
-							userDao.merge(menager);
+						}
+						
+						restaurantDao.merge(persisted);
+						
+						for(User u : restaurantMenagers){
+							u.add(persisted);
+							userDao.merge(u);
 						}
 						
 						type.add(persisted);
@@ -198,20 +193,8 @@ public class CreateRestaurantController extends HttpServlet{
 					rst.setRestaurantType(type);
 					
 					rst.setRestaurantType(type);
-					if(menagers.size() > 0){
-						for(int i = 0; i <menagers.size(); i++){
-							User menager = userDao.findById((Integer)menagers.get(i));
-							if(menager == null){
-								resp.setContentType("application/json; charset=utf-8");
-								PrintWriter out = resp.getWriter();
-								resultMapper.writeValue(out, "GRESKA");
-								return;
-							}
-							rst.add(menager);
-							userDao.merge(menager);
-						}
-					}
 					Restaurant persisted = restaurantDao.persist(rst);
+					
 					if(persisted == null){
 						resp.setContentType("application/json; charset=utf-8");
 						PrintWriter out = resp.getWriter();
@@ -219,15 +202,16 @@ public class CreateRestaurantController extends HttpServlet{
 						return;
 					}
 					
-					for(int i = 0; i < menagers.size(); i++){
-						User menager = userDao.findById((Integer)menagers.get(i));
-						if(menager == null){
-							resp.setContentType("application/json; charset=utf-8");
-							PrintWriter out = resp.getWriter();
-							resultMapper.writeValue(out, "GRESKA");
-							return;
+					if(restaurantMenagers.size() > 0){
+						for(User u : restaurantMenagers){
+							persisted.add(u);
 						}
-						userDao.merge(menager);
+					}
+					restaurantDao.merge(persisted);
+					
+					for(User u : restaurantMenagers){
+						u.add(persisted);
+						userDao.merge(u);
 					}
 					persistedAdr.add(rst);
 					addressDao.merge(persistedAdr);

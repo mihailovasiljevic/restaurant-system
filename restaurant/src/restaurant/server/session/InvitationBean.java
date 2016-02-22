@@ -1,5 +1,6 @@
 package restaurant.server.session;
 
+import java.util.HashMap;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -30,7 +31,7 @@ public class InvitationBean implements Invitation{
 	private Queue invitationQueue;
 	
 	@Override
-	public void invitate(User user) {
+	public void invitate(HashMap<Integer, User> reserve) {
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		Connection connection = null;
@@ -58,7 +59,7 @@ public class InvitationBean implements Invitation{
 
             // Creates an object message
             ObjectMessage object = session.createObjectMessage();
-            object.setObject(user);
+            object.setObject(reserve);
 		    
             // Tells the producer to send the object message
             producer.send(object);

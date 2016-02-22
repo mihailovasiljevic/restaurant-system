@@ -24,29 +24,15 @@ public class LogoutController extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		 Cookie[] cookies = req.getCookies();
-		 String sessionId = null;
-		  if(cookies != null) {
-		      for (int i = 0; i < cookies.length; i++) {
-		          if(cookies[i].getName().equals("restaurant.session_id")){
-		        	  sessionId = cookies[i].getValue();
-		        	  break;
-		       }
-		   }
-		   if(sessionId != null){
-			   User user = (User)req.getSession().getAttribute("user");
-				user.setIsSessionActive(false);
-				userDao.merge(user);
-				Cookie sessionCookie = new Cookie("restaurant.session_id", null);
-				sessionCookie.setDomain(req.getServerName());
-				sessionCookie.setPath(req.getContextPath());
-				sessionCookie.setMaxAge(0);
-				req.getSession().invalidate();
-				resp.sendRedirect(resp.encodeRedirectURL("./index.jsp"));
-		   }
-		    
+		
+		if(req.getSession().getAttribute("user") != null){
+
+					req.getSession().invalidate();
+					resp.sendRedirect(resp.encodeRedirectURL("./index.jsp"));
+			
 		}
+		// TODO Auto-generated method stub
+	
 	}
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)

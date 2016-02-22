@@ -36,7 +36,7 @@ public class UpdateRestaurantTypeController extends HttpServlet {
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
-			if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
+			if ((user.getUserType().getName()).equals("GUEST")) {
 				System.out
 						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
 				resp.sendRedirect(resp

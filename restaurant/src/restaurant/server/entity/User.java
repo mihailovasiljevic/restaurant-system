@@ -55,6 +55,9 @@ public class User implements Serializable{
     
     @Column(name = "USER_ACTIVATION_TOKEN")
     private byte[] token;
+    
+    @Column(name = "USER_ACTIVATION_SALT")
+    private byte[] tokenSalt;
 
 	@ManyToOne
 	@JoinColumn(name = "USER_TYPE_ID", referencedColumnName = "USER_TYPE_ID", nullable = false)
@@ -74,21 +77,35 @@ public class User implements Serializable{
 	@Column(name = "USER_ACT", nullable = false)
 	private Boolean activated;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name="FRIEND",
 				joinColumns=@JoinColumn(name = "USER_OWNER_ID", referencedColumnName = "USER_ID"),
 				inverseJoinColumns=@JoinColumn(name = "USER_FRIEND_ID", referencedColumnName = "USER_ID")
 	           )
 	private Set<User> myFriends = new HashSet<User>();
 	
-	public void addFriend(User friend) {
-		if (friend != null)
+	public void addFriend(User friend) { //stefan //marko //marko.add(stefan)
+		if(friend.getMyFriends() != null)
 			friend.getMyFriends().remove(friend);
 		myFriends.add(friend);
+		if(!friend.getMyFriends().contains(this))
+			friend.addFriend(this);
 	}
 
 	public void removeFriend(User friend) {
-		myFriends.remove(friend);
+		for(User u : myFriends){
+			if(u.getId().equals(friend.getId())){
+				myFriends.remove(u);
+				break;
+			}
+		}
+		
+		for(User u : friend.getMyFriends()){
+			if(u.getId().equals(this.getId())){
+				friend.getMyFriends().remove(u);
+				break;
+			}
+		}
 	}
 	
 	@OneToMany(cascade = { ALL }, fetch = FetchType.EAGER, mappedBy = "userGuestInvitationSender") //mappedBy says that owning side is street
@@ -207,7 +224,7 @@ public class User implements Serializable{
 	@JoinColumn(name = "USER_SYS_MEN_ID", referencedColumnName = "USER_ID")
 	private User systemMenager;
 	
-	@ManyToOne
+	@ManyToOne(cascade = { ALL })
 	@JoinColumn(name = "USER_REST_MEN_REST", referencedColumnName = "REST_ID")
 	private Restaurant restaurantMenagedBy;
 	
@@ -454,6 +471,15 @@ public class User implements Serializable{
 		this.restaurantMenagedBy = restaurantMenagedBy;
 	}
 
+	
+
+	public byte[] getTokenSalt() {
+		return tokenSalt;
+	}
+
+	public void setTokenSalt(byte[] tokenSalt) {
+		this.tokenSalt = tokenSalt;
+	}
 
 	public User(String name, String surname, String email, byte[] password, byte[] salt, Boolean isSessionActive,
 			String accountType, String sessionId, byte[] token, UserType userType, Address address, Image image,
