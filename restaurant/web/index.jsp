@@ -38,8 +38,7 @@
     <script>
 
         $(document).ready(function(){
-	               var message = ${requestScope.infoMessage};
-                    alert(message);
+            alert("${requestScope.infoMessage}");
                 $("#btn-login").click(
                     function(){
                         var userEmail = $("#userEmail").val();
