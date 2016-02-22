@@ -3,13 +3,16 @@ package restaurant.server.servlet.guests;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 
 import javax.ejb.EJB;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import restaurant.server.entity.Invitation;
 import restaurant.server.entity.Reservation;
 import restaurant.server.entity.User;
 import restaurant.server.session.ReservationDaoLocal;
@@ -29,14 +32,15 @@ public class PrepareInvitationDecisionController extends HttpServlet{
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
 			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
+			req.setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(getServletContext().getContextPath()+"/index.jsp");
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("GUEST")) {
-				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.setAttribute("infoMessage", "Nemate ovlascenja za pristup ovoj stranici.");
+				resp.sendRedirect(getServletContext().getContextPath()+"/index.jsp");
 				return;
 			}
 			try{
@@ -44,21 +48,35 @@ public class PrepareInvitationDecisionController extends HttpServlet{
 				Integer reservationId = Integer.parseInt(req.getParameter("reservation"));
 				
 				if(!userId.equals(user.getId())){
-					System.out.println("Neko menjao get link id korisnika.");
-					resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
+					req.getSession().setAttribute("infoMessage", "Neispravan link.");
+					resp.sendRedirect(getServletContext().getContextPath()+"/guest/guest.jsp");
 					return;						
 				}
 				
 				Reservation res = reservationDao.findById(reservationId);
 				if(res == null){
-					System.out.println("Nema vise te rezervacije nesto se desilo.");
-					resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
+					req.getSession().setAttribute("infoMessage", "Rezervacija kojoj pokusavate da pristupite ne postoji!");
+					resp.sendRedirect(getServletContext().getContextPath()+"/guest/guest.jsp");
 					return;						
 				}
+				
+				Iterator<Invitation> it = res.getInvitations().iterator();
+				
+				while(it.hasNext()){
+					Invitation inv = it.next();
+					if(inv.getUserGuestInvitationReceived().getId().equals(user.getId())){
+						if(inv.getInvitationAccepted() != null){
+							req.getSession().setAttribute("infoMessage", "Vec ste prihvatili ili odbili poziv!");
+							resp.sendRedirect(getServletContext().getContextPath()+"/guest/guest.jsp");
+							return;									
+						}
+					}
+				}	
+				
 				Date now = new Date();
 				if(now.compareTo(res.getDate()) == 1){
-					System.out.println("Proslo je vreme za prihvatanje te rezervacije. Rezervacija istekla.");
-					resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
+					req.getSession().setAttribute("infoMessage", "Proslo je vreme za prihvatanje te rezervacije. Rezervacija istekla.");
+					resp.sendRedirect(getServletContext().getContextPath()+"/guest/guest.jsp");
 					return;						
 				}else if(now.compareTo(res.getDate()) == 0){
 					Calendar cal = Calendar.getInstance();
@@ -68,19 +86,20 @@ public class PrepareInvitationDecisionController extends HttpServlet{
 					int resTime = cal.get(Calendar.HOUR_OF_DAY);
 					
 					if(nowTime-resTime >= 0){
-						System.out.println("Proslo je vreme za prihvatanje te rezervacije. Rezervacija istekla.");
-						resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
+						req.getSession().setAttribute("infoMessage", "Proslo je vreme za prihvatanje te rezervacije. Rezervacija istekla.");
+						resp.sendRedirect(getServletContext().getContextPath()+"/guest/guest.jsp");
 						return;	
 					}
 				}
 				
-				
 				req.getSession().setAttribute("reservationForDecision", res);
-				resp.sendRedirect(resp.encodeRedirectURL("../../guest/invitation.jsp"));
+				resp.sendRedirect(getServletContext().getContextPath()+"/guest/invitation.jsp");
+
 				return;	
 			}catch(Exception ex){
-				System.out.println("Neko menjao get link.");
-				resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
+				ex.printStackTrace();
+				req.getSession().setAttribute("infoMessage", "Neispravan link.");
+				resp.sendRedirect(getServletContext().getContextPath()+"/guest/guest.jsp");
 				return;				
 			}
 			

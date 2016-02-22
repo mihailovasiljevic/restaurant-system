@@ -239,11 +239,11 @@
                   <div class="form-group">
                         <!-- Button -->                                        
                         <div class="col-md-offset-3 col-md-3">
-                            <button id="btn-accept" type="button" class="btn btn-success"><i class="icon-hand-right"></i>Prihvati</button>                        
+                            <a href="../api/guest/invitationDecision?accept=true" class="btn btn-success">Prihvati</a>                    
                         </div>
                         <!-- Button -->                                        
                         <div class="col-md-offset-3 col-md-3">
-                            <button id="btn-accept" type="button" class="btn btn-danger"><i class="icon-hand-right"></i>Odbij</button>                        
+                            <a href="../api/guest/invitationDecision?accept=false" class="btn btn-danger">Odbij</a>                        
                         </div>
                      </div>  
                     </div>

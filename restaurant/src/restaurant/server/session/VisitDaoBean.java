@@ -1,9 +1,13 @@
 package restaurant.server.session;
 
+import javax.ejb.Local;
+import javax.ejb.Stateless;
 import javax.persistence.Query;
 
 import restaurant.server.entity.Visit;
 
+@Stateless
+@Local(VisitDaoLocal.class)
 public class VisitDaoBean extends GenericDaoBean<Visit, Integer>
 implements VisitDaoLocal{
 	public int findUserVisitsNo(Integer userId){

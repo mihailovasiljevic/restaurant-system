@@ -26,6 +26,7 @@ import restaurant.server.entity.Visit;
 import restaurant.server.session.InvitationDaoLocal;
 import restaurant.server.session.InvitationLocal;
 import restaurant.server.session.ReservationDaoLocal;
+import restaurant.server.session.RestaurantDaoLocal;
 import restaurant.server.session.RestaurantTableDaoLocal;
 import restaurant.server.session.TablesConfigurationDaoLocal;
 import restaurant.server.session.UserDaoLocal;
@@ -46,6 +47,8 @@ public class InviteFriendsController extends HttpServlet {
 	private InvitationDaoLocal invitationDao;
 	@EJB
 	private VisitDaoLocal visitDao;
+	@EJB
+	private RestaurantDaoLocal restaurantDao;
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -210,7 +213,7 @@ public class InviteFriendsController extends HttpServlet {
 				inv.setReservation(perseistedReservation);
 				inv.setUserGuestInvitationSender(user);
 				inv.setUserGuestInvitationReceived(u);
-				inv.setInvitationAccepted(false);
+				inv.setInvitationAccepted(null);
 				Invitation persistedInv = invitationDao.persist(inv);
 				if(persistedInv == null){
 					resp.setContentType("application/json; charset=utf-8");
@@ -225,14 +228,25 @@ public class InviteFriendsController extends HttpServlet {
 				perseistedReservation.add(inv);
 				reservatioDao.merge(perseistedReservation);
 			}
-			
 			for(RestaurantTable r : rb.getListOfTables()){
 				r.add(perseistedReservation);
 				tableDao.merge(r);
 				perseistedReservation.add(r);
 				reservatioDao.merge(perseistedReservation);
 			}
-			
+
+			Visit reservationMakerVisit = new Visit();
+			reservationMakerVisit.setReservation(perseistedReservation);
+			reservationMakerVisit.setRestaurant(restaurant);
+			reservationMakerVisit.setUser(user);
+			reservationMakerVisit.setGrade(-1);
+			visitDao.persist(reservationMakerVisit);
+			user.add(reservationMakerVisit);
+			restaurant.add(reservationMakerVisit);
+			perseistedReservation.add(reservationMakerVisit);
+			reservatioDao.merge(perseistedReservation);
+			userDao.merge(user);
+			restaurantDao.merge(restaurant);
 				try{
 					HashMap<Integer, User> hm = new HashMap<>();
 					hm.put(perseistedReservation.getId(), user);
@@ -251,11 +265,7 @@ public class InviteFriendsController extends HttpServlet {
 			if(req.getSession().getAttribute("tablesConfiguration")!= null)
 				req.getSession().removeAttribute("tablesConfiguration");				
 			
-			Visit reservationMakerVisit = new Visit();
-			reservationMakerVisit.setReservation(reservation);
-			reservationMakerVisit.setRestaurant(restaurant);
-			reservationMakerVisit.setUser(user);
-			visitDao.persist(reservationMakerVisit);
+
 			resp.setContentType("application/json; charset=utf-8");
 			PrintWriter out = resp.getWriter();
 			resultMapper.writeValue(out, "USPEH");

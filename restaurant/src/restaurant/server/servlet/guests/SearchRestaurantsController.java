@@ -57,11 +57,11 @@ public class SearchRestaurantsController extends HttpServlet{
 				String query = "";
 				List<Restaurant> restaurants = null;
 				if(searchByType != -1 && !searchByName.equals(" ")){
-					 query="SELECT k FROM Restaurant k WHERE k.restaurantType.id = "+searchByType+" and k.restaurant.name like '%"+searchByName+"%'";
+					 query="SELECT k FROM Restaurant k WHERE k.restaurantType.id = "+searchByType+" and k.name like '%"+searchByName+"%'";
 					 restaurants = restaurantDao.findBy(query);
 				}
 				else if(searchByType == -1 && !searchByName.equals(" ")){
-					 query="SELECT k FROM Restaurant k WHERE k.restaurant.name like '%"+searchByName+"%'";
+					 query="SELECT k FROM Restaurant k WHERE k.name like '%"+searchByName+"%'";
 					 restaurants = restaurantDao.findBy(query);
 				}
 				else if(searchByType != -1 && searchByName.equals(" ")){

@@ -573,6 +573,36 @@
 		<servlet-name>InviteFriendsController</servlet-name>
 		<url-pattern>/api/guest/inviteFriends</url-pattern>
 	</servlet-mapping>	
+	
+	<servlet>
+		<display-name>PrepareInvitationDecisionController</display-name>
+		<servlet-name>PrepareInvitationDecisionController</servlet-name>
+		<servlet-class>restaurant.server.servlet.guests.PrepareInvitationDecisionController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PrepareInvitationDecisionController</servlet-name>
+		<url-pattern>/invitation</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<display-name>InvitationDecisionController</display-name>
+		<servlet-name>InvitationDecisionController</servlet-name>
+		<servlet-class>restaurant.server.servlet.guests.InvitationDecisionController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>InvitationDecisionController</servlet-name>
+		<url-pattern>/api/guest/invitationDecision</url-pattern>
+	</servlet-mapping>			
 
 	<servlet>
 		<display-name>fileUpload</display-name>

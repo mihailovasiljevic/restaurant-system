@@ -39,7 +39,10 @@
 
         $(document).ready(function(){
 	
-
+                infoMessage = $("#infoMessage").val();
+                if(infoMessage != null && infoMessage != ""){
+                    alert(infoMessage);
+                }
             
                 $("#btn-login").click(
                     function(){
@@ -416,6 +419,7 @@
             <br>
             <a href="#restaurants" class="btn btn-dark btn-lg">Pogledajte restorane</a>
         </div>
+        <input type="hidden" value="${requestScope.infoMessage}" id="infoMessage">
     </header>
 
     <!-- About -->

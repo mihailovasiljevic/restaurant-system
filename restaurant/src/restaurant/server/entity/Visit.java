@@ -92,9 +92,7 @@ public class Visit implements Serializable{
 		// TODO Auto-generated constructor stub
 	}
 
-	public Visit(Integer grade, User user, Restaurant restaurant, Reservation reservation) {
-		super();
-		this.grade = grade;
+	public Visit(User user, Restaurant restaurant, Reservation reservation) {
 		this.user = user;
 		this.restaurant = restaurant;
 		this.reservation = reservation;
