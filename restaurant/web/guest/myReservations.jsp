@@ -255,7 +255,7 @@
                                             
                                             </td>
                                         </c:if>
-                                        <c:if test="${i.grade == -1}">
+                                        <c:if test="${i.grade != -1}">
                                             <td>
                                                 
                                                 <div class="form-group">

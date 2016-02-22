@@ -47,12 +47,9 @@
 //niz funkcija za proveru onoga sta je uneseno
 
         $(document).ready(function(){
-               infoMessage = $("#infoMessage").val();
-                if(infoMessage != null && infoMessage != ""){
-                    alert(infoMessage);
-                }
             
-            
+            	 var message = ${sessionScope.infoMessage};
+                 alert(message);
                 $('#btn-updateType').hide();
                  $("#btn-updateUser").click(
                     function(){
@@ -324,7 +321,7 @@
             <h1>&nbsp;</h1>
             <h3>&nbsp;</h3>
         </div>
-        <input type="hidden" value="${sessionSope.infoMessage}" id="infoMessage">
+        <input type="hidden" value="${sessionScope.infoMessage}" id="infoMessage">
     </header>
 
     <!-- About -->

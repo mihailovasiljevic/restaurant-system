@@ -38,12 +38,8 @@
     <script>
 
         $(document).ready(function(){
-	
-                infoMessage = $("#infoMessage").val();
-                if(infoMessage != null && infoMessage != ""){
-                    alert(infoMessage);
-                }
-            
+	               var message = ${requestScope.infoMessage};
+                    alert(message);
                 $("#btn-login").click(
                     function(){
                         var userEmail = $("#userEmail").val();
