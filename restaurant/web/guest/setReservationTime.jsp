@@ -410,6 +410,11 @@
                             <i class="glyphicon glyphicon-link"></i>
                             Prijatelji </a>
                         </li>   
+                        <li >
+                            <a href="./myReservations.jsp">
+                            <i class="glyphicon glyphicon-link"></i>
+                            Moje posete </a>
+                        </li>  
                     </ul>
 				</div>
 				<!-- END MENU -->

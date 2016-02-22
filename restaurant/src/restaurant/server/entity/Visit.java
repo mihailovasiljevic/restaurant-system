@@ -30,8 +30,8 @@ public class Visit implements Serializable{
 	@Column(name = "VISIT_ID", unique = true, nullable = false)
 	private Integer id;
 	
-	@Column(name = "VISIT_GRADE", nullable = false)
-	private Integer grade;
+	@Column(name = "VISIT_GRADE")
+	private Integer grade = -1;
 	
 	@ManyToOne
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")

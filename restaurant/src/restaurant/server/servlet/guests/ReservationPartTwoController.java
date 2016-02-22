@@ -57,118 +57,7 @@ public class ReservationPartTwoController extends HttpServlet{
 						.encodeRedirectURL("../../insufficient_privileges.jsp"));
 				return;
 			}
-			try {
-
-				ObjectMapper resultMapper = new ObjectMapper();
-				ObjectMapper mapper = new ObjectMapper();
-				
-				Restaurant restaurant = (Restaurant)req.getSession().getAttribute("restaurantForReservation");
-				if(restaurant == null){
-			        resp.setContentType("application/json; charset=utf-8");
-			        PrintWriter out = resp.getWriter();
-			        resultMapper.writeValue(out, "Greska na sesiji. Pokusajte ponovo od prvog koraka rezervacije.");
-					return;
-				}
-				
-				HashMap<String, String> data = mapper.readValue(req.getParameter("tablesData"), HashMap.class);
-				String checkedValues = "";
-				int reservationForHowLong=-1;
-				ArrayList<Integer> tablesIds = new ArrayList<>();
-				System.out.println("");
-				for (String key : data.keySet()) {
-					if (key.equals("checkedValues")){
-						String array = data.get(key).replaceAll("\\s+","");
-						String[] values = array.substring(0, array.length()-1).split(",");
-						for(String s : values){
-							if(!s.equals("null")){
-								tablesIds.add(Integer.parseInt(s));
-							}
-						}
-					}
-				}
-			   
-				
-				ReservationBean rb = (ReservationBean)req.getSession().getAttribute("reservationInProgress");
-				if(rb == null){
-			        resp.setContentType("application/json; charset=utf-8");
-			        PrintWriter out = resp.getWriter();
-			        resultMapper.writeValue(out, "Greska na sesiji. Pokusajte ponovo od prvog koraka rezervacije.");
-					return;					
-				}
-				
-				TablesConfiguration conf = rb.getConf();
-				String tableQuery = "SELECT k FROM RestaurantTable k WHERE k.tablesConfiguration.id like '"+conf.getId()+"'";
-				List<RestaurantTable> tables = tableDao.findBy(tableQuery);
-				List<RestaurantTable> okTables = new ArrayList<>();
-				
-				okTables.addAll(tables);				//Get only tables that can be reserved at that time
-					if(tables.size() > 0){
-						Iterator<RestaurantTable> iter = okTables.iterator();
-
-						while (iter.hasNext()) {
-						    RestaurantTable tbl = iter.next();
-							Calendar cal = Calendar.getInstance();
-							cal.setTime(rb.getDate());
-							int hourForReservation = cal.get(Calendar.HOUR_OF_DAY);
-							int minuteForReservation = cal.get(Calendar.MINUTE);
-							if(minuteForReservation > 30)
-								hourForReservation++;
-							
-							for(Reservation res : tbl.getReservations()){
-								if(res.getDate().compareTo(rb.getDate()) == 0){
-									cal.setTime(res.getDate());
-									int hourReserved = cal.get(Calendar.HOUR_OF_DAY);
-									int minuteReserved = cal.get(Calendar.MINUTE);
-									if (minuteReserved > 30)
-										hourReserved++;
-									boolean notOverlap = ((hourReserved <= (hourForReservation + reservationForHowLong))
-											&& ((hourReserved + res.getForHowLong()) >= hourForReservation));
-									if (!notOverlap) {
-										iter.remove();
-									}
-								}
-							}
-						}
-					}
-				boolean reservationCanPass = true;
-				ArrayList<RestaurantTable> tablesForReservation = new ArrayList<>();
-				for(Integer id : tablesIds){
-					boolean passOne = false;
-					for(RestaurantTable r : okTables){
-						if(r.getId().equals(id)){
-							passOne = true;
-							tablesForReservation.add(r);
-							break;
-						}
-					}
-					if(passOne == false){
-						reservationCanPass = false;
-						break;
-					}
-				}
-				
-				if(reservationCanPass == false){
-			        resp.setContentType("application/json; charset=utf-8");
-			        PrintWriter out = resp.getWriter();
-			        resultMapper.writeValue(out, "Neki od stolova koje pokusavate da rezervisete je neko u medjuvremenu rezervisao.\nVratite se na pocetak i pokusaje ponovo.");
-					return;						
-				}
-				
-				rb.setListOfTables(tablesForReservation);
-				req.getSession().setAttribute("reservationInProgress", rb);
-		        resp.setContentType("application/json; charset=utf-8");
-		        PrintWriter out = resp.getWriter();
-		        resultMapper.writeValue(out, "USPEH");
-				return;				
-
-			} catch (Exception ex) {
-				ObjectMapper resultMapper = new ObjectMapper();
-				ex.printStackTrace();
-		        resp.setContentType("application/json; charset=utf-8");
-		        PrintWriter out = resp.getWriter();
-		        resultMapper.writeValue(out, "GRESKA");
-				return;
-			}
+			makeReservationPartTwo(req, resp);
 		}
 	}
 
@@ -176,5 +65,120 @@ public class ReservationPartTwoController extends HttpServlet{
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(req, resp);
+	}
+	
+	private synchronized void makeReservationPartTwo(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+		try {
+
+			ObjectMapper resultMapper = new ObjectMapper();
+			ObjectMapper mapper = new ObjectMapper();
+			
+			Restaurant restaurant = (Restaurant)req.getSession().getAttribute("restaurantForReservation");
+			if(restaurant == null){
+		        resp.setContentType("application/json; charset=utf-8");
+		        PrintWriter out = resp.getWriter();
+		        resultMapper.writeValue(out, "Greska na sesiji. Pokusajte ponovo od prvog koraka rezervacije.");
+				return;
+			}
+			
+			HashMap<String, String> data = mapper.readValue(req.getParameter("tablesData"), HashMap.class);
+			String checkedValues = "";
+			int reservationForHowLong=-1;
+			ArrayList<Integer> tablesIds = new ArrayList<>();
+			System.out.println("");
+			for (String key : data.keySet()) {
+				if (key.equals("checkedValues")){
+					String array = data.get(key).replaceAll("\\s+","");
+					String[] values = array.substring(0, array.length()-1).split(",");
+					for(String s : values){
+						if(!s.equals("null")){
+							tablesIds.add(Integer.parseInt(s));
+						}
+					}
+				}
+			}
+		   
+			
+			ReservationBean rb = (ReservationBean)req.getSession().getAttribute("reservationInProgress");
+			if(rb == null){
+		        resp.setContentType("application/json; charset=utf-8");
+		        PrintWriter out = resp.getWriter();
+		        resultMapper.writeValue(out, "Greska na sesiji. Pokusajte ponovo od prvog koraka rezervacije.");
+				return;					
+			}
+			
+			TablesConfiguration conf = rb.getConf();
+			String tableQuery = "SELECT k FROM RestaurantTable k WHERE k.tablesConfiguration.id like '"+conf.getId()+"'";
+			List<RestaurantTable> tables = tableDao.findBy(tableQuery);
+			List<RestaurantTable> okTables = new ArrayList<>();
+			
+			okTables.addAll(tables);				//Get only tables that can be reserved at that time
+				if(tables.size() > 0){
+					Iterator<RestaurantTable> iter = okTables.iterator();
+
+					while (iter.hasNext()) {
+					    RestaurantTable tbl = iter.next();
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(rb.getDate());
+						int hourForReservation = cal.get(Calendar.HOUR_OF_DAY);
+						int minuteForReservation = cal.get(Calendar.MINUTE);
+						if(minuteForReservation > 30)
+							hourForReservation++;
+						
+						for(Reservation res : tbl.getReservations()){
+							if(res.getDate().compareTo(rb.getDate()) == 0){
+								cal.setTime(res.getDate());
+								int hourReserved = cal.get(Calendar.HOUR_OF_DAY);
+								int minuteReserved = cal.get(Calendar.MINUTE);
+								if (minuteReserved > 30)
+									hourReserved++;
+								boolean notOverlap = ((hourReserved <= (hourForReservation + reservationForHowLong))
+										&& ((hourReserved + res.getForHowLong()) >= hourForReservation));
+								if (!notOverlap) {
+									iter.remove();
+								}
+							}
+						}
+					}
+				}
+			boolean reservationCanPass = true;
+			ArrayList<RestaurantTable> tablesForReservation = new ArrayList<>();
+			for(Integer id : tablesIds){
+				boolean passOne = false;
+				for(RestaurantTable r : okTables){
+					if(r.getId().equals(id)){
+						passOne = true;
+						tablesForReservation.add(r);
+						break;
+					}
+				}
+				if(passOne == false){
+					reservationCanPass = false;
+					break;
+				}
+			}
+			
+			if(reservationCanPass == false){
+		        resp.setContentType("application/json; charset=utf-8");
+		        PrintWriter out = resp.getWriter();
+		        resultMapper.writeValue(out, "Neki od stolova koje pokusavate da rezervisete je neko u medjuvremenu rezervisao.\nVratite se na pocetak i pokusaje ponovo.");
+				return;						
+			}
+			
+			rb.setListOfTables(tablesForReservation);
+			req.getSession().setAttribute("reservationInProgress", rb);
+	        resp.setContentType("application/json; charset=utf-8");
+	        PrintWriter out = resp.getWriter();
+	        resultMapper.writeValue(out, "USPEH");
+			return;				
+
+		} catch (Exception ex) {
+			ObjectMapper resultMapper = new ObjectMapper();
+			ex.printStackTrace();
+	        resp.setContentType("application/json; charset=utf-8");
+	        PrintWriter out = resp.getWriter();
+	        resultMapper.writeValue(out, "GRESKA");
+			return;
+		}
 	}
 }
