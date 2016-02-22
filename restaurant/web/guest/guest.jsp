@@ -48,8 +48,8 @@
 
         $(document).ready(function(){
             
-
-                 alert("${sessionScope.infoMessage}");
+                if("${sessionScope.infoMessage}" != "")
+                    alert("${sessionScope.infoMessage}");
                 $('#btn-updateType').hide();
                  $("#btn-updateUser").click(
                     function(){

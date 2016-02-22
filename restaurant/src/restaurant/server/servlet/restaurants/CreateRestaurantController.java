@@ -58,15 +58,15 @@ public class CreateRestaurantController extends HttpServlet{
 	
 		
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
-				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			try {
@@ -90,11 +90,13 @@ public class CreateRestaurantController extends HttpServlet{
 					else if (key.equals("streetNo"))
 						streetNo = data.get(key);
 					else if (key.equals("menagers")){
-						String array = data.get(key).replaceAll("\\s+","");
-						String[] values = array.substring(0, array.length()-1).split(",");
-						for(String s : values){
-							if(!s.equals("null")){
-								menagers.add(Integer.parseInt(s));
+						if(data.get(key) != ""){
+							String array = data.get(key).replaceAll("\\s+","");
+							String[] values = array.substring(0, array.length()-1).split(",");
+							for(String s : values){
+								if(!s.equals("null")){
+									menagers.add(Integer.parseInt(s));
+								}
 							}
 						}
 					}
@@ -111,23 +113,23 @@ public class CreateRestaurantController extends HttpServlet{
 
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, "GRESKA");
+					resultMapper.writeValue(out, "Morate popuniti sva polja!");
 					return;
 				}
 				RestaurantType type = restaurantTypeDao.findById(typeId);
 				if(type == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, "GRESKA");
+					resultMapper.writeValue(out, "Nije moguci pronaci tip restorana koji ste pokusali da dodelite restoranu.");
 					return;
 				}
 				Street street = streetDao.findById(streetId);
 				if(street == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, "GRESKA");
+					resultMapper.writeValue(out, "Nije moguce pronaci ulicu koju ste pokusali da dodelite restoranu.");
 					return;
-				}				
+				}			
 				for(int i = 0; i < menagers.size(); i++){
 					if(userDao.findById(menagers.get(i))!=null);
 						restaurantMenagers.add(userDao.findById(menagers.get(i)));
@@ -147,7 +149,7 @@ public class CreateRestaurantController extends HttpServlet{
 						if(persisted == null){
 							resp.setContentType("application/json; charset=utf-8");
 							PrintWriter out = resp.getWriter();
-							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							resultMapper.writeValue(out, "Nismo uspeli da sacuvamo restoran. Molimo pokusajte ponovo.");
 							return;
 						}
 						
@@ -181,7 +183,7 @@ public class CreateRestaurantController extends HttpServlet{
 				if(persistedAdr == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, "GRESKA");
+					resultMapper.writeValue(out, "Nismo uspeli da sacuvamo adresu koju ste pokusali da dodelite restorano. Molimo pokusajte ponovo.");
 					return;
 				}
 				
@@ -198,7 +200,7 @@ public class CreateRestaurantController extends HttpServlet{
 					if(persisted == null){
 						resp.setContentType("application/json; charset=utf-8");
 						PrintWriter out = resp.getWriter();
-						resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+						resultMapper.writeValue(out, "Nismo uspeli da sacuvamo restoran. Molimo pokusajte ponovo.");
 						return;
 					}
 					
@@ -228,7 +230,7 @@ public class CreateRestaurantController extends HttpServlet{
 				ObjectMapper resultMapper = new ObjectMapper();
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
-				resultMapper.writeValue(out, ex.getMessage());
+				resultMapper.writeValue(out, "Greska na serveru. Molimo da pokusate ponovo.");
 				ex.printStackTrace();
 				return;
 			}

@@ -38,8 +38,12 @@
     <script>
 
         $(document).ready(function(){
-            alert("${requestScope.infoMessage}");
-                $("#btn-login").click(
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }
+                
+            $("#btn-login").click(
                     function(){
                         var userEmail = $("#userEmail").val();
                         var userPassword = $("#userPassword").val();

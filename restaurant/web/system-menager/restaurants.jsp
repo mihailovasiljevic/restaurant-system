@@ -38,6 +38,11 @@
     <script>
 
         $(document).ready(function(){
+            
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }
                 var imageFileName="";
             //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
                 $('#btn-updateType').hide();
@@ -102,10 +107,7 @@
                                                  window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }else {
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali restoran.");                                     		
-                                                $("#registrationModal").show();
+                                                alert("Uspesno ste izmenili restoran.")
                                                 window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }
@@ -125,7 +127,8 @@
             
                     $( "#restaurantTable" ).on( "click", "i", function( event ) {
                             var restaurantId = $(this).children().last().val();
-                        
+                            var mess1 = "Neko je verovanto obrisao restoran koji pokusavate da izmenite. Osvezite stranicu.";
+                            var mess2 = "Greska servera. Molimo pokusajte ponovo.";
                                 $.ajaxSetup({async:false});
                                 $.ajax({
                                       url: "../api/restaurant/prepareUpdateRestaurant",
@@ -139,7 +142,7 @@
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
-                                        if(data != "GRESKA"){
+                                        if(data != mess1 && data != mess2){
                                              $('#restaurantName').val(data.name);
                                             $('#restaurantType').val(data.type);
                                             $('#street').val(data.street);
@@ -181,7 +184,7 @@
                     $('#confirm-delete').on('show.bs.modal', function(e) {
                         $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 
-                        $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
+                        //$('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
                     });
             
             
@@ -246,10 +249,7 @@
                                                  window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }else {
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali restoran.");                                     		
-                                                $("#registrationModal").show();
+                                                alert("Uspesno ste dodali restoran.")
                                                 window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }

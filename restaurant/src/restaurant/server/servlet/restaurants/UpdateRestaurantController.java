@@ -51,15 +51,15 @@ public class UpdateRestaurantController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if ((user.getUserType().getName()).equals("GUEST")) {
-				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			try {
@@ -102,21 +102,21 @@ public class UpdateRestaurantController extends HttpServlet{
 
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_FIELD_EMPTY.toString());
+					resultMapper.writeValue(out, "Morate popuniti sva polja!");
 					return;
 				}
 				RestaurantType type = restaurantTypeDao.findById(typeId);
 				if(type == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+					resultMapper.writeValue(out, "Nije moguci pronaci tip restorana koji ste pokusali da dodelite restoranu.");
 					return;
 				}
 				Street street = streetDao.findById(streetId);
 				if(street == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+					resultMapper.writeValue(out, "Nije moguce pronaci ulicu koju ste pokusali da dodelite restoranu.");
 					return;
 				}			
 				ArrayList<User> restaurantMenagers = new ArrayList<>();
@@ -139,7 +139,7 @@ public class UpdateRestaurantController extends HttpServlet{
 							if(persisted == null){
 								resp.setContentType("application/json; charset=utf-8");
 								PrintWriter out = resp.getWriter();
-								resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+								resultMapper.writeValue(out, "Nismo uspeli da azuziramo restoran. Molimo pokusajte ponovo.");
 								return;
 							}
 							
@@ -169,7 +169,7 @@ public class UpdateRestaurantController extends HttpServlet{
 						}else{
 							resp.setContentType("application/json; charset=utf-8");
 							PrintWriter out = resp.getWriter();
-							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							resultMapper.writeValue(out, "Restoran koji pokusavate da izmenite vise ne postoji na sesiji. Molimo ponovite postupak.");
 							return;
 						}
 					}
@@ -182,7 +182,7 @@ public class UpdateRestaurantController extends HttpServlet{
 				if(persistedAdr == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+					resultMapper.writeValue(out, "Nismo uspeli da sacuvamo adresu koju ste pokusali da dodelite restorano. Molimo pokusajte ponovo.");
 					return;
 				}
 				
@@ -197,7 +197,7 @@ public class UpdateRestaurantController extends HttpServlet{
 						if(persisted == null){
 							resp.setContentType("application/json; charset=utf-8");
 							PrintWriter out = resp.getWriter();
-							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							resultMapper.writeValue(out, "Nismo uspeli da azuziramo restoran. Molimo pokusajte ponovo.");
 							return;
 						}
 						
@@ -228,7 +228,7 @@ public class UpdateRestaurantController extends HttpServlet{
 					}else{
 						resp.setContentType("application/json; charset=utf-8");
 						PrintWriter out = resp.getWriter();
-						resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+						resultMapper.writeValue(out, "Restoran koji pokusavate da izmenite vise ne postoji na sesiji. Molimo ponovite postupak.");
 						return;
 					}
 			}catch(Exception ex){
@@ -236,7 +236,7 @@ public class UpdateRestaurantController extends HttpServlet{
 				ObjectMapper resultMapper = new ObjectMapper();
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
-				resultMapper.writeValue(out, "GRESKA");
+				resultMapper.writeValue(out, "Greska na serveru. Molimo da pokusate ponovo.");
 				return;
 			}
 		}
