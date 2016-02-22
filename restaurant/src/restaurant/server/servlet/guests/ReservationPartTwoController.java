@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -98,9 +99,14 @@ public class ReservationPartTwoController extends HttpServlet{
 				TablesConfiguration conf = rb.getConf();
 				String tableQuery = "SELECT k FROM RestaurantTable k WHERE k.tablesConfiguration.id like '"+conf.getId()+"'";
 				List<RestaurantTable> tables = tableDao.findBy(tableQuery);
-				//Get only tables that can be reserved at that time
+				List<RestaurantTable> okTables = new ArrayList<>();
+				
+				okTables.addAll(tables);				//Get only tables that can be reserved at that time
 					if(tables.size() > 0){
-						for(RestaurantTable r : tables){
+						Iterator<RestaurantTable> iter = okTables.iterator();
+
+						while (iter.hasNext()) {
+						    RestaurantTable tbl = iter.next();
 							Calendar cal = Calendar.getInstance();
 							cal.setTime(rb.getDate());
 							int hourForReservation = cal.get(Calendar.HOUR_OF_DAY);
@@ -108,7 +114,7 @@ public class ReservationPartTwoController extends HttpServlet{
 							if(minuteForReservation > 30)
 								hourForReservation++;
 							
-							for(Reservation res : r.getReservations()){
+							for(Reservation res : tbl.getReservations()){
 								if(res.getDate().compareTo(rb.getDate()) == 0){
 									cal.setTime(res.getDate());
 									int hourReserved = cal.get(Calendar.HOUR_OF_DAY);
@@ -118,7 +124,7 @@ public class ReservationPartTwoController extends HttpServlet{
 									boolean notOverlap = ((hourReserved <= (hourForReservation + reservationForHowLong))
 											&& ((hourReserved + res.getForHowLong()) >= hourForReservation));
 									if (!notOverlap) {
-										tables.remove(r);
+										iter.remove();
 									}
 								}
 							}
@@ -128,7 +134,7 @@ public class ReservationPartTwoController extends HttpServlet{
 				ArrayList<RestaurantTable> tablesForReservation = new ArrayList<>();
 				for(Integer id : tablesIds){
 					boolean passOne = false;
-					for(RestaurantTable r : tables){
+					for(RestaurantTable r : okTables){
 						if(r.getId().equals(id)){
 							passOne = true;
 							tablesForReservation.add(r);

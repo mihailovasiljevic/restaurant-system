@@ -62,7 +62,6 @@ public class LoginController extends HttpServlet {
 			ObjectMapper resultMapper = new ObjectMapper();
 			String userEmail = "";
 			String userPassword = "";
-			String rememberMe = "";
 			ObjectMapper mapper = new ObjectMapper();
 			HashMap<String, String> data = mapper.readValue(request.getParameter("loginData"), HashMap.class);
 			for(String key : data.keySet()){
@@ -70,8 +69,6 @@ public class LoginController extends HttpServlet {
 					userEmail = data.get(key);
 				else if(key.equals("userPassword"))
 					userPassword = data.get(key);
-				else
-					rememberMe = data.get(key);
 			}
 
 			
@@ -108,9 +105,6 @@ public class LoginController extends HttpServlet {
 					Cookie sessionCookie = new Cookie("restaurant.session_id", sessionId);
 					sessionCookie.setDomain(request.getServerName());
 					sessionCookie.setPath(request.getContextPath());
-					if(rememberMe.equals("1")){
-						sessionCookie.setMaxAge(365 * 24 * 60 * 60);
-					}
 					response.addCookie(sessionCookie);
 					user.setIsSessionActive(true);
 					user.setSessionId(sessionId);

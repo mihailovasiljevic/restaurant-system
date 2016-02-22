@@ -1,5 +1,6 @@
 package restaurant.server.mdb;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -60,12 +61,13 @@ public class ActivateAccountMDBean implements MessageListener{
 
 		// Constructs the message 
 		javax.mail.Message msg = new MimeMessage(session);
+		
 		msg.setFrom(new InternetAddress("authorit0mv@gmail.com"));
 		msg.setRecipients(RecipientType.TO, InternetAddress.parse(user.getEmail()));
-		msg.setSubject("Aktiviacija naloga - sistem restorana");
+		msg.setSubject("Aktivacija naloga - sistem restorana");
 		StringBuilder sb = new StringBuilder();
 		sb.append("Ovo je automatski generisana poruka.Postovani, " + user.getName()+" " + user.getSurname()+" molimo vas da potvrdite registraciju pritiskom na link ispod.");
-		sb.append("http://localhost:8080/restaurant/activate?userId="+user.getId()+"&activate=true"+"&token="+user.getToken().toString());
+		sb.append("<br />http://localhost:8080/restaurant/activate?userId="+user.getId()+"&activate=true");
 		msg.setText(sb.toString());
 		msg.setSentDate(new Date());
 		

@@ -112,9 +112,10 @@ public class RegistrationController extends HttpServlet{
 					imageDao.merge(image);
 					user.setImage(image);
 
-					byte[] tokenSalt = ByteBuffer.allocate(4).putInt(user.getId()).array();
-					byte[] token = HashPassword.hashPassword(HashPassword.strToChar(user.getEmail()), tokenSalt);
+					byte[] tokenSalt = HashPassword.getNextSalt();
+					byte[] token = HashPassword.hashPassword(HashPassword.strToChar(user.getId().toString()), tokenSalt);
 					user.setToken(token);
+					user.setTokenSalt(tokenSalt);
 					
 					userDao.merge(user);
 					userTypeDao.merge(userType);
@@ -151,9 +152,10 @@ public class RegistrationController extends HttpServlet{
 						return;
 					}
 					
-					byte[] tokenSalt = ByteBuffer.allocate(4).putInt(user.getId()).array();
-					byte[] token = HashPassword.hashPassword(HashPassword.strToChar(user.getEmail()), tokenSalt);
+					byte[] tokenSalt = HashPassword.getNextSalt();
+					byte[] token = HashPassword.hashPassword(HashPassword.strToChar(user.getId().toString()), tokenSalt);
 					user.setToken(token);
+					user.setTokenSalt(tokenSalt);
 					
 					userDao.merge(user);
 					userTypeDao.merge(userType);

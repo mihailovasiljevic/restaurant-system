@@ -101,32 +101,37 @@ public class InviteFriendsController extends HttpServlet {
 				String tableQuery = "SELECT k FROM RestaurantTable k WHERE k.tablesConfiguration.id like '"
 						+ conf.getId() + "'";
 				List<RestaurantTable> tables = tableDao.findBy(tableQuery);
-				// Get only tables that can be reserved at that time
-				if (tables.size() > 0) {
-					for (RestaurantTable r : tables) {
-						Calendar cal = Calendar.getInstance();
-						cal.setTime(rb.getDate());
-						int hourForReservation = cal.get(Calendar.HOUR_OF_DAY);
-						int minuteForReservation = cal.get(Calendar.MINUTE);
-						if (minuteForReservation > 30)
-							hourForReservation++;
-						
-						for(Reservation res : r.getReservations()){
-							if(res.getDate().compareTo(rb.getDate()) == 0){
-								cal.setTime(res.getDate());
-								int hourReserved = cal.get(Calendar.HOUR_OF_DAY);
-								int minuteReserved = cal.get(Calendar.MINUTE);
-								if (minuteReserved > 30)
-									hourReserved++;
-								boolean notOverlap = ((hourReserved <= (hourForReservation + reservationForHowLong))
-										&& ((hourReserved + res.getForHowLong()) >= hourForReservation));
-								if (!notOverlap) {
-									tables.remove(r);
+				List<RestaurantTable> okTables = new ArrayList<>();
+				
+				okTables.addAll(tables);				//Get only tables that can be reserved at that time
+					if(tables.size() > 0){
+						Iterator<RestaurantTable> iter = okTables.iterator();
+
+						while (iter.hasNext()) {
+						    RestaurantTable tbl = iter.next();
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(rb.getDate());
+							int hourForReservation = cal.get(Calendar.HOUR_OF_DAY);
+							int minuteForReservation = cal.get(Calendar.MINUTE);
+							if(minuteForReservation > 30)
+								hourForReservation++;
+							
+							for(Reservation res : tbl.getReservations()){
+								if(res.getDate().compareTo(rb.getDate()) == 0){
+									cal.setTime(res.getDate());
+									int hourReserved = cal.get(Calendar.HOUR_OF_DAY);
+									int minuteReserved = cal.get(Calendar.MINUTE);
+									if (minuteReserved > 30)
+										hourReserved++;
+									boolean notOverlap = ((hourReserved <= (hourForReservation + reservationForHowLong))
+											&& ((hourReserved + res.getForHowLong()) >= hourForReservation));
+									if (!notOverlap) {
+										iter.remove();
+									}
 								}
 							}
 						}
 					}
-				}
 				boolean reservationCanPass = true;
 				ArrayList<RestaurantTable> tablesForReservation = new ArrayList<>();
 				for(RestaurantTable id : rb.getListOfTables()){
@@ -214,7 +219,9 @@ public class InviteFriendsController extends HttpServlet {
 				}
 				
 					try{
-						invitationMDB.invitate(user);
+						HashMap<Integer, User> hm = new HashMap<>();
+						hm.put(perseistedReservation.getId(), user);
+						invitationMDB.invitate(hm);
 					}
 					catch(Exception ex){
 						resp.setContentType("application/json; charset=utf-8");

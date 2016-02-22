@@ -73,7 +73,8 @@
                                              window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                              return;
                                         }else{
-                                            $("#typeName-error").text(data);
+                                            alert(data);
+                                            window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -121,7 +122,8 @@
                                              $('#btn-type').show();
                                              return;
                                         }else{
-                                            $("#typeName-error").text(data);
+                                            alert(data);
+                                            window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -160,8 +162,8 @@
                                              $("#typeName-error").text("");
                                              return;
                                         }else{
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                            alert(data);
+                                            window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -310,7 +312,7 @@
                 <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout" data-toggle="modal" data-target="#myModal" Odjavite se </a>
             </li>
         </ul>
     </nav>

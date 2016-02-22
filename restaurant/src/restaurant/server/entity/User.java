@@ -55,6 +55,9 @@ public class User implements Serializable{
     
     @Column(name = "USER_ACTIVATION_TOKEN")
     private byte[] token;
+    
+    @Column(name = "USER_ACTIVATION_SALT")
+    private byte[] tokenSalt;
 
 	@ManyToOne
 	@JoinColumn(name = "USER_TYPE_ID", referencedColumnName = "USER_TYPE_ID", nullable = false)
@@ -221,7 +224,7 @@ public class User implements Serializable{
 	@JoinColumn(name = "USER_SYS_MEN_ID", referencedColumnName = "USER_ID")
 	private User systemMenager;
 	
-	@ManyToOne
+	@ManyToOne(cascade = { ALL })
 	@JoinColumn(name = "USER_REST_MEN_REST", referencedColumnName = "REST_ID")
 	private Restaurant restaurantMenagedBy;
 	
@@ -468,6 +471,15 @@ public class User implements Serializable{
 		this.restaurantMenagedBy = restaurantMenagedBy;
 	}
 
+	
+
+	public byte[] getTokenSalt() {
+		return tokenSalt;
+	}
+
+	public void setTokenSalt(byte[] tokenSalt) {
+		this.tokenSalt = tokenSalt;
+	}
 
 	public User(String name, String surname, String email, byte[] password, byte[] salt, Boolean isSessionActive,
 			String accountType, String sessionId, byte[] token, UserType userType, Address address, Image image,

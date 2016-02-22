@@ -1,10 +1,12 @@
 package restaurant.server.mdb;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -22,6 +24,7 @@ import javax.mail.internet.MimeMessage.RecipientType;
 import restaurant.server.entity.Invitation;
 import restaurant.server.entity.Reservation;
 import restaurant.server.entity.User;
+import restaurant.server.session.ReservationDaoLocal;
 
 @MessageDriven(
 		activationConfig = {
@@ -34,7 +37,8 @@ public class InvitationMDBean implements MessageListener{
 	
 	@Resource(name="Mail")
 	Session session;
-	
+	@EJB
+	private ReservationDaoLocal reservationDao;
 	public InvitationMDBean() {
 		// TODO Auto-generated constructor stub
 	}
@@ -45,11 +49,11 @@ public class InvitationMDBean implements MessageListener{
 	    try {
 	        if (message instanceof ObjectMessage) {
 	            ObjectMessage obj = (ObjectMessage) message;
-	            User user = (User)obj.getObject();
+	            HashMap<Integer, User> reserve = (HashMap<Integer, User>)obj.getObject();
 	            
 	            // Validate the credit card using web services...
 	            
-	            sendMessage(user);
+	            sendMessage(reserve);
 	        } else {
 	            System.out.println("MESSAGE BEAN: Message of wrong type: " + message.getClass().getName());
 	        }
@@ -60,48 +64,39 @@ public class InvitationMDBean implements MessageListener{
 	    }
 	}
 	
-	private void sendMessage(User user) throws AddressException, MessagingException {
+	private void sendMessage(HashMap<Integer, User> reserve) throws AddressException, MessagingException {
 
-
-		Iterator<Reservation> iterator = user.getReservations().iterator(); 
-		//preuzmi poslednje napravljenu rezervaciju
-		Reservation lastReservation = new Reservation();
-		while(iterator.hasNext()){
-			if(!iterator.hasNext()) {
-				lastReservation = ((Reservation)iterator);
+		Reservation reservation = null;
+		for(Integer i : reserve.keySet()){
+			reservation = reservationDao.findById(i);
+		}
+		if(reservation != null){
+			Iterator<Invitation> it = reservation.getInvitations().iterator(); 
+			
+			while(it.hasNext()){
+				// Constructs the message 
+				javax.mail.Message msg = new MimeMessage(session);
+				msg.setFrom(new InternetAddress("authorit0mv@gmail.com"));
+				Invitation inv = it.next();
+				msg.setSubject("Potvrda rezervacije - pozivnica");
+				StringBuilder sb = new StringBuilder();
+				sb.append("");
+				sb.append("Ovo je automatski generisana poruka.\n");
+				sb.append("Vas prijatelj: "+inv.getUserGuestInvitationSender().getName()+" "+inv.getUserGuestInvitationSender().getSurname()+" vas je pozvao da prisustvejete rezervaciji:\n");
+				sb.append("Restoran: " + inv.getReservation().getRestaurant().getName());
+				sb.append("\nDatum i vreme: "+ inv.getReservation().getDate());
+				sb.append("\nDuzina trajanja rezervacije: " + inv.getReservation().getForHowLong()+"\n");
+				sb.append("Posetitet stranicu ispod kako biste potvrdili vas dolazak.\n");
+				sb.append("http://localhost:8080/restaurant/invitation?userId="+inv.getUserGuestInvitationReceived().getId()+"&reservation="+inv.getReservation().getId());
+				msg.setText(sb.toString());
+				msg.setRecipients(RecipientType.TO, InternetAddress.parse(inv.getUserGuestInvitationReceived().getEmail()));
+				msg.setSentDate(new Date());
+				// Sends the message
+				Transport.send(msg);
+				System.out.println("MESSAGE BEAN: Mail was sent successfully.");
 			}
 		}
 		
-		Iterator<Invitation> invitation = lastReservation.getInvitations().iterator(); 
-		//preuzmi sve pozvnae korisnike i poslji im pozivnice
-		while(invitation.hasNext()){
-			// Constructs the message 
-			javax.mail.Message msg = new MimeMessage(session);
-			msg.setFrom(new InternetAddress("authorit0mv@gmail.com"));
-			
-			msg.setSubject("Potvrda rezervacije - pozivnica");
-			StringBuilder sb = new StringBuilder();
-			sb.append("");
-			sb.append("Ovo je automatski generisana poruka.\n");
-			sb.append("Vas prijatelj: "+invitation.next().getUserGuestInvitationSender().getName()+" "+invitation.next().getUserGuestInvitationSender().getSurname()+" vas je pozvao da prisustvejete rezervaciji:\n");
-			sb.append("Restoran: " + invitation.next().getReservation().getRestaurant().getName());
-			sb.append("\nDatum i vreme: "+ invitation.next().getReservation().getDate());
-			sb.append("\nDuzina trajanja rezervacije: " + invitation.next().getReservation().getForHowLong()+"\n");
-			sb.append("Posetitet stranicu ispod kako biste potvrdili vas dolazak.\n");
-			sb.append("http://localhost:8080/restaurant/invitation?userId="+invitation.next().getUserGuestInvitationReceived().getId()+"&reservation="+invitation.next().getReservation().getId());
-			msg.setText(sb.toString());
-			msg.setRecipients(RecipientType.TO, InternetAddress.parse(invitation.next().getUserGuestInvitationReceived().getEmail()));
-			msg.setSentDate(new Date());
-			// Sends the message
-			Transport.send(msg);
-			System.out.println("MESSAGE BEAN: Mail was sent successfully.");
-		}
-		
-		
-
-		
-;
-
 		
 	}
 }

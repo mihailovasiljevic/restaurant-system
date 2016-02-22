@@ -63,6 +63,7 @@ public class PrepareUpdateRestaurantController extends HttpServlet{
 						}
 						RestaurantBean restBean = new RestaurantBean(rest.getName(), rest.getRestaurantType().getId(),
 								rest.getAddress().getStreet().getId(), rest.getAddress().getBrojUUlici(), menagers);
+						
 				        resp.setContentType("application/json; charset=utf-8");
 				        PrintWriter out = resp.getWriter();
 				        resultMapper.writeValue(out, restBean);

@@ -46,7 +46,6 @@
                         var userEmail = $("#userEmail").val();
                         var userPassword = $("#userPassword").val();
                         var allGood = false;
-                        var rememberMe = $("#login-remember").is(':checked') ? '1' : '0';
                             if( userEmail == "" || userEmail == undefined || userEmail == null ) {
                                 $("#email-error").text("Polje za email adresu ne sme biti prazno!");
 
@@ -77,8 +76,7 @@
                                       data: {
                                        loginData:JSON.stringify({
                                            userEmail:userEmail,
-                                           userPassword:userPassword,
-                                           rememberMe: rememberMe
+                                           userPassword:userPassword
                                        }),    
                                        cache: false,
                                        dataType:'json'
@@ -223,8 +221,9 @@
                                                 $("#myModal").modal('hide');
                                                 $("#loginbox").modal('hide');
                                                 $("#signupbox").modal('hide');
-                                                $("#registrationModal #message").text("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ");                                     		
-                                                $("#registrationModal").modal('show');
+                                                $("#registrationModal #message").text("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ");                                     	alert("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ")	;	
+                                                window.location.href = "/restaurant/index.jsp";
+                                                return;
                                             }
                                             $( "#email-error" ).text(data);
                                             //alert("Data: "+ data);
@@ -286,8 +285,9 @@
                                                 $("#myModal").modal('hide');
                                                 $("#loginbox").modal('hide');
                                                 $("#signupbox").modal('hide');
-                                            $("#registrationModal #message").text("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ");                                     		
-                                        	$("#registrationModal").modal('show');
+                                                $("#registrationModal #message").text("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ");                                     	alert("Da biste koristili nalog morate ga aktivirati. Aktivacioni mejl je poslat na vasu adresu. ")	;
+                                        	  window.location.href = "/restaurant/index.jsp";
+                                                return;
                                         }
                                         $( "#email-error" ).text(data);
                                         //alert("Data: "+ data);
@@ -517,16 +517,6 @@
                                         <input id="userPassword" type="password" class="form-control" name="userPassword" placeholder="lozinka">
                                     </div>
                                     
-
-                                
-                            <div class="input-group">
-                                      <div class="checkbox">
-                                        <label>
-                                          <input id="login-remember" type="checkbox" name="remember" value="1"> Zapamti me
-                                        </label>
-                                      </div>
-                                    </div>
-
 
                                 <div style="margin-top:10px" class="form-group">
                                     <!-- Button -->
