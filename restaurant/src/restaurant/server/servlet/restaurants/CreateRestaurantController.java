@@ -161,9 +161,11 @@ public class CreateRestaurantController extends HttpServlet{
 						
 						restaurantDao.merge(persisted);
 						
-						for(User u : restaurantMenagers){
-							u.add(persisted);
-							userDao.merge(u);
+						if(restaurantMenagers.size() > 0){
+							for(User u : restaurantMenagers){
+								u.add(persisted);
+								userDao.merge(u);
+							}
 						}
 						
 						type.add(persisted);

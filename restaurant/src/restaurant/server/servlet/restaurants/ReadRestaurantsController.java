@@ -58,7 +58,7 @@ public class ReadRestaurantsController extends HttpServlet {
 			List<Street> streets = streetDao.findAll();
 			req.getSession().setAttribute("streets", streets);
 			
-			String query = "SELECT k FROM User k WHERE k.userType.name like 'RESTAURANT_MENAGER'";
+			String query = "SELECT k FROM User k WHERE k.userType.name like 'RESTAURANT_MENAGER' and k.restaurantMenagedBy is null";
 			List<User> restaurantMenagers = userDao.findBy(query);
 			req.getSession().setAttribute("restaurantMenagers", restaurantMenagers);
 			if ((user.getUserType().getName()).equals("SYSTEM_MENAGER"))

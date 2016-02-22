@@ -464,7 +464,7 @@
                 <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout" data-toggle="modal" data-target="#myModal"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -490,11 +490,11 @@
 			<div class="profile-sidebar">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+                    	<c:if test="${sessionScope.user.image == null}">
                             <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
-                        <c:if test="${sessionScope.image != null}">
-                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
+                        <c:if test="${sessionScope.user.image != null}">
+                            <img src="${sessionScope.user.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}">
                         </c:if>
 
 				</div>
@@ -567,13 +567,7 @@
                                         <td>${i.grade}</td>
                                         <td>${i.restaurantType.name}</td>
                                         <td>${i.address.street.name} ${i.address.brojUUlici}, ${i.address.street.city.name}, ${i.address.street.city.country.name}</td>
-                                        <c:if test="${fn:length(i.restaurantMenagers) > 0}">
-                                            <td>
-                                            <c:forEach var="i" items="${i.restaurantMenagers}">
-                                                ${i.name} ${i.surname}<br />
-                                            </c:forEach>
-                                            </td>
-                                        </c:if>
+
                                         
                                         <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
                                             restoran</button></i></td>
