@@ -48,15 +48,15 @@ public class UpdateRestaurantMenagerController extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
-				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			try {
@@ -87,7 +87,7 @@ public class UpdateRestaurantMenagerController extends HttpServlet {
 
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_FIELD_EMPTY.toString());
+					resultMapper.writeValue(out, "Sva polja moraju biti popunjena!");
 					if (uploadImageRealName != null) {
 						File deleteFile = new File(uploadImagePath);
 						// check if the file is present or not
@@ -138,7 +138,7 @@ public class UpdateRestaurantMenagerController extends HttpServlet {
 						if (persisted == null) {
 							resp.setContentType("application/json; charset=utf-8");
 							PrintWriter out = resp.getWriter();
-							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							resultMapper.writeValue(out, "Korisnik sa tom email adresom vec ima nalog!");
 
 							if (uploadImageRealName != null) {
 								File deleteFile = new File(uploadImagePath);
@@ -177,7 +177,7 @@ public class UpdateRestaurantMenagerController extends HttpServlet {
 						if (persisted == null) {
 							resp.setContentType("application/json; charset=utf-8");
 							PrintWriter out = resp.getWriter();
-							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							resultMapper.writeValue(out, "Nismo uspeli da sacuvamo korisnika. Molimo pokusajte ponovo.");
 
 							return;
 						}
@@ -214,7 +214,7 @@ public class UpdateRestaurantMenagerController extends HttpServlet {
 				ObjectMapper resultMapper = new ObjectMapper();
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
-				resultMapper.writeValue(out, "DOGODILA SE GRESKA");
+				resultMapper.writeValue(out, "Greska servera. Molimo pokusajte kasnije.");
 				return;
 			}
 		}

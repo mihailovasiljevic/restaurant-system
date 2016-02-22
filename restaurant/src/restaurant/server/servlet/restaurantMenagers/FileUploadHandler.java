@@ -31,7 +31,8 @@ public class FileUploadHandler extends HttpServlet{
     @Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-    	resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+		req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+		resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 	}
 
 	@Override
@@ -79,14 +80,14 @@ public class FileUploadHandler extends HttpServlet{
             } catch (Exception ex) {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 PrintWriter out = response.getWriter();
-                mapper.writeValue(out, ResultCode.REGISTER_USER_FILE_UPLOAD_SUCC.toString());
+                mapper.writeValue(out, "Greska pri cuvanju fajla.");
         		return;
             }          
          
         }else{
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             PrintWriter out = response.getWriter();
-            mapper.writeValue(out, ResultCode.REGISTER_USER_FILE_UPLOAD_SUCC.toString());
+            mapper.writeValue(out, "Pokusavate da prosledite nesto sto nije slika!");
     		return;
         }
         
