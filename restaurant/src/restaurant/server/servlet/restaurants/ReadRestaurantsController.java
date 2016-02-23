@@ -50,18 +50,20 @@ public class ReadRestaurantsController extends HttpServlet {
 			List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
 			req.getSession().setAttribute("restaurantTypes", restaurantTypes);
 			
+			String query = "SELECT k FROM User k WHERE k.userType.name like 'RESTAURANT_MENAGER' and k.restaurantMenagedBy is null";
+			List<User> restaurantMenagers = userDao.findBy(query);
+			req.getSession().setAttribute("restaurantMenagers", restaurantMenagers);
+			
 			if ((user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
 				List<restaurant.server.entity.Restaurant> restaurants = restaurantDao.findAll();
 				req.getSession().setAttribute("restaurants", restaurants);
 
-				String query = "SELECT k FROM User k WHERE k.userType.name like 'RESTAURANT_MENAGER' and k.restaurantMenagedBy is null";
-				List<User> restaurantMenagers = userDao.findBy(query);
-				req.getSession().setAttribute("restaurantMenagers", restaurantMenagers);
-
 				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurants.jsp"));
 			} else {
 				
-				String query = "SELECT k FROM Restaurant k WHERE k.id like '"+user.getRestaurantMenagedBy().getId()+"'";
+				
+				
+				query = "SELECT k FROM Restaurant k WHERE k.id like '"+user.getRestaurantMenagedBy().getId()+"'";
 				List<Restaurant> restaurants = restaurantDao.findBy(query);
 				req.getSession().setAttribute("restaurants", restaurants);
 				

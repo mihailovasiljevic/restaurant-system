@@ -48,7 +48,10 @@ function daLiJeRealanBroj(field){
 }
         $(document).ready(function(){
                 
-            
+                         if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }
                 $('#btn-updateType').hide();
                  $("#btn-updateType").click(
                     function(){
@@ -309,7 +312,7 @@ function daLiJeRealanBroj(field){
 
 	<c:if test="${sessionScope.user.userType.name ne 'RESTAURANT_MENAGER'}">
 		<c:redirect url="../index.jsp" />
-    
+    </c:if>
     <!-- Navigation -->
     <a id="menu-toggle" href="#" class="btn btn-dark btn-lg toggle"><i class="fa fa-bars"></i></a>
     <nav id="sidebar-wrapper">

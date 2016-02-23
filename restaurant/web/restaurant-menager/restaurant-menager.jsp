@@ -277,7 +277,10 @@ function parseDatumDo(field){
 }
         $(document).ready(function(){
                 
-            
+                         if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }
                 $('#btn-updateType').hide();
                  $("#btn-type").click(
                     function(){

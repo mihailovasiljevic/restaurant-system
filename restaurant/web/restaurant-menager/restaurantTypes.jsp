@@ -47,7 +47,10 @@ function daLiJeRealanBroj(field){
     return /^\+?(0|[1-9]\d*)$/.test(field[0].value);
 }
         $(document).ready(function(){
-                
+             if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }                
             
                   $('#btn-updateType').hide();
                 $("#btn-type").click(
@@ -82,7 +85,8 @@ function daLiJeRealanBroj(field){
                                              window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                              return;
                                         }else{
-                                            $("#typeName-error").text(data);
+                                           alert(data)
+                                            window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -130,7 +134,8 @@ function daLiJeRealanBroj(field){
                                              $('#btn-type').show();
                                              return;
                                         }else{
-                                            $("#typeName-error").text(data);
+                                            alert(data)
+                                            window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -146,7 +151,8 @@ function daLiJeRealanBroj(field){
                     });   
                     $( "#restaurantTable" ).on( "click", "i", function( event ) {
                             var typeId = $(this).children().last().val();
-                        
+                             var mess1 = "Neko je verovanto obrisao tip entita koji pokusavate da izmenite. Osvezite stranicu.";
+                            var mess2 = "Greska servera. Molimo pokusajte ponovo.";                        
                                 $.ajaxSetup({async:false});
                                 $.ajax({
                                       url: "../api/restaurant-type/prepareUpdateRestaurantType",
@@ -160,7 +166,7 @@ function daLiJeRealanBroj(field){
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
-                                        if(data != "GRESKA"){
+                                        if(data != mess1 && data != mess2){
                                             if($('#typeName').val() != "" && $('#typeName').val() != null && $('#typeName').val() != undefined)
                                                 $('#typeName').val("");
                                              $('#typeName').val(data);
@@ -169,8 +175,8 @@ function daLiJeRealanBroj(field){
                                              $("#typeName-error").text("");
                                              return;
                                         }else{
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                            alert(data);
+                                            window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -306,12 +312,12 @@ function daLiJeRealanBroj(field){
 </head>
 
 <body>
-    <c:if test="${sessionScope.user == null}">
-        <c:redirect url="../login.jsp" />
-    </c:if>
+	<c:if test="${sessionScope.user == null}">
+		<c:redirect url="../index.jsp" />
+	</c:if>
 
-    <c:if test="${sessionScope.user.userType.name ne 'RESTAURANT_MENAGER'}">
-        <c:redirect url="../insufficient_privileges.jsp" />
+	<c:if test="${sessionScope.user.userType.name ne 'RESTAURANT_MENAGER'}">
+		<c:redirect url="../index.jsp" />
     </c:if>
     
     <!-- Navigation -->
@@ -323,10 +329,10 @@ function daLiJeRealanBroj(field){
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -352,11 +358,11 @@ function daLiJeRealanBroj(field){
             <div class="profile-sidebar">
                 <!-- SIDEBAR USERPIC -->
                 <div class="profile-userpic">
-                        <c:if test="${sessionScope.image == null}">
+                        <c:if test="${sessionScope.user.image == null}">
                             <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
-                        <c:if test="${sessionScope.image != null}">
-                            <img src="${sessionScope.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
+                        <c:if test="${sessionScope.user.image != null}">
+                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}">
                         </c:if>
 
                 </div>
