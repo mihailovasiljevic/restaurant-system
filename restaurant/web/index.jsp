@@ -526,7 +526,7 @@
 
                                     <div class="col-sm-12 controls">
                                       <a id="btn-login" href="#" class="btn btn-success">Prijavi se  </a>
-                                      <a id="btn-fblogin" href="#" class="btn btn-primary">Facebook</a>
+                                      <a id="btn-fblogin" href="http://localhost:8080/restaurant/facebook" class="btn btn-primary">Facebook</a>
                                       <a id="btn-fblogin" href="http://localhost:8080/restaurant/googlePlus" class="btn btn-danger">Google+</a>          
                                     </div>
                                 </div>
