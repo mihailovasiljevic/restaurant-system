@@ -2,7 +2,9 @@ package restaurant.server.servlet.guests;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -38,15 +40,15 @@ public class SearchFriendsController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("GUEST")) {
-				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			try {
@@ -71,8 +73,26 @@ public class SearchFriendsController extends HttpServlet{
 				}
 				String query="SELECT k FROM User k WHERE k.userType.name like 'GUEST' and k."+searchBy+" like '%"+searchFriends+"%' and k.id <> "+user.getId()+"";
 				List<User> friends = userDao.findBy(query);
+				ArrayList<User> myFriends = new ArrayList<>();
+				ArrayList<User> notMyFriends = new ArrayList<>();
 				if(friends != null){
-					req.getSession().setAttribute("friends", friends);
+					for(User u : friends){
+						Iterator<User> it = user.getMyFriends().iterator();
+						boolean found = false;
+						while(it.hasNext()){
+							User mu =it.next();
+							if(u.getId().equals(mu.getId())){
+								myFriends.add(u);
+								found = true;
+								break;
+							}
+						}
+						if(found == false){
+							notMyFriends.add(u);
+						}
+					}
+					req.getSession().setAttribute("friends", myFriends);
+					req.getSession().setAttribute("notFriends", notMyFriends);
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
 					resultMapper.writeValue(out, "USPEH");
@@ -80,7 +100,7 @@ public class SearchFriendsController extends HttpServlet{
 				}else{
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, "GRESKA");
+					resultMapper.writeValue(out, "Nismo uspeli da pronadjemo prijatelje. Greska na serveru. Pokusajte ponovo.");
 					return;
 				}
 				
@@ -89,7 +109,7 @@ public class SearchFriendsController extends HttpServlet{
 				ObjectMapper resultMapper = new ObjectMapper();
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
-				resultMapper.writeValue(out, "GRESKA");
+				resultMapper.writeValue(out, "Greska na serveru. Molimo, pokusajte kasnije.");
 				ex.printStackTrace();
 				return;
 			}
