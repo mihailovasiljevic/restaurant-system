@@ -44,11 +44,14 @@ function daLiJeCeoBroj(field){
 	return /^\d{0,10}(\.\d{0,4}){0,1}$/.test(field[0].value);
 }
 function daLiJeRealanBroj(field){
-	return /^\+?(0|[1-9]\d*)$/.test(field[0].value);
+	return /^(0\.[1-9]|[1-9][0-9]{0,2}(\.[1-9])?)$/.test(field[0].value);
 }
         $(document).ready(function(){
                 
-            
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }            
                 $('#btn-updateType').hide();
                  $("#btn-type").click(
                     function(){
@@ -72,21 +75,18 @@ function daLiJeRealanBroj(field){
 
                                 allGood = false;
                             } else {
-                                $("#dishPrice-error").text("");
+                                    if(!daLiJeCeoBroj($('#dishPrice'))){
+                                       $("#dishPrice-error").text("Uneti broj nije pozitivan i realan.");
+                                        allGood = false;                                
+                                    }else{
+                                         $("#dishPrice-error").text("");
 
-                                if(allGood != false)
-                                    allGood = true;
+                                        if(allGood != false)
+                                            allGood = true;                               
+                                    } 
+    
                             }
-                          
-                           if(!daLiJeCeoBroj($('#dishPrice'))){
-                               $("#dishPrice-error").text("Uneti broj nije pozitivan i realan.");
-                                allGood = false;                                
-                            }else{
-                                 $("#dishPrice-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;                               
-                            }                      
+                                               
 
                             if(allGood == true){
                                 $.ajaxSetup({async:false});
@@ -110,9 +110,8 @@ function daLiJeRealanBroj(field){
                                              $('#btn-type').show();
                                              return;
                                         }else{
-                                            $("#dishName-error").text(data);
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                            alert(data);
+                                            window.location.href = "/restaurant/api/dish/dishes";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -149,21 +148,16 @@ function daLiJeRealanBroj(field){
 
                                 allGood = false;
                             } else {
-                                $("#dishPrice-error").text("");
+                               if(!daLiJeCeoBroj($('#dishPrice'))){
+                                       $("#dishPrice-error").text("Uneti broj nije pozitivan i realan.");
+                                        allGood = false;                                
+                                    }else{
+                                         $("#dishPrice-error").text("");
 
-                                if(allGood != false)
-                                    allGood = true;
-                            }
-                          
-                           if(!daLiJeCeoBroj($('#dishPrice'))){
-                               $("#dishPrice-error").text("Uneti broj nije pozitivan i realan.");
-                                allGood = false;                                
-                            }else{
-                                 $("#dishPrice-error").text("");
-
-                                if(allGood != false)
-                                    allGood = true;                               
-                            }                      
+                                        if(allGood != false)
+                                            allGood = true;                               
+                                    } 
+                            }                
 
                             if(allGood == true){
                                 $.ajaxSetup({async:false});
@@ -187,9 +181,8 @@ function daLiJeRealanBroj(field){
                                              $('#btn-type').show();
                                              return;
                                         }else{
-                                            $("#dishName-error").text(data);
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                           alert(data);
+                                            window.location.href = "/restaurant/api/dish/dishes";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -206,7 +199,8 @@ function daLiJeRealanBroj(field){
             
                         $( "#restaurantTable" ).on( "click", "i", function( event ) {
                             var dishId = $(this).children().last().val();
-                        
+                            var mess1 = "Neko je verovanto obrisao jelo koji pokusavate da izmenite. Osvezite stranicu.";
+                            var mess2 = "Greska servera. Molimo pokusajte ponovo.";                        
                                 $.ajaxSetup({async:false});
                                 $.ajax({
                                       url: "../api/dish/prepareUpdateDish",
@@ -220,7 +214,7 @@ function daLiJeRealanBroj(field){
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
-                                        if(data != "GRESKA"){
+                                        if(data != mess1 && data != mess2){
                                              $('#dishName').val(data.name);
                                             $('#dishDescrp').val(data.description);
                                             $('#dishPrice').val(data.price);
@@ -229,8 +223,8 @@ function daLiJeRealanBroj(field){
                                              $("#typeName-error").text("");
                                              return;
                                         }else{
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                           alert(data);
+                                            window.location.href = "/restaurant/api/dish/dishes";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -366,11 +360,11 @@ function daLiJeRealanBroj(field){
 
 <body>
 	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
 
 	<c:if test="${sessionScope.user.userType.name ne 'RESTAURANT_MENAGER'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
     
     <!-- Navigation -->
@@ -382,10 +376,10 @@ function daLiJeRealanBroj(field){
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -411,11 +405,11 @@ function daLiJeRealanBroj(field){
 			<div class="profile-sidebar">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+                    	<c:if test="${sessionScope.user.image == null}">
                             <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
-                        <c:if test="${sessionScope.image != null}">
-                            <img src="${sessionScope.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
+                        <c:if test="${sessionScope.user.image != null}">
+                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}">
                         </c:if>
 
 				</div>
@@ -453,7 +447,7 @@ function daLiJeRealanBroj(field){
 						<li >
 							<a href="../api/restaurant-type/restaurantTypes">
 							<i class="glyphicon glyphicon-link"></i>
-							Tipovi resotrana </a>
+							Tipovi restorana </a>
 						</li>
             <li >	
 							<a href="../api/menu/menus">
@@ -629,7 +623,7 @@ function daLiJeRealanBroj(field){
                                     </div>
                                     <div style="margin-top:10px" class="form-group">
                                         <!-- ERROR PROVIDER -->
-                                        <span id = "dishDescrp-error" class="label label-danger">Format: dd-mm-gggg</span>
+                                        <span id = "dishDescrp-error" class="label label-danger"></span>
                                     </div>
                                 </div>
                                 

@@ -30,21 +30,21 @@ public class ReadDishesController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("RESTAURANT_MENAGER")) {
-				System.out
-						.println("Korisnik nije menadzer restorana i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp
-						.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			
-			List<Dish> dishes = dishDao.findAll();
+			
+			String query = "SELECT k FROM Dish k WHERE k.menu.userRestaurantMenager.id like '"+user.getId()+"'";
+			List<Dish> dishes = dishDao.findBy(query);
 			req.getSession().setAttribute("dishes", dishes);
 			
 

@@ -277,7 +277,7 @@ function parseDatumDo(field){
 }
         $(document).ready(function(){
                 
-                         if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
                 alert("${sessionScope.infoMessage}");
                 <c:set var="infoMessage" scope="session" value=""/>
             }
