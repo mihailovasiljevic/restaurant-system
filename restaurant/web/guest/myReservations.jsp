@@ -55,27 +55,34 @@
             return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(field[0].value);
         }       
         $(document).ready(function(){
-                
-                   $("#btn-choose").click(
+                               
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }   
+                   $("#btn-grade").click(
                     function(){
-                        var checkedValues = "";
-                        $("input:checkbox:checked").each(function(){
-                                checkedValues += $(this).val()+",";
-                        });
-           
+                        var grade = $("#grade").val();
+                        var visitId = $("#visitId").val();
+                        var allGood = false;
                        var allGood = true;
-                        if(checkedValues == ""){
-                            checkedValues = " ";
+                        
+                        if(grade == "" || grade== undefined || grade == null){
+                            alert("Morate uneti ocenu!");
+                            allGood = false;
+                        }else{
+                            allGoode = true;
                         }
                         if(allGood == true){
                                 $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "../api/guest/inviteFriends",
+                                      url: "../api/guest/grade",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
-                                       tablesData:JSON.stringify({
-                                           checkedValues:checkedValues,
+                                       gradeData:JSON.stringify({
+                                           grade:grade,
+                                           visitId: visitId
                                        }),    
                                        cache: false,
                                        dataType:'json'
@@ -86,7 +93,7 @@
                                              return;
                                         }else{
                                             alert(data);
-                                            window.location.href = "/restaurant/guest/guest.jsp";
+                                            window.location.href = "/restaurant/guest/myReservations.jsp";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -115,11 +122,11 @@
 
 <body>
 	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
 
 	<c:if test="${sessionScope.user.userType.name ne 'GUEST'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
     
     <!-- Navigation -->
@@ -131,10 +138,10 @@
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -160,11 +167,11 @@
 			<div class="profile-sidebar">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+                    	<c:if test="${sessionScope.user.image == null}">
                             <a herf="#" id="changePicture"><img src="../img/noPicture.png" class="img-responsive" alt=""></a>
                         </c:if>
-                        <c:if test="${sessionScope.image != null}">
-                            <a herf="#" id="changePicture"><img src="${sessionScope.image.path}" class="img-responsive" alt="{sessionScope.image.realName}"></a>
+                        <c:if test="${sessionScope.user.image != null}">
+                            <a herf="#" id="changePicture"><img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}"></a>
                         </c:if>
 
 				</div>
@@ -247,6 +254,10 @@
                                                     
                                                     <div class="col-md-3">
                                                         <input type="text" class="form-control" name="grade" id="grade">
+                                                    </div>
+                                                                                                        
+                                                    <div class="col-md-3">
+                                                        <input type="hidden" class="form-control" name="grade" id="visitId" value="${i.id}">
                                                     </div>
                                                     <div class="col-md-offset-3 col-md-3">
                                                         <button id="btn-grade" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Oceni</button>                        

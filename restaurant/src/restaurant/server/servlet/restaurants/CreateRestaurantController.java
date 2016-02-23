@@ -140,7 +140,7 @@ public class CreateRestaurantController extends HttpServlet{
 					if (a.getBrojUUlici().equals(streetNo) && a.getStreet().getId().equals(streetId)) {
 						Restaurant restaurant = new Restaurant();
 						restaurant.setAddress(a);
-						restaurant.setGrade(-1);
+						restaurant.setGrade(-1.0);
 						restaurant.setName(restaurantName);
 						restaurant.setUserSystemMenager(user);
 						restaurant.setRestaurantType(type);
@@ -191,7 +191,7 @@ public class CreateRestaurantController extends HttpServlet{
 				
 					Restaurant rst = new Restaurant();
 					rst.setAddress(persistedAdr);
-					rst.setGrade(-1);
+					rst.setGrade(-1.0);
 					rst.setName(restaurantName);
 					rst.setUserSystemMenager(user);
 					rst.setRestaurantType(type);

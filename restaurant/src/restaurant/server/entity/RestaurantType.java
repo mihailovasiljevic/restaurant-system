@@ -52,7 +52,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "RESTAURANT_TYPE")
 @NamedQuery(name = "findRestaurantTypeByUserId", query = "SELECT k FROM RestaurantType k WHERE k.userSystemMenager.id like :userId")
-public class RestaurantType implements Serializable {
+public class RestaurantType implements Serializable{
 
 	private static final long serialVersionUID = 3263127309803325049L;
 
@@ -126,6 +126,11 @@ public class RestaurantType implements Serializable {
 		this.name = name;
 		this.userSystemMenager = userSystemMenager;
 		this.restaurants = restaurants;
+	}
+
+	@Override
+	public String toString() {
+		return name;
 	}
 
 

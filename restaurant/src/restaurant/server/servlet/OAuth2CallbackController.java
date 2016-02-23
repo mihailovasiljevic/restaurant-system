@@ -157,7 +157,7 @@ public class OAuth2CallbackController extends HttpServlet {
 
 		
 		req.getSession().setAttribute("user", user);
-		resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
+		resp.sendRedirect(getServletContext().getContextPath()+"/guest/guest.jsp");
 		return;
 	}
 

@@ -44,7 +44,7 @@ public class Restaurant implements Serializable{
 	private String name;
 	
 	@Column(name = "REST_GRADE")
-	private Integer grade;
+	private Double grade;
 	
 	@ManyToOne
 	@JoinColumn(name = "REST_TYPE_ID", referencedColumnName = "REST_TYPE_ID")
@@ -149,11 +149,11 @@ public class Restaurant implements Serializable{
 		this.name = name;
 	}
 
-	public Integer getGrade() {
+	public Double getGrade() {
 		return grade;
 	}
 
-	public void setGrade(Integer grade) {
+	public void setGrade(Double grade) {
 		this.grade = grade;
 	}
 
@@ -228,7 +228,7 @@ public class Restaurant implements Serializable{
 		this.restaurantMenagers = restaurantMenagers;
 	}
 
-	public Restaurant(String name, Integer grade, RestaurantType restaurantType, Address address,
+	public Restaurant(String name, Double grade, RestaurantType restaurantType, Address address,
 			User userSystemMenager, Set<Menu> menus, Set<TablesConfiguration> tablesConfigurations,
 			Set<Reservation> reservations, Set<Visit> visits, Set<User> restaurantMenagers) {
 		super();
@@ -246,7 +246,7 @@ public class Restaurant implements Serializable{
 
 	@Override
 	public String toString() {
-		return "Restaurant [id=" + id + ", name=" + name + ", grade=" + grade + "]";
+		return name;
 	}
 
 }

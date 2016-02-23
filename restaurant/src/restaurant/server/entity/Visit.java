@@ -1,9 +1,11 @@
 package restaurant.server.entity;
 
+import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,11 +35,11 @@ public class Visit implements Serializable{
 	@Column(name = "VISIT_GRADE")
 	private Integer grade = -1;
 	
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.MERGE })
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
 	private User user;
 	
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.MERGE  })
 	@JoinColumn(name = "REST_ID", referencedColumnName = "REST_ID")
 	private Restaurant restaurant;
 	

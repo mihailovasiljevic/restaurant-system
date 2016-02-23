@@ -26,15 +26,15 @@ public class DeleteFriendController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("GUEST")) {
-				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			try {
@@ -52,11 +52,12 @@ public class DeleteFriendController extends HttpServlet{
 							resp.sendRedirect(resp.encodeRedirectURL("../../guests/friends.jsp"));
 				} else {
 					System.out.println("Neko obrisao u medjuvremenu.");
-					resp.sendRedirect(resp.encodeRedirectURL("./restaurantMenagers"));
+					req.getSession().setAttribute("infoMessage", "taj korisnik vise ne postoji.");
+					resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
 				}
 			} catch (Exception ex) {
-				System.out.println("Brisanje nije uspelo.");
-				resp.sendRedirect(resp.encodeRedirectURL("./restaurantMenagers"));
+				req.getSession().setAttribute("infoMessage", "Greska na serveru. Molimo pokusajte ponovo.");
+				resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
 			}
 		}
 	}

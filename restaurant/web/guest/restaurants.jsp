@@ -47,7 +47,11 @@
 //niz funkcija za proveru onoga sta je uneseno
 
         $(document).ready(function(){
-                
+                                
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }  
                    $("#btn-search").click(
                     function(){
                         var searchByType = $("#searchByType :selected").val();
@@ -77,9 +81,44 @@
                                         }else{
                                             alert(data);
                                             window.location.href = "/restaurant/guest/restaurants.jsp";
-                                            $("#confName-error").text(data);
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                            return;
+                                        }
+                                        //alert("Data: "+ data);
+                                        console.log(data);
+                                        console.log(status);
+                                      },
+                                      error: function (xhr, desc, err) {
+                                        console.log(xhr);
+                                      },
+                                    });
+                                $.ajaxSetup({async:true});
+                            
+                    }); 
+            
+                    $("#btn-search").click(
+                    function(){
+                        var sortBy = $("#sortBy :selected").val();
+                                $.ajaxSetup({async:false});
+                                $.ajax({
+                                      url: "../api/guest/sort",
+                                      type: 'post',
+                                      contentType: "application/x-www-form-urlencoded",
+                                      data: {
+                                       sortData:JSON.stringify({
+                                           sortBy:sortBy
+                                       }),    
+                                       cache: false,
+                                       dataType:'json'
+                                    },
+                                      success: function (data, status) {
+                                        if(data == "USPEH"){
+                                             window.location.href = "/restaurant/guest/restaurants.jsp";
+                                             $('#btn-updateType').hide();
+                                             $('#btn-type').show();
+                                             return;
+                                        }else{
+                                            alert(data);
+                                            window.location.href = "/restaurant/guest/restaurants.jsp";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -107,11 +146,11 @@
 
 <body>
 	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
 
 	<c:if test="${sessionScope.user.userType.name ne 'GUEST'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
     
     <!-- Navigation -->
@@ -123,10 +162,10 @@
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -152,11 +191,11 @@
 			<div class="profile-sidebar">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+                    	<c:if test="${sessionScope.user.image == null}">
                             <a herf="#" id="changePicture"><img src="../img/noPicture.png" class="img-responsive" alt=""></a>
                         </c:if>
-                        <c:if test="${sessionScope.image != null}">
-                            <a herf="#" id="changePicture"><img src="${sessionScope.image.path}" class="img-responsive" alt="{sessionScope.image.realName}"></a>
+                        <c:if test="${sessionScope.user.image != null}">
+                            <a herf="#" id="changePicture"><img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}"></a>
                         </c:if>
 
 				</div>
@@ -196,6 +235,11 @@
                             <i class="glyphicon glyphicon-link"></i>
                             Prijatelji </a>
                         </li>   
+                         <li >
+                            <a href="./myReservations.jsp">
+                            <i class="glyphicon glyphicon-link"></i>
+                            Moje posete </a>
+                        </li>  
                     </ul>
 				</div>
 				<!-- END MENU -->
@@ -233,7 +277,7 @@
                         </form>  
                 
                  <div class="container">
-                    <div class="row">
+                    <div class="row">                    
                           <div class="table-responsive">
                             <table class="table table-hover">
                               <thead>
@@ -248,7 +292,7 @@
                                 <c:forEach var="i" items="${sessionScope.restaurants}">
                                     <tr>                                      
                                         <td>${i.name}</td>
-                                        <td><% int randomNum = 500 + (int)(Math.random() * 1000); %></td>
+                                        <td></td>
                                         <c:if test="${i.grade == -1}">
                                         	<td>Nema ocena</td>
                                         </c:if>
