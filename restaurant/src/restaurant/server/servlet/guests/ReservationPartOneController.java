@@ -110,6 +110,12 @@ public class ReservationPartOneController extends HttpServlet{
 				e.printStackTrace();
 				return;
 			}
+			if(date.compareTo(new Date()) < 0){
+		        resp.setContentType("application/json; charset=utf-8");
+		        PrintWriter out = resp.getWriter();
+		        resultMapper.writeValue(out, "datum: " + date +" je pre danasnjeg: " + new Date()+". Izaberite ispravan datum!");
+				return;				
+			}
 			String query="SELECT k FROM Reservation k WHERE k.restaurant.id like '"+restaurant.getId()+"'";
 			List<Reservation> reservations = reservatioDao.findBy(query);
 			

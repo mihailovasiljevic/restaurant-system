@@ -109,7 +109,7 @@ public class OAuth2CallbackController extends HttpServlet {
 		for(User u: users){
 			if(HashPassword.isPassword(HashPassword.strToChar(googleId),u.getSalt(), u.getPassword())){
 				req.getSession().setAttribute("user", u);
-				resp.sendRedirect(resp.encodeRedirectURL("../../guest/guest.jsp"));
+				resp.sendRedirect(getServletContext().getContextPath()+"/guest/guest.jsp");
 				return;
 			}
 		}
@@ -129,13 +129,14 @@ public class OAuth2CallbackController extends HttpServlet {
 			googleSurname = "NEPOZNATO";
 		user.setName(googleName);
 		user.setSurname(googleSurname);
-		user.setEmail(googleEmail);
+		user.setEmail(googleEmail+googleId);
 		salt = HashPassword.getNextSalt();
 		byte[] hashedId = HashPassword.hashPassword(HashPassword.strToChar(googleId), salt);
 		user.setSalt(salt);
 		user.setPassword(hashedId);
 		user.setActivated(true);
 		user.setIsSessionActive(true);
+		user.setAccountType("GLOBAL");
 		
 		List<UserType> userTypes = userTypeDao.findAll();
 		

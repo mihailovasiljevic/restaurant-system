@@ -1,3 +1,4 @@
+<%@page import="java.util.Random"%>
 <%@page import="java.util.HashSet"%>
 <%@page import="restaurant.server.entity.User"%>
 <%@page import="restaurant.server.entity.RestaurantTable"%>
@@ -43,11 +44,14 @@
     <script type="text/javascript"
     src="http://maps.google.com/maps/api/js?sensor=false">
     </script>
+    
     <script>
 //niz funkcija za proveru onoga sta je uneseno
 
         $(document).ready(function(){
-                                
+                 $(function(){
+                        $("#sortableTable").tablesorter();
+                });  
             if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
                 alert("${sessionScope.infoMessage}");
                 <c:set var="infoMessage" scope="session" value=""/>
@@ -279,26 +283,41 @@
                  <div class="container">
                     <div class="row">                    
                           <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="sortableTable">
                               <thead>
                                 <tr>
                                   <th>Naziv</th>
                                   <th>Udaljenost</th>
                                   <th>Rejting</th>
+                                  <th>Rejting prijatelja</th>
                                   <th>&nbsp;</th>
                                 </tr>
                               </thead>
                               <tbody id="restaurantTable">
-                                <c:forEach var="i" items="${sessionScope.restaurants}">
+                                <c:forEach var="i" items="${sessionScope.restaurants}" varStatus="indexI">
                                     <tr>                                      
                                         <td>${i.name}</td>
-                                        <td></td>
+                                        <td>
+                                        <%
+                                        	int randomNum = 100 + (int)(Math.random() * ((1000 - 100) + 1));
+                                        %>
+                                        <%= randomNum %>
+                                        </td>
                                         <c:if test="${i.grade == -1}">
                                         	<td>Nema ocena</td>
                                         </c:if>
                                         <c:if test="${i.grade != -1}">
                                         	<td>${i.grade}</td>
-                                        </c:if>                                       
+                                        </c:if>          
+                                        
+                                       <c:forEach var="j" items="${sessionScope.friendsGrades}" varStatus="indexJ">
+                                       		<c:if test="${indexI.index == indexJ.index}">
+                                       			<c:if test="${j != -1}">
+                                       				<td>${j}</td>
+                                       			</c:if>
+                                       		</c:if>
+                                       </c:forEach>
+                                                                     
                                         <td><a href="../api/guest/prepareReservation?restaurantId=${i.id}">Rezervisi</a></td>
              
                                     </tr>
@@ -359,7 +378,7 @@
     </div>
 
     <script src="js/jquery.js"></script>
-
+    <script type="text/javascript" src="./js/jquery.tablesorter.min.js"></script>
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 

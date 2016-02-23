@@ -64,7 +64,12 @@ public class GiveRestaurantAGradeController extends HttpServlet {
 				}
 				Visit vis = visitDao.findById(visitId);
 				if (vis != null) {
-
+					if(vis.getGrade() != -1){
+						resp.setContentType("application/json; charset=utf-8");
+						PrintWriter out = resp.getWriter();
+						resultMapper.writeValue(out, "Vec ste dali ocenu!");
+						return;
+					}
 					vis.setGrade(grade);
 					visitDao.merge(vis);
 					
@@ -89,7 +94,7 @@ public class GiveRestaurantAGradeController extends HttpServlet {
 						restaurantDao.merge(vis.getRestaurant());
 					}
 				}
-
+				req.getSession().setAttribute("user", user);
 				List<restaurant.server.entity.Restaurant> restaurants = restaurantDao.findAll();
 				req.getSession().setAttribute("restaurants", restaurants);
 

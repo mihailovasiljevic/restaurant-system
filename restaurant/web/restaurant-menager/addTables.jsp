@@ -75,7 +75,7 @@
                                     },
                                       success: function (data, status) {
                                         if(data == "USPEH"){
-                                             window.location.href = "/restaurant/restaurant-menager/restaurant-menager.jsp";
+                                             window.location.href = "../api/tables-configuration/tablesConfigurations";
                                              return;
                                         }else{
                                             alert(data);
