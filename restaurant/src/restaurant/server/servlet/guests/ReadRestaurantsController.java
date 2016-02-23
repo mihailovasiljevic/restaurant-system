@@ -1,6 +1,7 @@
 package restaurant.server.servlet.guests;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,12 +18,15 @@ import restaurant.server.entity.User;
 import restaurant.server.entity.Visit;
 import restaurant.server.session.RestaurantDaoLocal;
 import restaurant.server.session.RestaurantTypeDaoLocal;
+import restaurant.server.session.VisitDaoLocal;
 
 public class ReadRestaurantsController extends HttpServlet{
 	@EJB
 	private RestaurantTypeDaoLocal restaurantTypeDao;
 	@EJB
 	private RestaurantDaoLocal restaurantDao;
+	@EJB
+	private VisitDaoLocal visitDao;
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -66,6 +70,25 @@ public class ReadRestaurantsController extends HttpServlet{
 			List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
 			req.getSession().setAttribute("restaurantTypes", restaurantTypes);
 			
+			ArrayList<Double> friendsGrades = new ArrayList<>();
+			for(Restaurant r : restaurants){
+				String query="SELECT k FROM Visit k WHERE k.reservation.restaurant.id like '"+r.getId()+"' and k.user.id <> "+user.getId();
+				List<Visit> visits = visitDao.findBy(query);
+				int count = visits.size();
+				int gradeSum = 0;
+				for(Visit v : visits){
+					if(v.getGrade() != -1){
+						gradeSum += v.getGrade();
+					}
+				}
+				double friendsGrade = -1;
+				if(count != 0){
+					friendsGrade = gradeSum/count;
+				}
+				friendsGrades.add(friendsGrade);
+			}
+			
+			req.getSession().setAttribute("friendsGrades", friendsGrades);
 			
 			resp.sendRedirect(resp.encodeRedirectURL("../../guest/restaurants.jsp"));
 			
