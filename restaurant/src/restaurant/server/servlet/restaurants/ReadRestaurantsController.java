@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import restaurant.server.entity.*;
-import restaurant.server.entity.RestaurantType;
-import restaurant.server.entity.User;
 import restaurant.server.session.*;
 import restaurant.server.session.RestaurantTypeDaoLocal;
 
@@ -31,8 +29,7 @@ public class ReadRestaurantsController extends HttpServlet {
 	private UserDaoLocal userDao;
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
 			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
@@ -42,30 +39,35 @@ public class ReadRestaurantsController extends HttpServlet {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if ((user.getUserType().getName()).equals("GUEST")) {
-				System.out
-						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp
-						.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
-			
-			List<restaurant.server.entity.Restaurant> restaurants = restaurantDao.findAll();
-			req.getSession().setAttribute("restaurants", restaurants);
-
-			List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
-			req.getSession().setAttribute("restaurantTypes", restaurantTypes);
 			
 			List<Street> streets = streetDao.findAll();
 			req.getSession().setAttribute("streets", streets);
 			
-			String query = "SELECT k FROM User k WHERE k.userType.name like 'RESTAURANT_MENAGER' and k.restaurantMenagedBy is null";
-			List<User> restaurantMenagers = userDao.findBy(query);
-			req.getSession().setAttribute("restaurantMenagers", restaurantMenagers);
-			if ((user.getUserType().getName()).equals("SYSTEM_MENAGER"))
-				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurants.jsp"));
-			else
-				resp.sendRedirect(resp.encodeRedirectURL("../../restaurant-menager/restaurants.jsp"));
+			List<RestaurantType> restaurantTypes = restaurantTypeDao.findAll();
+			req.getSession().setAttribute("restaurantTypes", restaurantTypes);
 			
+			if ((user.getUserType().getName()).equals("SYSTEM_MENAGER")) {
+				List<restaurant.server.entity.Restaurant> restaurants = restaurantDao.findAll();
+				req.getSession().setAttribute("restaurants", restaurants);
+
+				String query = "SELECT k FROM User k WHERE k.userType.name like 'RESTAURANT_MENAGER' and k.restaurantMenagedBy is null";
+				List<User> restaurantMenagers = userDao.findBy(query);
+				req.getSession().setAttribute("restaurantMenagers", restaurantMenagers);
+
+				resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/restaurants.jsp"));
+			} else {
+				
+				String query = "SELECT k FROM Restaurant k WHERE k.id like '"+user.getRestaurantMenagedBy().getId()+"'";
+				List<Restaurant> restaurants = restaurantDao.findBy(query);
+				req.getSession().setAttribute("restaurants", restaurants);
+				
+				resp.sendRedirect(resp.encodeRedirectURL("../../restaurant-menager/restaurants.jsp"));
+			}
+
 		}
 	}
 

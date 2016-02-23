@@ -303,6 +303,21 @@
 	</servlet-mapping>
 	
 	<servlet>
+		<display-name>setTables</display-name>
+		<servlet-name>SetTablesController</servlet-name>
+		<servlet-class>restaurant.server.servlet.tablesConfigurations.SetTablesController</servlet-class>
+		<init-param>
+			<param-name>sleep-time-in-seconds</param-name>
+			<param-value>10</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SetTablesController</servlet-name>
+		<url-pattern>/api/tables-configuration/setTables</url-pattern>
+	</servlet-mapping>	
+	
+	<servlet>
 		<display-name>readMenusController</display-name>
 		<servlet-name>ReadMenusController</servlet-name>
 		<servlet-class>restaurant.server.servlet.menus.ReadMenusController</servlet-class>

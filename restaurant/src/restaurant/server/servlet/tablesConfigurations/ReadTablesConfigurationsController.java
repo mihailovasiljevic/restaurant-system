@@ -33,28 +33,24 @@ public class ReadTablesConfigurationsController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("RESTAURANT_MENAGER")) {
-				System.out
-						.println("Korisnik nije menadzer restorana i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp
-						.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
-			
-			List<TablesConfiguration> configurations = tablesConfigurationDao.findAll();
+			String query = "SELECT k FROM TablesConfiguration k WHERE k.userRestaurantMenager.id like '"+user.getId()+"'";
+			List<TablesConfiguration> configurations = tablesConfigurationDao.findBy(query);
 			req.getSession().setAttribute("tablesConfigurations", configurations);
 			
-			List<Restaurant> restaurants = restaurantDao.findAll();
+			query = "SELECT k FROM Restaurant k WHERE k.id like '"+user.getRestaurantMenagedBy().getId()+"'";
+			List<Restaurant> restaurants = restaurantDao.findBy(query);
 			req.getSession().setAttribute("restaurants", restaurants);
-			
-			List<RestaurantTable> tables = tableDao.findAll();
-			req.getSession().setAttribute("tables", tables);
 
 			resp.sendRedirect(resp.encodeRedirectURL("../../restaurant-menager/restaurant-menager.jsp"));
 		}

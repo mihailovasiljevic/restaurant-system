@@ -464,7 +464,7 @@
                 <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="../logout" data-toggle="modal" data-target="#myModal"> Odjavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -554,7 +554,6 @@
                                   <th>Ocena</th>
                                   <th>Tip</th>
                                   <th>Adresa</th>
-                                  <th>Menadzeri</th>
                                   <th>&nbsp;</th>
                                   <th>&nbsp;</th>
                                 </tr>
