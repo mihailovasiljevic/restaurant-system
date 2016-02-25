@@ -48,7 +48,10 @@
 
         $(document).ready(function(){
                 
-            
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }            
                 $('#btn-updateType').hide();
                  $("#btn-updateUser").click(
                     function(){
@@ -110,14 +113,13 @@
                                     },
                                       success: function (data, status) {
                                         if(data == "USPEH"){
-                                             window.location.href = "/restaurant/guest/guest.jsp";
+                                             window.location.href = "/restaurant/guest/friends.jsp";
                                              $('#btn-updateType').hide();
                                              $('#btn-type').show();
                                              return;
                                         }else{
-                                            $("#confName-error").text(data);
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                            alert(data);
+                                            window.location.href = "/restaurant/guest/friends.jsp";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -255,9 +257,6 @@
                                         }else{
                                             alert(data);
                                             window.location.href = "/restaurant/guest/friends.jsp";
-                                            $("#confName-error").text(data);
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -291,11 +290,11 @@
 
 <body>
 	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
 
 	<c:if test="${sessionScope.user.userType.name ne 'GUEST'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
     
     <!-- Navigation -->
@@ -307,10 +306,10 @@
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -336,11 +335,11 @@
 			<div class="profile-sidebar">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+                    	<c:if test="${sessionScope.user.image == null}">
                             <a herf="#" id="changePicture"><img src="../img/noPicture.png" class="img-responsive" alt=""></a>
                         </c:if>
-                        <c:if test="${sessionScope.image != null}">
-                            <a herf="#" id="changePicture"><img src="${sessionScope.image.path}" class="img-responsive" alt="{sessionScope.image.realName}"></a>
+                        <c:if test="${sessionScope.user.image != null}">
+                            <a herf="#" id="changePicture"><img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}"></a>
                         </c:if>
 
 				</div>
@@ -501,22 +500,26 @@
                                         <td>${i.name}</td>
                                         <td>${i.surname}</td>
                                         
-                                        <c:if test="${fn:length(sessionScope.user.myFriends) > 0}">
-                                            <c:forEach var="j" items="${sessionScope.user.myFriends}">
-                                                <c:if test="${j.id != i.id}">
-                                                    <td><a href="../api/guest/addFriend?userId=${i.id}&page=friends">Dodaj</a></td>    
-                                                </c:if>
-                                                <c:if test="${j.id == i.id}">
-                                                    <td><a href="#" data-href="../api/guest/deleteFriend?userId=${i.id}&page=friends" data-toggle="modal" data-target="#confirm-delete">Ukloni iz liste prijatelja</a></td>
-                                                </c:if>
-                                            </c:forEach>
-                                        </c:if>
-                                        <c:if test="${fn:length(sessionScope.user.myFriends) == 0}">
-                                            <td><a href="../api/guest/addFriend?userId=${i.id}&page=friends">Dodaj</a></td> 
-                                        </c:if>
+			  								 <td><a href="#" data-href="../api/guest/deleteFriend?userId=${i.id}&page=guest" data-toggle="modal" data-target="#confirm-delete">Ukloni iz liste prijatelja</a></td>	
+
                                                     
                                     </tr>
                                 </c:forEach> 
+                                <c:forEach var="i" items="${sessionScope.notFriends}">
+                                    <tr>
+                                         <c:if test="${i.image == null}">
+                                            <td><img src="../img/noPicture.png" class="img-responsive" alt="" width="32px" height="32px"></td>
+                                        </c:if>
+                                        <c:if test="${i.image != null}">
+                                            <td><img src="${i.image.path}" class="img-responsive" alt="{sessionScope.image.realName}" width="32px" height="32px"></td>
+                                        </c:if>                                       
+                                        <td>${i.name}</td>
+                                        <td>${i.surname}</td>
+
+                               				<td><a href="../api/guest/addFriend?userId=${i.id}&page=guest">Dodaj</a></td>  
+          
+                                    </tr>
+                                </c:forEach>   
                                 </tbody>
                               </table>
                             </div>    

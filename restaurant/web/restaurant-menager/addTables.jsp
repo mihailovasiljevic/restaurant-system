@@ -1,5 +1,3 @@
-<%@page import="java.util.HashSet"%>
-<%@page import="restaurant.server.entity.User"%>
 <%@page import="restaurant.server.entity.RestaurantTable"%>
 <%@page import="java.util.List"%>
 <%@page import="restaurant.server.entity.TablesConfiguration"%>
@@ -44,56 +42,44 @@
     src="http://maps.google.com/maps/api/js?sensor=false">
     </script>
     <script>
-//niz funkcija za proveru onoga sta je uneseno
-        function daLiJeCeoBroj(field){
-            return /^\+?(0|[1-9]\d*)$/.test(field[0].value);
-        }
-        function datum(field){
-            return /^(0?[1-9]|[12][0-9]|3[01])[\-](0?[1-9]|1[012])[\-]\d{2}$/.test(field[0].value);
-        }
-        function vreme(field){
-            return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(field[0].value);
-        }       
         $(document).ready(function(){
-                               
-            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
-                alert("${sessionScope.infoMessage}");
-                <c:set var="infoMessage" scope="session" value=""/>
-            }   
-                   $("#btn-grade").click(
+                
+            $("#btn-choose").click(
                     function(){
-                        var grade = $("#grade").val();
-                        var visitId = $("#visitId").val();
-                        var allGood = false;
-                       var allGood = true;
-                        
-                        if(grade == "" || grade== undefined || grade == null){
-                            alert("Morate uneti ocenu!");
+                        var checkedValues = "";
+                        $("input:checkbox:checked").each(function(){
+                                checkedValues += $(this).val()+";";
+                        });
+           
+                     var allGood = true;
+                        if(checkedValues == ""){
+                            $('#nothingChoosed').text("Morate selektovati bar jedan sto da biste mogli da nastavite dalje!");
                             allGood = false;
                         }else{
-                            allGoode = true;
+                           $('#nothingChoosed').text(""); 
+                            allGOod = true;
                         }
+                        
                         if(allGood == true){
                                 $.ajaxSetup({async:false});
                                 $.ajax({
-                                      url: "../api/guest/grade",
+                                      url: "../api/tables-configuration/setTables",
                                       type: 'post',
                                       contentType: "application/x-www-form-urlencoded",
                                       data: {
-                                       gradeData:JSON.stringify({
-                                           grade:grade,
-                                           visitId: visitId
+                                       tablesData:JSON.stringify({
+                                           checkedValues:checkedValues,
                                        }),    
                                        cache: false,
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
                                         if(data == "USPEH"){
-                                             window.location.href = "/restaurant/guest/myReservations.jsp";
+                                             window.location.href = "../api/tables-configuration/tablesConfigurations";
                                              return;
                                         }else{
                                             alert(data);
-                                            window.location.href = "/restaurant/guest/myReservations.jsp";
+                                            window.location.href = "/restaurant/restaurant-menager/restaurant-menager.jsp";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -107,10 +93,11 @@
                                 $.ajaxSetup({async:true});
                         }
                             
-                    }); 
-    
+                    });             
+  				
+            
         });
-
+        
 
     </script>
     
@@ -125,7 +112,7 @@
 		<c:redirect url="../index.jsp" />
 	</c:if>
 
-	<c:if test="${sessionScope.user.userType.name ne 'GUEST'}">
+	<c:if test="${sessionScope.user.userType.name ne 'RESTAURANT_MENAGER'}">
 		<c:redirect url="../index.jsp" />
 	</c:if>
     
@@ -159,7 +146,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2>Dobro dosli: ${sessionScope.user.name} ${sessionScope.user.surname}</h2>
+                    <h2>Menadzer restorana: ${sessionScope.user.name} ${sessionScope.user.surname}</h2>
                     <p class="lead"><div id="map_canvas" style="width:100%; height:500px">
                     
                                         <div class="row profile">
@@ -168,10 +155,10 @@
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
                     	<c:if test="${sessionScope.user.image == null}">
-                            <a herf="#" id="changePicture"><img src="../img/noPicture.png" class="img-responsive" alt=""></a>
+                            <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
                         <c:if test="${sessionScope.user.image != null}">
-                            <a herf="#" id="changePicture"><img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}"></a>
+                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}">
                         </c:if>
 
 				</div>
@@ -195,27 +182,32 @@
 				<!-- SIDEBAR MENU -->
 				<div class="profile-usermenu">
                     <ul class="nav">
-                        <li id="liTablesConfigurations">
-                            <a href="./guest.jsp" id="aTablesConfigurations">
+                        <li id="liTablesConfigurations" class="active">
+                            <a href="#" id="aTablesConfigurations">
                             <i class="glyphicon glyphicon-align-center"></i>
-                            Moj nalog </a>
+                            Konfiguracije stolova </a>
                         </li>
                         <li >
-                            <a href="../api/guest/restaurants">
+                            <a href="../api/restaurant/restaurants">
                             <i class="glyphicon glyphicon-registration-mark"></i>
                             Restorani </a>
                         </li>
                         <li  >
-                        <li>
-                            <a href="./friends.jsp">
+                        <li >
+                            <a href="../api/restaurant-type/restaurantTypes">
                             <i class="glyphicon glyphicon-link"></i>
-                            Prijatelji </a>
+                            Tipovi restorana </a>
                         </li>   
-                         <li class="active">
-                            <a href="./myReservations.jsp">
-                            <i class="glyphicon glyphicon-link"></i>
-                            Moje posete </a>
-                        </li>  
+                        <li >
+                            <a href="../api/menu/menus">
+                            <i class="glyphicon glyphicon-book"></i>
+                            Jelovnici </a>
+                        </li>
+                        <li >
+                            <a href="../api/dish/dishes">
+                            <i class="glyphicon glyphicon-list"></i>
+                            Jela</a>
+                        </li>
                     </ul>
 				</div>
 				<!-- END MENU -->
@@ -223,78 +215,58 @@
 		</div>
 		<div class="col-md-9">
             <div class="profile-content" id="content">
-
-                
-                 <div class="container">
+			   
+                <div class="container">
                     <div class="row">
+                                                 	
+                     	<table border = 1>
+                     		<form id="chooseTableForm" class="form-horizontal" role="form">
+                     		<%
+                     		    TablesConfiguration conf = (TablesConfiguration)session.getAttribute("tablesConfiguration");
+                     			if(conf != null){
+                     				
+                     				for(int i = 0; i < conf.getNumberOfRows(); i++){%>
+                     					<tr>
+                     				<%  for(int j = 0; j < conf.getNumberOfCols(); j++){%>
+  
+                     									<td>
+	                     									<div class="checkbox">
+															  <label><input type="checkbox" value="<%= i %>,<%= j %>">STO[<%= i %>,<%= j %>]</label>
+															</div>
+														</td>
+                     								
+                     					
+                     					<%}	%><tr><%
+                     				}
+
+                     				
+                     			}
+                     		%>
+                     		
                      	
-                <c:if test="${fn:length(sessionScope.user.visits) > 0}">  
-                 <div class="container">
-                    <div class="row">
-                          <div class="table-responsive">
-                            <table class="table table-hover">
-                              <thead>
-                                <tr>
-                                  <th>Datum rezervacije</th>
-                                  <th>Restoran</th>
-                                  <th>Moja ocena</th>
-                                  <th>&nbsp;</th>
-                                  <th>&nbsp;</th>
-                                </tr>
-                              </thead>
-                              <tbody id="restaurantTable">
-                                <c:forEach var="i" items="${sessionScope.user.visits}">
-                                    <tr>                                     
-                                        <td>${i.reservation.date}</td>
-                                        <td>${i.restaurant.name}</td>
-                                        <c:if test="${i.grade == -1}">
-                                            <td>
-                                                
-                                                <div class="form-group">
-                                                    
-                                                    <div class="col-md-3">
-                                                        <input type="text" class="form-control" name="grade" id="grade">
-                                                    </div>
-                                                                                                        
-                                                    <div class="col-md-3">
-                                                        <input type="hidden" class="form-control" name="grade" id="visitId" value="${i.id}">
-                                                    </div>
-                                                    <div class="col-md-offset-3 col-md-3">
-                                                        <button id="btn-grade" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Oceni</button>                        
-                                                    </div>
-                                                </div>
+                     	</table>
                                             
-                                            </td>
-                                        </c:if>
-                                        <c:if test="${i.grade != -1}">
-                                            <td>
-                                                
-                                                <div class="form-group">
-                                                    
-                                                    <div class="col-md-3">
-                                                        <input type="text" class="form-control" name="grade" id="grade" value="${i.grade}" disabled>
-                                                    </div>
-                                                </div>
-
-                                            </td>
-                                        </c:if>                                        
-             
-                                    </tr>
-                                </c:forEach> 
-                                </tbody>
-                              </table>
-                            </div>    
-                            <div class="col-md-12 text-center">
-                                <ul class="pagination pagination-lg pager" id="myPager"></ul>
-                            </div>
                     </div>
                 </div>
-                </c:if> 
                 
-                     
-                    </div>
-                </div>
+            </div>
+		</div>
+	</div>
+                                </div>
+                                <div class="form-group">
+                                    <!-- Button -->                                        
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <h2 id="nothingChoosed"></h2>                       
+                                    </div>
+                                </div>  
+                                 <div class="form-group">
+                                    <!-- Button -->                                        
+                                    <div class="col-md-offset-3 col-md-9">
+                                        <button id="btn-choose" type="button" class="btn btn-info"><i class="icon-hand-right"></i>Odaberi</button>                        
+                                    </div>
+                                </div>  
                     
+                    </div></p>
                 </div>
             </div>
             <!-- /.row -->
@@ -335,10 +307,53 @@
         </div>
     </footer>
     
-      
-    </div>
-    </div>
+    
+            <!-- Registration Modal -->
+        <div id="registrationModal" class="modal fade" role="dialog">
+          <div class="modal-dialog">
 
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Informacija o registraciji</h4>
+              </div>
+              <div class="modal-body">
+                  <span id="message"></span>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zatvori</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+    
+
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Potvrdite brisanje
+            
+                <div class="modal-body">
+                    <p>Pokusavate da obrisete tip restorana. Ako tip ima povezanih restorana NECE biti obrisan. Mozete brisati samo tipove koji nemaju za sebe nista povezano.</p>
+                    <p>Da li zelite da nastavite?</p>
+                    <p class="debug-url"></p>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a class="btn btn-danger btn-ok">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+      
+
+    <!-- jQuery -->
     <script src="js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->

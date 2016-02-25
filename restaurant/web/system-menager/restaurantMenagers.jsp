@@ -38,6 +38,10 @@
     <script>
 
         $(document).ready(function(){
+             if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }
                 var imageFileName="";
             //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
                 $('#btn-updateType').hide();
@@ -132,16 +136,11 @@
                                         },
                                           success: function (data, status) {
                                             if(data != "USPEH"){
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
-                                                 $("#registrationModal").show();
+                                                alert(data);
+                                                 window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
                                                 return;
                                             }else {
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali menadzera restorana.");                                     		
-                                                $("#registrationModal").show();
+                                                alert("Uspesno ste izmenili menadzera.")
                                                 window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
                                                 return;
                                             }
@@ -162,7 +161,8 @@
             
                     $( "#restaurantTable" ).on( "click", "i", function( event ) {
                             var userId = $(this).children().last().val();
-                        
+                            var mess1 = "Neko je verovanto obrisao menadzera kog pokusavate da izmenite. Osvezite stranicu.";
+                            var mess2 = "Greska servera. Molimo pokusajte ponovo.";
                                 $.ajaxSetup({async:false});
                                 $.ajax({
                                       url: "../api/restaurant-menager/prepareUpdateRestaurantMenager",
@@ -176,7 +176,7 @@
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
-                                        if(data != "GRESKA"){
+                                        if(data != mess1 && data){
                                              $('#userEmailsu').val(data.email);
                                             $('#userName').val(data.name);
                                             $('#userSurname').val(data.surname);
@@ -192,8 +192,8 @@
                                              $("#typeName-error").text("");
                                              return;
                                         }else{
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                            alert(data);
+                                             window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -320,17 +320,12 @@
                                         },
                                           success: function (data, status) {
                                             if(data != "USPEH"){
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
-                                                 $("#registrationModal").show();
+                                                alert(data);
+                                                 window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
                                                 return;
                                             }else {
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali menadzera restorana.");                                     		
-                                                $("#registrationModal").show();
-                                                window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
+                                                alert("Uspesno ste dodali menadzera.");
+                                                 window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
                                                 return;
                                             }
                                             $( "#email-error" ).text(data);
@@ -383,17 +378,12 @@
                                         },
                                           success: function (data, status) {
                                             if(data != "USPEH"){
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
-                                                 $("#registrationModal").show();
+                                                alert(data);
+                                                 window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
                                                 return;
                                             }
                                               else {
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali menadzera restorana.");                                     		
-                                                $("#registrationModal").show();
+                                                alert("Uspesno ste dodali menadzera.");
                                                 window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
                                                 return;
                                             }
@@ -431,17 +421,12 @@
                                         },
                                           success: function (data, status) {
                                             if(data != "USPEH"){
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                 $("#registrationModal #message").text("Dogodila se greska i nismo uspeli da vas registrujemo. Molimo pokusajte ponovo.");
-                                                 $("#registrationModal").show();
+                                                 alert(data);
+                                                 window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
                                                 return;
                                             }
                                               else {
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali menadzera restorana.");                                     		
-                                                $("#registrationModal").show();
+                                                alert("Uspesno ste dodali menadzera.");
                                                 window.location.href = "/restaurant/api/restaurant-menager/restaurantMenagers";
                                                 return;
                                             }
@@ -630,11 +615,11 @@
 
 <body>
 	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
 
 	<c:if test="${sessionScope.user.userType.name ne 'SYSTEM_MENAGER'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
     
     <!-- Navigation -->
@@ -646,10 +631,10 @@
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                 <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -675,11 +660,11 @@
 			<div class="profile-sidebar">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+                    	<c:if test="${sessionScope.user.image == null}">
                             <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
-                        <c:if test="${sessionScope.image != null}">
-                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
+                        <c:if test="${sessionScope.user.image != null}">
+                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}">
                         </c:if>
 
 				</div>

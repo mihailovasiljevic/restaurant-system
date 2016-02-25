@@ -28,17 +28,15 @@ public class PrepareUpdateRestaurantTypeController extends HttpServlet{
 		// TODO Auto-generated method stub
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if ((user.getUserType().getName()).equals("GUEST")) {
-				System.out
-						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp
-						.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 
@@ -62,7 +60,7 @@ public class PrepareUpdateRestaurantTypeController extends HttpServlet{
 					} else {					
 				        resp.setContentType("application/json; charset=utf-8");
 				        PrintWriter out = resp.getWriter();
-				        resultMapper.writeValue(out, "GRESKA");
+				        resultMapper.writeValue(out, "Neko je verovanto obrisao tip entita koji pokusavate da izmenite. Osvezite stranicu.");
 						return;
 						}
 				} catch (Exception ex) {
@@ -70,7 +68,7 @@ public class PrepareUpdateRestaurantTypeController extends HttpServlet{
 					
 			        resp.setContentType("application/json; charset=utf-8");
 			        PrintWriter out = resp.getWriter();
-			        resultMapper.writeValue(out, "GRESKA");
+			        resultMapper.writeValue(out, "Greska servera. Molimo pokusajte ponovo.");
 					return;
 				}
 		}

@@ -44,15 +44,15 @@ public class ChangePasswordController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("GUEST")) {
-				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			try {
@@ -74,7 +74,7 @@ public class ChangePasswordController extends HttpServlet{
 
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_FIELD_EMPTY.toString());
+					resultMapper.writeValue(out, "Morate popuniti sva polja!");
 					return;
 				}
 				byte[] salt;
@@ -82,7 +82,7 @@ public class ChangePasswordController extends HttpServlet{
 				if(!HashPassword.isPassword(HashPassword.strToChar(userOldPassword), user.getSalt(),user.getPassword())){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_FIELD_EMPTY.toString());
+					resultMapper.writeValue(out, "Stara lozinka se ne poklapa sa onom koju ste uneli.");
 					return;					
 				}
 				
@@ -94,7 +94,7 @@ public class ChangePasswordController extends HttpServlet{
 				if(persisted == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_FIELD_EMPTY.toString());
+					resultMapper.writeValue(out,"Nismo uspeli da izmenimo vase podatke. Molimo pokusajte kasnije.");
 					return;
 				}
 				resp.setContentType("application/json; charset=utf-8");
@@ -106,7 +106,7 @@ public class ChangePasswordController extends HttpServlet{
 				ObjectMapper resultMapper = new ObjectMapper();
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
-				resultMapper.writeValue(out, "GRESKA");
+				resultMapper.writeValue(out, "Greska na serveru. Molimo pokusajte kasnije.");
 				return;
 			}
 		}

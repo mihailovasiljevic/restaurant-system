@@ -54,15 +54,15 @@ public class CreateTablesConfigurationController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("RESTAURANT_MENAGER")) {
-				System.out.println("Korisnik nije menadzer resotrana i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			try {
@@ -129,10 +129,42 @@ public class CreateTablesConfigurationController extends HttpServlet{
 				if(rst == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, "Neko je obrisao restoran u medjvuremenu.");
+					resultMapper.writeValue(out, "Neko je obrisao restoran u medjuvremenu.");
 					return;
 				}
-
+				//postavi sve configuracije do sada na 
+				if(rst.getTablesConfigurations().size() > 0){
+					
+					resp.setContentType("application/json; charset=utf-8");
+					PrintWriter out = resp.getWriter();
+					resultMapper.writeValue(out, "Vec ste dodali konfiguraciju za ovaj restoran.");
+					return;					
+					
+					/*
+					Iterator<TablesConfiguration> it = rst.getTablesConfigurations().iterator();
+					while(it.hasNext()){
+						System.out.println(it.hasNext());
+						if(it.next() != null)
+							if(((TablesConfiguration)it.next()).getDateTo() == null){
+								((TablesConfiguration)it.next()).setDateTo(new Date());
+								((TablesConfiguration)it.next()).setCurrent(!it.next().getCurrent());
+								tablesConfigurationDao.merge(((TablesConfiguration)it.next()));
+							}
+					}
+					
+					TablesConfiguration lastConf = getLastElement(rst.getTablesConfigurations());
+					if(lastConf.getTables().size() > 0){
+						Iterator<RestaurantTable> tablesIt = lastConf.getTables().iterator();
+						while(tablesIt.hasNext()){
+							if(tablesIt.next() != null){
+								tablesIt.next().setTablesConfiguration(persisted);
+								tableDao.merge(tablesIt.next());
+							}
+						}
+					}
+					*/
+				}
+				
 				TablesConfiguration conf = new TablesConfiguration();
 				conf.setCurrent(true);
 				conf.setDateFrom(dateFrom);
@@ -152,32 +184,7 @@ public class CreateTablesConfigurationController extends HttpServlet{
 
 				user.add(persisted);
 				userDao.merge(user);
-				//postavi sve configuracije do sada na 
-				if(rst.getTablesConfigurations().size() > 0){
-					Iterator<TablesConfiguration> it = rst.getTablesConfigurations().iterator();
-					while(it.hasNext()){
-						System.out.println(it.hasNext());
-						if(it.next() != null)
-							if(((TablesConfiguration)it.next()).getDateTo() == null){
-								((TablesConfiguration)it.next()).setDateTo(new Date());
-								((TablesConfiguration)it.next()).setCurrent(!it.next().getCurrent());
-								tablesConfigurationDao.merge(((TablesConfiguration)it.next()));
-							}
-					}
-					/*
-					TablesConfiguration lastConf = getLastElement(rst.getTablesConfigurations());
-					if(lastConf.getTables().size() > 0){
-						Iterator<RestaurantTable> tablesIt = lastConf.getTables().iterator();
-						while(tablesIt.hasNext()){
-							if(tablesIt.next() != null){
-								tablesIt.next().setTablesConfiguration(persisted);
-								tableDao.merge(tablesIt.next());
-							}
-						}
-					}
-					*/
-				}
-				
+				/*
 				for(int i = 0; i < persisted.getNumberOfRows(); i++){
 					for(int j = 0; j < persisted.getNumberOfCols(); j++){
 						int randomCol = (int)(Math.random() * (persisted.getNumberOfCols() + 1));
@@ -199,9 +206,10 @@ public class CreateTablesConfigurationController extends HttpServlet{
 					}
 				}
 				
-				
+				*/
 				rst.add(persisted);
 				restaurantDao.merge(rst);
+				req.getSession().setAttribute("tablesConfiguration", persisted);
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
 				resultMapper.writeValue(out, "USPEH");

@@ -38,7 +38,10 @@
     <script>
 
         $(document).ready(function(){
-                
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }
             //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
                 $('#btn-updateType').hide();
                 $("#btn-type").click(
@@ -122,6 +125,7 @@
                                              $('#btn-type').show();
                                              return;
                                         }else{
+                                                                                     
                                             alert(data);
                                             window.location.href = "/restaurant/api/restaurant-type/restaurantTypes";
                                             return;
@@ -139,8 +143,9 @@
                     });   
                     $( "#restaurantTable" ).on( "click", "i", function( event ) {
                             var typeId = $(this).children().last().val();
-                        
-                                $.ajaxSetup({async:false});
+                             var mess1 = "Neko je verovanto obrisao tip entita koji pokusavate da izmenite. Osvezite stranicu.";
+                            var mess2 = "Greska servera. Molimo pokusajte ponovo.";
+                           $.ajaxSetup({async:false});
                                 $.ajax({
                                       url: "../api/restaurant-type/prepareUpdateRestaurantType",
                                       type: 'post',
@@ -153,7 +158,7 @@
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
-                                        if(data != "GRESKA"){
+                                        if(data != mess1 && data != mess2){
                                             if($('#typeName').val() != "" && $('#typeName').val() != null && $('#typeName').val() != undefined)
                                                 $('#typeName').val("");
                                              $('#typeName').val(data);
@@ -177,7 +182,11 @@
                                 $.ajaxSetup({async:true});
                             
                     });
-            
+                   $('#confirm-delete').on('show.bs.modal', function(e) {
+                        $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
+
+                        //$('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
+                    });
             
         });
         
@@ -293,11 +302,11 @@
 
 <body>
 	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
 
 	<c:if test="${sessionScope.user.userType.name ne 'SYSTEM_MENAGER'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
     
     <!-- Navigation -->
@@ -309,10 +318,10 @@
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="../logout" data-toggle="modal" data-target="#myModal" Odjavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -338,11 +347,11 @@
 			<div class="profile-sidebar">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+                    	<c:if test="${sessionScope.user.image == null}">
                             <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
                         <c:if test="${sessionScope.image != null}">
-                            <img src="${sessionScope.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
+                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}">
                         </c:if>
 
 				</div>
@@ -569,8 +578,8 @@
                 </div>
                 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-danger btn-ok">Delete</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Odustani</button>
+                    <a class="btn btn-danger btn-ok">Obrisi</a>
                 </div>
             </div>
         </div>

@@ -46,15 +46,15 @@ public class UpdateGuestController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("GUEST")) {
-				System.out.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			try {
@@ -83,14 +83,14 @@ public class UpdateGuestController extends HttpServlet{
 
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_FIELD_EMPTY.toString());
+					resultMapper.writeValue(out, "Morate da popunite sva polja!");
 					return;
 				}
 				Street street = streetDao.findById(streetId);
 				if(street == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+					resultMapper.writeValue(out, "Nismo uspeli da sacuvamo ulicu koju ste zadali. Molimo pokusajte ponovo.");
 					return;
 				}				
 				List<Address> addresses = addressDao.findAll();
@@ -104,7 +104,7 @@ public class UpdateGuestController extends HttpServlet{
 							if(persisted == null){
 								resp.setContentType("application/json; charset=utf-8");
 								PrintWriter out = resp.getWriter();
-								resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+								resultMapper.writeValue(out, "Nismo uspeli da vam promenimo podatke. Molimo pokusajte ponovo.");
 								return;
 							}
 							
@@ -119,7 +119,7 @@ public class UpdateGuestController extends HttpServlet{
 						}else{
 							resp.setContentType("application/json; charset=utf-8");
 							PrintWriter out = resp.getWriter();
-							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							resultMapper.writeValue(out, "Doslo je do greske na sesiji. Molimo prijavite se ponovo.");
 							return;
 						}
 					}
@@ -132,7 +132,7 @@ public class UpdateGuestController extends HttpServlet{
 				if(persistedAdr == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+					resultMapper.writeValue(out, "Nismo uspeli da sacuvamo adresu koju ste naveli. Molimo pokusajte ponovo.");
 					return;
 				}
 				
@@ -143,7 +143,7 @@ public class UpdateGuestController extends HttpServlet{
 						if(persisted == null){
 							resp.setContentType("application/json; charset=utf-8");
 							PrintWriter out = resp.getWriter();
-							resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+							resultMapper.writeValue(out, "Nismo uspeli da vam izmenimo podatke. MOlimo pokusajte ponoov.");
 							return;
 						}
 						
@@ -158,7 +158,7 @@ public class UpdateGuestController extends HttpServlet{
 					}else{
 						resp.setContentType("application/json; charset=utf-8");
 						PrintWriter out = resp.getWriter();
-						resultMapper.writeValue(out, ResultCode.REGISTER_USER_ERROR.toString());
+						resultMapper.writeValue(out, "Doslo je do greske na sesiji. Molimo prijavite se ponovo.");
 						return;
 					}
 			}catch(Exception ex){
@@ -166,7 +166,7 @@ public class UpdateGuestController extends HttpServlet{
 				ObjectMapper resultMapper = new ObjectMapper();
 				resp.setContentType("application/json; charset=utf-8");
 				PrintWriter out = resp.getWriter();
-				resultMapper.writeValue(out, "GRESKA");
+				resultMapper.writeValue(out, "Greska servera, molimo, pokusajte ponovo.");
 				return;
 			}
 		}

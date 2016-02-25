@@ -277,7 +277,10 @@ function parseDatumDo(field){
 }
         $(document).ready(function(){
                 
-            
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }
                 $('#btn-updateType').hide();
                  $("#btn-type").click(
                     function(){
@@ -381,14 +384,13 @@ function parseDatumDo(field){
                                     },
                                       success: function (data, status) {
                                         if(data == "USPEH"){
-                                             window.location.href = "/restaurant/api/tables-configuration/tablesConfigurations";
+                                             window.location.href = "./addTables.jsp";
                                              $('#btn-updateType').hide();
                                              $('#btn-type').show();
                                              return;
                                         }else{
-                                            $("#confName-error").text(data);
-                                            $("#updateBox").hide();
-                                            $("#myModal").hide();
+                                            alert(data);
+                                             window.location.href = "/restaurant/api/tables-configuration/tablesConfigurations";
                                             return;
                                         }
                                         //alert("Data: "+ data);
@@ -518,11 +520,11 @@ function parseDatumDo(field){
 
 <body>
 	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
 
 	<c:if test="${sessionScope.user.userType.name ne 'RESTAURANT_MENAGER'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
     
     <!-- Navigation -->
@@ -534,10 +536,10 @@ function parseDatumDo(field){
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -567,7 +569,7 @@ function parseDatumDo(field){
                             <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
                         <c:if test="${sessionScope.user.image != null}">
-                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
+                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}">
                         </c:if>
 
 				</div>
@@ -605,7 +607,7 @@ function parseDatumDo(field){
                         <li >
                             <a href="../api/restaurant-type/restaurantTypes">
                             <i class="glyphicon glyphicon-link"></i>
-                            Tipovi resotrana </a>
+                            Tipovi restorana </a>
                         </li>   
                         <li >
                             <a href="../api/menu/menus">

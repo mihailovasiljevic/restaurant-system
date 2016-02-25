@@ -130,11 +130,11 @@
             <li class="sidebar-brand">
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
-            <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+           <li>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -160,11 +160,11 @@
 			<div class="profile-sidebar">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+                    	<c:if test="${sessionScope.user.image == null}">
                             <a herf="#" id="changePicture"><img src="../img/noPicture.png" class="img-responsive" alt=""></a>
                         </c:if>
-                        <c:if test="${sessionScope.image != null}">
-                            <a herf="#" id="changePicture"><img src="${sessionScope.image.path}" class="img-responsive" alt="{sessionScope.image.realName}"></a>
+                        <c:if test="${sessionScope.user.image != null}">
+                            <a herf="#" id="changePicture"><img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}"></a>
                         </c:if>
 
 				</div>

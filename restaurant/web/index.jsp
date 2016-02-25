@@ -38,8 +38,12 @@
     <script>
 
         $(document).ready(function(){
-            alert("${requestScope.infoMessage}");
-                $("#btn-login").click(
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }
+                
+            $("#btn-login").click(
                     function(){
                         var userEmail = $("#userEmail").val();
                         var userPassword = $("#userPassword").val();
@@ -376,17 +380,15 @@
 
 <body>
           <c:if test="${sessionScope.user != null}" >
-			<c:choose>
-			    <c:when test="${sessionScope.user.userType.name eq 'GUEST'}">
-			       <c:redirect url="./guest/guest.jsp" />
-			    </c:when>
-					<c:when test="${sessionScope.user.userType.name eq 'SYSTEM_MENAGER'}">
-			       <c:redirect url="./api/restaurant-type/restaurantTypes" />
-			    </c:when>
-					<c:otherwise>
-						<c:redirect url="./api/tables-configuration/tablesConfigurations" />
-      		</c:otherwise>
-			</c:choose>
+              	<c:if test="${sessionScope.user.userType.name eq 'SYSTEM_MENAGER'}">
+                    <c:redirect url="./api/restaurant-type/restaurantTypes" />
+                </c:if>
+              	<c:if test="${sessionScope.user.userType.name eq 'GUEST'}">
+                    <c:redirect url="./guest/guest.jsp" />
+                </c:if> 
+              	<c:if test="${sessionScope.user.userType.name eq 'RESTAURANT_MENAGER'}">
+                    <c:redirect url="./api/restaurant-type/restaurantTypes" />
+                </c:if>                   
 		</c:if>
     
     <!-- Navigation -->
@@ -412,24 +414,11 @@
             <h1>Restorani na dohvat ruke</h1>
             <h3>Rezervišite vaš termin već danas!</h3>
             <br>
-            <a href="#restaurants" class="btn btn-dark btn-lg">Pogledajte restorane</a>
+            <a href="#" class="btn btn-dark btn-lg"> Registrujte se i rezervisite vec danas</a>
         </div>
         <input type="hidden" value="${requestScope.infoMessage}" id="infoMessage">
     </header>
 
-    <!-- About -->
-    <section id="restaurants" class="about">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>Upoznajte vašu sledeću destinaciju za obrok!</h2>
-                    <p class="lead"><div id="map_canvas" style="width:100%; height:500px"></div></p>
-                </div>
-            </div>
-            <!-- /.row -->
-        </div>
-        <!-- /.container -->
-    </section>
 
 
     <!-- Footer -->
@@ -522,7 +511,7 @@
 
                                     <div class="col-sm-12 controls">
                                       <a id="btn-login" href="#" class="btn btn-success">Prijavi se  </a>
-                                      <a id="btn-fblogin" href="#" class="btn btn-primary">Facebook</a>
+                                      <a id="btn-fblogin" href="http://localhost:8080/restaurant/facebook" class="btn btn-primary">Facebook</a>
                                       <a id="btn-fblogin" href="http://localhost:8080/restaurant/googlePlus" class="btn btn-danger">Google+</a>          
                                     </div>
                                 </div>
@@ -630,12 +619,12 @@
                                                     <span class="input-group-btn">
                                                         <!-- image-preview-clear button -->
                                                         <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
-                                                            <span class="glyphicon glyphicon-remove"></span> Clear
+                                                            <span class="glyphicon glyphicon-remove"></span> Ocisti
                                                         </button>
                                                         <!-- image-preview-input -->
                                                         <div class="btn btn-default image-preview-input">
                                                             <span class="glyphicon glyphicon-folder-open"></span>
-                                                            <span class="image-preview-input-title">Browse</span>
+                                                            <span class="image-preview-input-title">Odaberi</span>
                                                             <input type="file" accept="image/png, image/jpeg, image/gif" name="uploadFile" id="uploadFile"/> <!-- rename it -->
                                                         </div>
                                                     </span>
@@ -659,8 +648,8 @@
                                 <div style="border-top: 1px solid #999; padding-top:20px"  class="form-group">
                                     
                                     <div class="col-md-offset-3 col-md-9">
-                                        <button id="btn-fbsignup" type="button" class="btn btn-primary"><i class="icon-facebook"></i>Facebook</button>
-                                        <button id="btn-fbsignup" type="button" class="btn btn-danger"><i class="icon-google"></i>Google</button>
+                                      <a id="btn-fblogin" href="http://localhost:8080/restaurant/facebook" class="btn btn-primary">Facebook</a>
+                                      <a id="btn-fblogin" href="http://localhost:8080/restaurant/googlePlus" class="btn btn-danger">Google+</a>    
                                     </div>                                           
                                         
                                 </div>

@@ -46,15 +46,15 @@ public class CreateMenuController extends HttpServlet{
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("RESTAURANT_MENAGER")) {
-				System.out.println("Korisnik nije menadzer resotrana i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			try {
@@ -100,29 +100,16 @@ public class CreateMenuController extends HttpServlet{
 				if(rst == null){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, "Neko je obrisao restoran u medjvuremenu.");
+					resultMapper.writeValue(out, "Neko je obrisao meni u medjvuremenu.");
 					return;
 				}
-
-				Menu menu = new Menu();
-				menu.setCurrent(true);
-				menu.setDateFrom(menuDateFrom);
-				menu.setDateTo(null);
-				menu.setName(menuName);
-				menu.setRestaurant(rst);
-				menu.setUserRestaurantMenager(user);
-				Menu persisted = menuDao.persist(menu);
-				if(persisted == null){
+				
+				if(rst.getMenus().size() > 0){
 					resp.setContentType("application/json; charset=utf-8");
 					PrintWriter out = resp.getWriter();
-					resultMapper.writeValue(out, "Nije uspelo cuvanje konfiguracije.");
-					return;
-				}
-
-				user.add(persisted);
-				userDao.merge(user);
-				//postavi sve configuracije do sada na 
-				if(rst.getMenus().size() > 0){
+					resultMapper.writeValue(out, "Ovaj restoran vec ima meni. Meni mozete postaviti samo jednom. Idite na stranicu sa jelima kako biste dodavali i menjali jela.");
+					return;					
+					/*
 					Iterator<Menu> it = rst.getMenus().iterator();
 					while(it.hasNext()){
 						System.out.println(it.hasNext());
@@ -143,7 +130,27 @@ public class CreateMenuController extends HttpServlet{
 							}
 						}
 					}
+					*/
 				}
+				Menu menu = new Menu();
+				menu.setCurrent(true);
+				menu.setDateFrom(menuDateFrom);
+				menu.setDateTo(null);
+				menu.setName(menuName);
+				menu.setRestaurant(rst);
+				menu.setUserRestaurantMenager(user);
+				Menu persisted = menuDao.persist(menu);
+				if(persisted == null){
+					resp.setContentType("application/json; charset=utf-8");
+					PrintWriter out = resp.getWriter();
+					resultMapper.writeValue(out, "Nije uspelo cuvanje menija.");
+					return;
+				}
+
+				user.add(persisted);
+				userDao.merge(user);
+				//postavi sve configuracije do sada na 
+
 				
 				rst.add(menu);
 				restaurantDao.merge(rst);

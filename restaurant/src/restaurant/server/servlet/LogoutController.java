@@ -30,6 +30,8 @@ public class LogoutController extends HttpServlet{
 					req.getSession().invalidate();
 					resp.sendRedirect(resp.encodeRedirectURL("./index.jsp"));
 			
+		}else{
+			resp.sendRedirect(resp.encodeRedirectURL("./index.jsp"));
 		}
 		// TODO Auto-generated method stub
 	

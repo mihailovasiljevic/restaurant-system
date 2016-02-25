@@ -42,10 +42,8 @@ public class PrepareUpdateDishController extends HttpServlet{
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if (!(user.getUserType().getName()).equals("RESTAURANT_MENAGER")) {
-				System.out
-						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp
-						.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite stranici!");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 
@@ -70,7 +68,7 @@ public class PrepareUpdateDishController extends HttpServlet{
 					} else {					
 				        resp.setContentType("application/json; charset=utf-8");
 				        PrintWriter out = resp.getWriter();
-				        resultMapper.writeValue(out, "GRESKA");
+				        resultMapper.writeValue(out, "Neko je verovanto obrisao jelo koji pokusavate da izmenite. Osvezite stranicu.");
 						return;
 						}
 				} catch (Exception ex) {
@@ -78,7 +76,7 @@ public class PrepareUpdateDishController extends HttpServlet{
 					
 			        resp.setContentType("application/json; charset=utf-8");
 			        PrintWriter out = resp.getWriter();
-			        resultMapper.writeValue(out, "GRESKA");
+			        resultMapper.writeValue(out, "Greska servera. Molimo pokusajte ponovo.");
 					return;
 				}
 		}

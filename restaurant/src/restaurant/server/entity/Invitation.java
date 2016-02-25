@@ -26,7 +26,7 @@ public class Invitation implements Serializable{
 	@Column(name = "INV_NAME", nullable = false, length=64)
 	private String name;
 	
-	@Column(name = "INV_ACC")
+	@Column(name = "INV_ACC", nullable = true)
 	private Boolean invitationAccepted = null;
 	
 	@ManyToOne

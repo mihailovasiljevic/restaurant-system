@@ -38,6 +38,11 @@
     <script>
 
         $(document).ready(function(){
+            
+            if("${sessionScope.infoMessage}" != "" && "${sessionScope.infoMessage}" != "null"){
+                alert("${sessionScope.infoMessage}");
+                <c:set var="infoMessage" scope="session" value=""/>
+            }
                 var imageFileName="";
             //$('#restaurantTable').pageMe({pagerSelector:'#myPager',showPrevNext:true,hidePageNumbers:false,perPage:10});
                 $('#btn-updateType').hide();
@@ -102,10 +107,7 @@
                                                  window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }else {
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali restoran.");                                     		
-                                                $("#registrationModal").show();
+                                                alert("Uspesno ste izmenili restoran.")
                                                 window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }
@@ -125,7 +127,8 @@
             
                     $( "#restaurantTable" ).on( "click", "i", function( event ) {
                             var restaurantId = $(this).children().last().val();
-                        
+                            var mess1 = "Neko je verovanto obrisao restoran koji pokusavate da izmenite. Osvezite stranicu.";
+                            var mess2 = "Greska servera. Molimo pokusajte ponovo.";
                                 $.ajaxSetup({async:false});
                                 $.ajax({
                                       url: "../api/restaurant/prepareUpdateRestaurant",
@@ -139,7 +142,7 @@
                                        dataType:'json'
                                     },
                                       success: function (data, status) {
-                                        if(data != "GRESKA"){
+                                        if(data != mess1 && data != mess2){
                                              $('#restaurantName').val(data.name);
                                             $('#restaurantType').val(data.type);
                                             $('#street').val(data.street);
@@ -181,7 +184,7 @@
                     $('#confirm-delete').on('show.bs.modal', function(e) {
                         $(this).find('.btn-ok').attr('href', $(e.relatedTarget).data('href'));
 
-                        $('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
+                        //$('.debug-url').html('Delete URL: <strong>' + $(this).find('.btn-ok').attr('href') + '</strong>');
                     });
             
             
@@ -246,10 +249,7 @@
                                                  window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }else {
-                                                $("#myModal").hide();
-                                                $("#updatebox").hide();
-                                                $("#registrationModal #message").text("Uspesno ste dodali restoran.");                                     		
-                                                $("#registrationModal").show();
+                                                alert("Uspesno ste dodali restoran.")
                                                 window.location.href = "/restaurant/api/restaurant/restaurants";
                                                 return;
                                             }
@@ -445,11 +445,11 @@
 
 <body>
 	<c:if test="${sessionScope.user == null}">
-		<c:redirect url="../login.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
 
 	<c:if test="${sessionScope.user.userType.name ne 'SYSTEM_MENAGER'}">
-		<c:redirect url="../insufficient_privileges.jsp" />
+		<c:redirect url="../index.jsp" />
 	</c:if>
     
     <!-- Navigation -->
@@ -461,10 +461,10 @@
                 <a href="#top"  onclick = $("#menu-close").click(); >Rezervacije restorana</a>
             </li>
             <li>
-                <a href="#top" onclick = $("#menu-close").click(); >Početna</a>
+                <a href="../index.jsp" onclick = $("#menu-close").click(); >Početna</a>
             </li>
             <li>
-                <a href="#" data-toggle="modal" data-target="#myModal" >Prijavite se </a>
+                <a href="../logout"> Odjavite se </a>
             </li>
         </ul>
     </nav>
@@ -490,11 +490,11 @@
 			<div class="profile-sidebar">
 				<!-- SIDEBAR USERPIC -->
 				<div class="profile-userpic">
-                    	<c:if test="${sessionScope.image == null}">
+                    	<c:if test="${sessionScope.user.image == null}">
                             <img src="../img/noPicture.png" class="img-responsive" alt="">
                         </c:if>
-                        <c:if test="${sessionScope.image != null}">
-                            <img src="${sessionScope.user.image.path}" class="img-responsive" alt="{sessionScope.image.realName}">
+                        <c:if test="${sessionScope.user.image != null}">
+                            <img src="${sessionScope.user.user.image.path}" class="img-responsive" alt="{sessionScope.user.image.realName}">
                         </c:if>
 
 				</div>
@@ -554,7 +554,6 @@
                                   <th>Ocena</th>
                                   <th>Tip</th>
                                   <th>Adresa</th>
-                                  <th>Menadzeri</th>
                                   <th>&nbsp;</th>
                                   <th>&nbsp;</th>
                                 </tr>
@@ -567,13 +566,7 @@
                                         <td>${i.grade}</td>
                                         <td>${i.restaurantType.name}</td>
                                         <td>${i.address.street.name} ${i.address.brojUUlici}, ${i.address.street.city.name}, ${i.address.street.city.country.name}</td>
-                                        <c:if test="${fn:length(i.restaurantMenagers) > 0}">
-                                            <td>
-                                            <c:forEach var="i" items="${i.restaurantMenagers}">
-                                                ${i.name} ${i.surname}<br />
-                                            </c:forEach>
-                                            </td>
-                                        </c:if>
+
                                         
                                         <td><i><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal" onclick="$('#updatebox').show();" id="updateButton" value="${i.id}"><input type="hidden" value="${i.id}" id="hiddenUpdate">Izmeni
                                             restoran</button></i></td>

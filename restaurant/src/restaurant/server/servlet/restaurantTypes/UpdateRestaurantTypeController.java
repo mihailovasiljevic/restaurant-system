@@ -30,17 +30,15 @@ public class UpdateRestaurantTypeController extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		if (req.getSession().getAttribute("user") == null) {
-			System.out.println("Nema korisnika na sesiji");
-			resp.sendRedirect(resp.encodeRedirectURL("../../login.jsp"));
+			req.getSession().setAttribute("infoMessage", "Morate se prijaviti!");
+			resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 			return;
 		} else {
 			User user = (User) req.getSession().getAttribute("user");
 			System.out.println("User type: " + user.getUserType().getName());
 			if ((user.getUserType().getName()).equals("GUEST")) {
-				System.out
-						.println("Korisnik nije menadzer sistema i nema ovlascenja da uradi tako nesto!");
-				resp.sendRedirect(resp
-						.encodeRedirectURL("../../insufficient_privileges.jsp"));
+				req.getSession().setAttribute("infoMessage", "Nemate ovlascenja da pristupite trazenoj stranici.");
+				resp.sendRedirect(resp.encodeRedirectURL("../../index.jsp"));
 				return;
 			}
 			if(req.getSession().getAttribute("updateRestaurantType") != null) {
@@ -55,9 +53,8 @@ public class UpdateRestaurantTypeController extends HttpServlet {
 					}
 					
 					if (name == null || name.equals("") || name.equals(" ")) {
-						System.out.println("Polje je prazno!");
-						resp.sendRedirect(resp
-								.encodeRedirectURL("../../system-menager/restaurant-type/updateRestaurantType.jsp"));
+						req.getSession().setAttribute("infoMessage", "Polje name je ostalo prazno!");
+						resp.sendRedirect(resp.encodeRedirectURL("../../system-menager/system-menager.jsp"));
 						return;
 					}
 					RestaurantType rt = (RestaurantType) req.getSession()
@@ -72,12 +69,12 @@ public class UpdateRestaurantTypeController extends HttpServlet {
 						}else{
 					        resp.setContentType("application/json; charset=utf-8");
 					        PrintWriter out = resp.getWriter();
-					        resultMapper.writeValue(out, "Nije uspelo azuriranje.");
+					        resultMapper.writeValue(out, "Nije uspelo azuriranje. Molimo pokusajte ponovo.");
 						}
 					} else {
 				        resp.setContentType("application/json; charset=utf-8");
 				        PrintWriter out = resp.getWriter();
-				        resultMapper.writeValue(out, "Nije uspelo azuriranje.");
+				        resultMapper.writeValue(out, "Nije uspelo azuriranje. Neko je verovatno obrisao tip restorana koji pokusavate da izmenite.");
 					}
 					removeSessionObject(req);
 					return;
@@ -87,7 +84,7 @@ public class UpdateRestaurantTypeController extends HttpServlet {
 					
 			        resp.setContentType("application/json; charset=utf-8");
 			        PrintWriter out = resp.getWriter();
-			        resultMapper.writeValue(out, "Nije uspelo azuriranje");
+			        resultMapper.writeValue(out, "Serverska greska. Molimo pokusajte citav proces ispocetka.");
 			        removeSessionObject(req);
 					return;
 				}
